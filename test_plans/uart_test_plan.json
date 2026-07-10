@@ -1,0 +1,55 @@
+{
+  "design_name": "uart",
+  "version": "1.0",
+  "generated_at": "2026-07-10T22:36:52.184181",
+  "signals": [
+    {
+      "name": "clk",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "rst_n",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "tx_data",
+      "width": 8,
+      "direction": "input"
+    },
+    {
+      "name": "rx_data",
+      "width": 8,
+      "direction": "output"
+    }
+  ],
+  "fsm_states": [
+    "IDLE",
+    "START",
+    "DATA",
+    "STOP"
+  ],
+  "register_map": [
+    {
+      "address": "0x00",
+      "name": "baud_divisor",
+      "width": 16
+    },
+    {
+      "address": "0x04",
+      "name": "control",
+      "width": 8
+    }
+  ],
+  "functional_points": [
+    {
+      "id": "FP_001",
+      "description": "8-bit data transmission"
+    },
+    {
+      "id": "FP_002",
+      "description": "Baud rate configuration"
+    }
+  ]
+}

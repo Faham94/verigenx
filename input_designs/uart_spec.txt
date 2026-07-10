@@ -1,0 +1,22 @@
+UART Module Specification
+=========================
+
+1. Signals
+----------
+clk      : 1-bit input  - System clock
+rst_n    : 1-bit input  - Active low reset
+tx_data  : 8-bit input  - Data to transmit
+rx_data  : 8-bit output - Received data
+
+2. Protocol: 8-N-1
+-------------------
+- 8 data bits, No parity, 1 stop bit
+
+3. FSM States
+-------------
+IDLE → START → DATA → STOP → IDLE
+
+4. Registers
+------------
+Address 0x00: baud_divisor (16-bit)
+Address 0x04: control (8-bit)
