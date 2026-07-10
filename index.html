@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VeriGenX — Autonomous UVM Verification Platform</title>
+  <meta name="description" content="VeriGenX is an open-source, AI-powered UVM verification platform automating the complete verification flow from specification to testbench." />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #060c18;
+      --surface: #0d1628;
+      --surface2: #131f35;
+      --border: #1e2d47;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --accent: #3b82f6;
+      --accent2: #60a5fa;
+      --green: #22c55e;
+      --amber: #f59e0b;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(6,12,24,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .nav-brand { font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+    .nav-brand span { color: var(--accent2); }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a { color: var(--muted); font-size: 13px; font-weight: 500; text-decoration: none; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: var(--accent);
+      color: #fff;
+      font-size: 13px; font-weight: 600;
+      padding: 8px 20px; border-radius: 8px;
+      text-decoration: none; transition: background 0.2s;
+    }
+    .nav-cta:hover { background: #2563eb; }
+
+    /* HERO */
+    .hero {
+      padding: 140px 60px 100px;
+      max-width: 1100px; margin: 0 auto;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.3);
+      color: var(--accent2);
+      font-size: 12px; font-weight: 600; letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 6px 16px; border-radius: 20px;
+      margin-bottom: 28px;
+    }
+    .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+    .hero h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 800; letter-spacing: -2px; line-height: 1.1;
+      margin-bottom: 24px;
+    }
+    .hero h1 .highlight {
+      background: linear-gradient(135deg, #3b82f6, #60a5fa, #93c5fd);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 18px; color: var(--muted); max-width: 620px; margin: 0 auto 40px;
+    }
+    .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent); color: #fff;
+      padding: 14px 32px; border-radius: 10px;
+      font-size: 15px; font-weight: 600; text-decoration: none;
+      transition: transform 0.2s, background 0.2s;
+    }
+    .btn-primary:hover { background: #2563eb; transform: translateY(-1px); }
+    .btn-secondary {
+      background: var(--surface2); color: var(--text);
+      border: 1px solid var(--border);
+      padding: 14px 32px; border-radius: 10px;
+      font-size: 15px; font-weight: 600; text-decoration: none;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); transform: translateY(-1px); }
+
+    /* PHASE STATUS */
+    .phase-bar {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 60px;
+    }
+    .phase-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0;
+    }
+    .phase-item {
+      padding: 8px 24px; border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .phase-item:last-child { border-right: none; }
+    .phase-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
+    .phase-val { font-size: 15px; font-weight: 700; }
+    .green-text { color: var(--green); }
+    .amber-text { color: var(--amber); }
+
+    /* SECTIONS */
+    section { padding: 80px 60px; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 12px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 1.5px; color: var(--accent); margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 40px);
+      font-weight: 800; letter-spacing: -1px; margin-bottom: 16px;
+    }
+    .section-sub { font-size: 16px; color: var(--muted); max-width: 560px; }
+
+    /* FEATURE GRID */
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px; margin-top: 48px;
+    }
+    .feat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .feat-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .feat-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: rgba(59,130,246,0.12);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 16px; font-weight: 700; color: var(--accent2);
+    }
+    .feat-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .feat-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .feat-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; }
+    .tag {
+      font-size: 11px; font-weight: 600;
+      padding: 3px 10px; border-radius: 6px;
+      background: var(--surface2); color: var(--muted);
+      border: 1px solid var(--border);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* RESULTS TABLE */
+    .results-section { background: var(--surface); }
+    .results-table-wrap {
+      margin-top: 40px;
+      border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: var(--surface2); }
+    thead th {
+      padding: 14px 24px; text-align: left;
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 1px; color: var(--muted);
+    }
+    tbody tr { border-top: 1px solid var(--border); transition: background 0.15s; }
+    tbody tr:hover { background: var(--surface2); }
+    tbody td { padding: 14px 24px; font-size: 14px; }
+    .pass-badge {
+      display: inline-block;
+      background: rgba(34,197,94,0.12);
+      color: var(--green); border: 1px solid rgba(34,197,94,0.3);
+      font-size: 11px; font-weight: 700; letter-spacing: 0.5px;
+      padding: 3px 12px; border-radius: 20px;
+    }
+    .phase-badge {
+      font-size: 11px; font-weight: 600;
+      padding: 3px 10px; border-radius: 6px;
+      background: rgba(59,130,246,0.1); color: var(--accent2);
+    }
+
+    /* CTA */
+    .cta-section { text-align: center; }
+    .cta-box {
+      background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+      border: 1px solid var(--border);
+      border-radius: 20px; padding: 64px 40px;
+    }
+    .cta-box h2 { font-size: 36px; font-weight: 800; margin-bottom: 16px; letter-spacing: -1px; }
+    .cta-box p { color: var(--muted); font-size: 16px; margin-bottom: 36px; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 60px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-brand { font-size: 16px; font-weight: 700; }
+    .footer-brand span { color: var(--accent2); }
+    .footer-copy { font-size: 13px; color: var(--muted); }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 24px; }
+      .nav-links { display: none; }
+      .hero { padding: 100px 24px 60px; }
+      section { padding: 60px 24px; }
+      .phase-bar { padding: 16px 24px; }
+      footer { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">Veri<span>GenX</span></div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#results">Results</a>
+    <a href="#next">Roadmap</a>
+  </div>
+  <a href="CLIENT_REPORT.html" class="nav-cta">View Full Report</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge"><span class="dot"></span> Phase 1 and Phase 2 Complete</div>
+  <h1>Autonomous <span class="highlight">UVM Verification</span> Intelligence</h1>
+  <p>VeriGenX automates the complete hardware verification flow — from RTL specification parsing to structured testbench generation — using AI and a modular multi-agent architecture.</p>
+  <div class="hero-btns">
+    <a href="CLIENT_REPORT.html" class="btn-primary">View Verification Report</a>
+    <a href="https://github.com/Faham94/verigenx" target="_blank" class="btn-secondary">GitHub Repository</a>
+  </div>
+</div>
+
+<!-- PHASE STATUS BAR -->
+<div class="phase-bar">
+  <div class="phase-inner">
+    <div class="phase-item">
+      <span class="phase-label">Phase 0 — Environment</span>
+      <span class="phase-val green-text">Complete — 100%</span>
+    </div>
+    <div class="phase-item">
+      <span class="phase-label">Phase 1 — SpecMind</span>
+      <span class="phase-val green-text">Complete — 95%</span>
+    </div>
+    <div class="phase-item">
+      <span class="phase-label">Phase 2 — ArchWeaver</span>
+      <span class="phase-val green-text">Complete — 95%</span>
+    </div>
+    <div class="phase-item">
+      <span class="phase-label">Phase 3 — UVMForge</span>
+      <span class="phase-val amber-text">Pending — 0%</span>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-inner">
+    <div class="section-label">Platform Capabilities</div>
+    <h2 class="section-title">Two Phases. Production-Ready.</h2>
+    <p class="section-sub">Built with a modular multi-agent architecture. Each agent handles a specific stage of the verification pipeline independently.</p>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">P1</div>
+        <div class="feat-title">SpecMind — Specification Intelligence</div>
+        <div class="feat-desc">Parses RTL specifications in TXT, PDF, and DOCX formats. Performs semantic chunking, ChromaDB embedding, and LLM-based extraction of signals, FSM states, registers, and timing constraints.</div>
+        <div class="feat-tags">
+          <span class="tag">ingestion.py</span>
+          <span class="tag">chunker.py</span>
+          <span class="tag">embedder.py</span>
+          <span class="tag">extractor.py</span>
+        </div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">P2</div>
+        <div class="feat-title">ArchWeaver — Dependency Graph Engine</div>
+        <div class="feat-desc">Constructs a directed acyclic graph of all 12 UVM components. Applies Kahn's topological sort algorithm, detects circular dependencies, identifies naming conflicts, and exports to DOT format for visualization.</div>
+        <div class="feat-tags">
+          <span class="tag">dag_builder.py</span>
+          <span class="tag">resolver.py</span>
+          <span class="tag">conflict_detector.py</span>
+        </div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">LLM</div>
+        <div class="feat-title">Ollama LLM Integration</div>
+        <div class="feat-desc">Fully integrated with local Ollama models (DeepSeek Coder v2). All inference runs locally — no external API calls, no data leaves the machine. Includes response validation and centralized prompt library.</div>
+        <div class="feat-tags">
+          <span class="tag">ollama_client.py</span>
+          <span class="tag">prompt_library.py</span>
+          <span class="tag">response_validator.py</span>
+        </div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">SB</div>
+        <div class="feat-title">State Bus and Orchestrator</div>
+        <div class="feat-desc">A centralized pipeline state manager with rollback support coordinates all agents. The orchestrator runs the complete Phase 1 to Phase 2 pipeline from a single command with full error handling.</div>
+        <div class="feat-tags">
+          <span class="tag">state_bus.py</span>
+          <span class="tag">orchestrator.py</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULTS -->
+<section id="results" class="results-section">
+  <div class="section-inner">
+    <div class="section-label">Verification Results</div>
+    <h2 class="section-title">All Tests Passing</h2>
+    <p class="section-sub">Complete end-to-end test run on the UART design specification. All 8 verification checks pass with zero failures.</p>
+    <div class="results-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Phase</th>
+            <th>Test Description</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="phase-badge">Phase 1</span></td><td>Specification Parsing — TXT format (473 chars extracted)</td><td><span class="pass-badge">PASS</span></td></tr>
+          <tr><td><span class="phase-badge">Phase 1</span></td><td>JSON Test Plan Generation — signals, FSM, registers, functional points</td><td><span class="pass-badge">PASS</span></td></tr>
+          <tr><td><span class="phase-badge">Phase 1</span></td><td>Semantic Chunking — section-aware split with overlap</td><td><span class="pass-badge">PASS</span></td></tr>
+          <tr><td><span class="phase-badge">Phase 2</span></td><td>DAG Build — 12 UVM components from test plan JSON</td><td><span class="pass-badge">PASS</span></td></tr>
+          <tr><td><span class="phase-badge">Phase 2</span></td><td>Topological Sort — Kahn's algorithm, correct generation order</td><td><span class="pass-badge">PASS</span></td></tr>
+          <tr><td><span class="phase-badge">Phase 2</span></td><td>Cycle Detection — no circular dependencies found</td><td><span class="pass-badge">PASS</span></td></tr>
+          <tr><td><span class="phase-badge">Phase 2</span></td><td>Conflict Detection — no duplicate signals or naming conflicts</td><td><span class="pass-badge">PASS</span></td></tr>
+          <tr><td><span class="phase-badge">Phase 2</span></td><td>DAG Visualization — DOT format exported for Graphviz</td><td><span class="pass-badge">PASS</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- NEXT PHASE -->
+<section id="next">
+  <div class="section-inner cta-section">
+    <div class="cta-box">
+      <div class="section-label" style="margin-bottom:16px;">Next Milestone</div>
+      <h2>Phase 3 — UVMForge</h2>
+      <p>Generate all 12 UVM SystemVerilog files directly from the test plan and dependency graph. Includes Jinja2 templates, LLM-assisted filling, and automated syntax repair.</p>
+      <div class="hero-btns" style="justify-content:center;">
+        <a href="CLIENT_REPORT.html" class="btn-primary">Review Full Report</a>
+        <a href="https://github.com/Faham94/verigenx" target="_blank" class="btn-secondary">GitHub Repository</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">Veri<span>GenX</span></div>
+  <div class="footer-copy">Autonomous UVM Verification Intelligence Platform &mdash; 2026</div>
+</footer>
+
+</body>
+</html>

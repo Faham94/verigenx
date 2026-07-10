@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VeriGenX — UART Verification Report</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f0f2f5;
+      color: #1a1d23;
+      min-height: 100vh;
+    }
+
+    /* ---- HEADER ---- */
+    .header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f4c81 100%);
+      padding: 48px 60px 40px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .header::after {
+      content: '';
+      position: absolute;
+      right: -80px; top: -80px;
+      width: 360px; height: 360px;
+      border-radius: 50%;
+      background: rgba(99,179,237,0.08);
+    }
+    .header-badge {
+      display: inline-block;
+      background: rgba(99,179,237,0.18);
+      border: 1px solid rgba(99,179,237,0.4);
+      color: #93c5fd;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 18px;
+    }
+    .header h1 {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .header h1 span { color: #60a5fa; }
+    .header p {
+      font-size: 15px;
+      color: #94a3b8;
+      max-width: 560px;
+      line-height: 1.6;
+    }
+    .header-meta {
+      margin-top: 28px;
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .meta-item { display: flex; flex-direction: column; gap: 2px; }
+    .meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; }
+    .meta-value { font-size: 14px; font-weight: 600; color: #e2e8f0; }
+
+    /* ---- MAIN CONTENT ---- */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 60px;
+    }
+
+    /* ---- STATUS STRIP ---- */
+    .status-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .status-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 24px;
+      border-left: 4px solid #2563eb;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    }
+    .status-card.green { border-left-color: #16a34a; }
+    .status-card.amber { border-left-color: #d97706; }
+    .status-card .sc-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; margin-bottom: 6px; }
+    .status-card .sc-value { font-size: 22px; font-weight: 700; color: #0f172a; }
+    .status-card .sc-sub { font-size: 12px; color: #64748b; margin-top: 3px; }
+
+    /* ---- SECTIONS ---- */
+    .section { margin-bottom: 40px; }
+    .section-title {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: #475569;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    /* ---- TABLES ---- */
+    .table-wrap {
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: #1e293b; }
+    thead th {
+      padding: 13px 20px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #94a3b8;
+    }
+    tbody tr { border-bottom: 1px solid #f1f5f9; transition: background 0.15s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f8fafc; }
+    tbody td {
+      padding: 13px 20px;
+      font-size: 14px;
+      color: #334155;
+    }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      background: #f1f5f9;
+      padding: 2px 8px;
+      border-radius: 4px;
+      color: #0f4c81;
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-input  { background: #dbeafe; color: #1d4ed8; }
+    .badge-output { background: #dcfce7; color: #15803d; }
+    .badge-pass   { background: #dcfce7; color: #15803d; }
+
+    /* ---- FSM STATES ---- */
+    .fsm-flow {
+      background: #fff;
+      border-radius: 12px;
+      padding: 28px 32px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      display: flex;
+      align-items: center;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+    .fsm-state {
+      background: #1e293b;
+      color: #e2e8f0;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.5px;
+    }
+    .fsm-arrow {
+      width: 36px;
+      height: 2px;
+      background: #94a3b8;
+      position: relative;
+    }
+    .fsm-arrow::after {
+      content: '';
+      position: absolute;
+      right: -1px; top: -4px;
+      width: 0; height: 0;
+      border-left: 8px solid #94a3b8;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+    }
+
+    /* ---- FUNCTIONAL POINTS ---- */
+    .fp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .fp-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 22px 24px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      border-top: 3px solid #2563eb;
+    }
+    .fp-id {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #2563eb;
+      margin-bottom: 8px;
+    }
+    .fp-desc { font-size: 14px; color: #334155; line-height: 1.5; }
+
+    /* ---- TEST RESULTS ---- */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+    .result-row {
+      background: #fff;
+      border-radius: 10px;
+      padding: 16px 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .result-label { font-size: 13px; color: #475569; font-weight: 500; }
+    .result-pass {
+      font-size: 12px;
+      font-weight: 700;
+      color: #15803d;
+      background: #dcfce7;
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    /* ---- FOOTER ---- */
+    .footer {
+      background: #0f172a;
+      color: #475569;
+      text-align: center;
+      padding: 28px;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+    .footer strong { color: #64748b; }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-badge">Verification Report</div>
+  <h1>VeriGenX <span>UART</span> Test Plan</h1>
+  <p>Autonomous UVM Verification Intelligence Platform — Structured analysis of the UART design specification including signals, FSM states, register map, and functional test points.</p>
+  <div class="header-meta">
+    <div class="meta-item"><span class="meta-label">Design</span><span class="meta-value">UART (Universal Asynchronous Receiver-Transmitter)</span></div>
+    <div class="meta-item"><span class="meta-label">Version</span><span class="meta-value">1.0</span></div>
+    <div class="meta-item"><span class="meta-label">Generated</span><span class="meta-value">2026-07-10</span></div>
+    <div class="meta-item"><span class="meta-label">Protocol</span><span class="meta-value">8-N-1</span></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- STATUS STRIP -->
+  <div class="status-strip">
+    <div class="status-card green">
+      <div class="sc-label">Phase 1 — SpecMind</div>
+      <div class="sc-value">Complete</div>
+      <div class="sc-sub">Specification parsed and structured</div>
+    </div>
+    <div class="status-card green">
+      <div class="sc-label">Phase 2 — ArchWeaver</div>
+      <div class="sc-value">Complete</div>
+      <div class="sc-sub">Dependency graph resolved (12 components)</div>
+    </div>
+    <div class="status-card amber">
+      <div class="sc-label">Phase 3 — UVMForge</div>
+      <div class="sc-value">Pending</div>
+      <div class="sc-sub">Testbench generation — next phase</div>
+    </div>
+    <div class="status-card">
+      <div class="sc-label">UVM Components</div>
+      <div class="sc-value">12</div>
+      <div class="sc-sub">Topologically sorted, no cycles</div>
+    </div>
+  </div>
+
+  <!-- SIGNALS -->
+  <div class="section">
+    <div class="section-title">Interface Signals</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Signal Name</th>
+            <th>Width (bits)</th>
+            <th>Direction</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mono">clk</span></td>
+            <td>1</td>
+            <td><span class="badge badge-input">Input</span></td>
+          </tr>
+          <tr>
+            <td><span class="mono">rst_n</span></td>
+            <td>1</td>
+            <td><span class="badge badge-input">Input</span></td>
+          </tr>
+          <tr>
+            <td><span class="mono">tx_data</span></td>
+            <td>8</td>
+            <td><span class="badge badge-input">Input</span></td>
+          </tr>
+          <tr>
+            <td><span class="mono">rx_data</span></td>
+            <td>8</td>
+            <td><span class="badge badge-output">Output</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FSM STATES -->
+  <div class="section">
+    <div class="section-title">FSM State Transition</div>
+    <div class="fsm-flow">
+      <div class="fsm-state">IDLE</div>
+      <div class="fsm-arrow"></div>
+      <div class="fsm-state">START</div>
+      <div class="fsm-arrow"></div>
+      <div class="fsm-state">DATA</div>
+      <div class="fsm-arrow"></div>
+      <div class="fsm-state">STOP</div>
+      <div class="fsm-arrow"></div>
+      <div class="fsm-state" style="opacity:0.5;">IDLE</div>
+    </div>
+  </div>
+
+  <!-- REGISTER MAP -->
+  <div class="section">
+    <div class="section-title">Register Map</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Address</th>
+            <th>Register Name</th>
+            <th>Width (bits)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="mono">0x00</span></td>
+            <td><span class="mono">baud_divisor</span></td>
+            <td>16</td>
+          </tr>
+          <tr>
+            <td><span class="mono">0x04</span></td>
+            <td><span class="mono">control</span></td>
+            <td>8</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- FUNCTIONAL POINTS -->
+  <div class="section">
+    <div class="section-title">Functional Coverage Points</div>
+    <div class="fp-grid">
+      <div class="fp-card">
+        <div class="fp-id">FP_001</div>
+        <div class="fp-desc">8-bit data transmission — Verify full-width serial data transfer across TX and RX channels.</div>
+      </div>
+      <div class="fp-card">
+        <div class="fp-id">FP_002</div>
+        <div class="fp-desc">Baud rate configuration — Verify baud divisor register controls correct timing across all supported rates.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEST RESULTS -->
+  <div class="section">
+    <div class="section-title">Verification Results</div>
+    <div class="results-grid">
+      <div class="result-row">
+        <span class="result-label">Specification Parsing (TXT)</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Test Plan Generation (JSON)</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">DAG Build (12 Components)</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Topological Sort</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Cycle Detection</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Conflict Detection</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">DAG Visualization (DOT Export)</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Semantic Chunking</span>
+        <span class="result-pass">PASS</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <strong>VeriGenX</strong> &mdash; Autonomous UVM Verification Intelligence Platform &mdash; Generated 2026-07-10 &mdash; Confidential
+</div>
+
+</body>
+</html>
