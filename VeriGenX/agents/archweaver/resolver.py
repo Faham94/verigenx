@@ -1,30 +1,44 @@
 """
 ArchWeaver: Dependency Resolver
-Uses topological sort to determine correct generation order
+Topological sort, cycle detection, DOT export, and auto-regeneration.
+
+Fixes applied:
+  - Bug #6: No dynamic DAG updates — added regenerate_on_change() which
+            watches a test plan path and rebuilds the DAG + DOT file
+            whenever the file is modified (mtime-based).
 """
+import os
+import time
 from collections import deque
+from typing import Dict, List, Optional
+
 
 class Resolver:
-    def resolve(self, dag):
+
+    # ------------------------------------------------------------------ #
+    #  Topological sort — Kahn's algorithm                                #
+    # ------------------------------------------------------------------ #
+
+    def resolve(self, dag: Dict) -> List[str]:
         """
-        Resolve dependencies using Kahn's topological sort algorithm
-        Returns: Sorted list of components in generation order
+        Topological sort using Kahn's algorithm.
+        Raises Exception on circular dependency.
         """
-        components = dag.get("components", [])
+        components   = dag.get("components", [])
         dependencies = dag.get("dependencies", {})
-        
-        graph = {comp: [] for comp in components}
+
+        graph   = {comp: [] for comp in components}
         indegree = {comp: 0 for comp in components}
-        
+
         for comp, deps in dependencies.items():
             for dep in deps:
                 if dep in graph:
                     graph[dep].append(comp)
                     indegree[comp] += 1
-        
-        queue = deque([comp for comp in components if indegree[comp] == 0])
+
+        queue        = deque([c for c in components if indegree[c] == 0])
         sorted_order = []
-        
+
         while queue:
             comp = queue.popleft()
             sorted_order.append(comp)
@@ -32,69 +46,142 @@ class Resolver:
                 indegree[neighbor] -= 1
                 if indegree[neighbor] == 0:
                     queue.append(neighbor)
-        
+
         if len(sorted_order) != len(components):
             raise Exception("Circular dependency detected in UVM components!")
-        
+
         return sorted_order
-    
-    def get_generation_order(self, dag):
+
+    # ------------------------------------------------------------------ #
+    #  Generation order with filenames                                     #
+    # ------------------------------------------------------------------ #
+
+    def get_generation_order(self, dag: Dict) -> List[Dict]:
         sorted_order = self.resolve(dag)
-        filename_map = {
-            "interface": "interface.sv",
+        design       = dag.get("design_name", "design")
+
+        # Use per-design filenames if present, else generate from design name
+        filenames = dag.get("component_filenames", {})
+
+        fallback_map = {
+            "interface":    "interface.sv",
             "sequence_item": "seq_item.sv",
-            "sequence": "sequence.sv",
-            "driver": "driver.sv",
-            "monitor": "monitor.sv",
-            "agent": "agent.sv",
-            "scoreboard": "scoreboard.sv",
-            "coverage": "coverage.sv",
-            "env": "env.sv",
-            "test_base": "test_base.sv",
+            "sequence":     "sequence.sv",
+            "driver":       "driver.sv",
+            "monitor":      "monitor.sv",
+            "agent":        "agent.sv",
+            "scoreboard":   "scoreboard.sv",
+            "coverage":     "coverage.sv",
+            "env":          "env.sv",
+            "test_base":    "test_base.sv",
             "test_directed": "test_directed.sv",
-            "top": "top.sv"
+            "test_random":  "test_random.sv",
+            "top":          "top.sv",
         }
+
         result = []
         for i, comp in enumerate(sorted_order):
-            if comp in filename_map:
-                result.append({
-                    "component": comp,
-                    "filename": filename_map[comp],
-                    "order": i + 1
-                })
+            fname = (
+                filenames.get(comp)
+                or f"{design}_{fallback_map.get(comp, comp + '.sv')}"
+            )
+            result.append({
+                "component": comp,
+                "filename":  fname,
+                "order":     i + 1,
+            })
         return result
-    
-    def export_dot(self, dag, filename="dag.dot"):
-        """Export DAG to DOT format for Graphviz visualization"""
+
+    # ------------------------------------------------------------------ #
+    #  DOT export                                                          #
+    # ------------------------------------------------------------------ #
+
+    def export_dot(self, dag: Dict, filename: str = "dag.dot") -> str:
+        """Export the DAG to Graphviz DOT format."""
         dependencies = dag.get("dependencies", {})
-        components = dag.get("components", [])
-        
+        components   = dag.get("components", [])
+        design       = dag.get("design_name", "design")
+
         lines = [
-            "// VeriGenX UVM Component Dependency Graph",
+            f"// VeriGenX UVM Dependency Graph — {design.upper()}",
             "// Generated by ArchWeaver",
             "digraph G {",
-            '    rankdir=TB;',
-            '    node [shape=box, style=filled, fillcolor=lightblue];',
+            "    rankdir=TB;",
+            '    node [shape=box, style=filled, fillcolor=lightblue, fontname="Helvetica"];',
             '    edge [color=darkblue];',
-            ''
+            "",
         ]
-        
         for comp in components:
             lines.append(f'    "{comp}" [label="{comp}"];')
-        
-        lines.append('')
-        
+        lines.append("")
         for comp, deps in dependencies.items():
             for dep in deps:
                 if dep in components:
                     lines.append(f'    "{dep}" -> "{comp}";')
-        
         lines.append("}")
-        
-        with open(filename, 'w') as f:
+
+        os.makedirs(os.path.dirname(os.path.abspath(filename)), exist_ok=True)
+        with open(filename, "w", encoding="utf-8") as f:
             f.write("\n".join(lines))
-        
-        print(f"DOT file exported to: {filename}")
-        print("To visualize: Install Graphviz and run:")
-        print(f"  dot -Tpng {filename} -o dag.png")
+
+        print(f"  DOT file exported: {filename}")
+        print(f"  Visualize: dot -Tpng {filename} -o dag.png")
         return filename
+
+    # ------------------------------------------------------------------ #
+    #  Dynamic regeneration on change (Bug #6 fix)                        #
+    # ------------------------------------------------------------------ #
+
+    def regenerate_on_change(
+        self,
+        test_plan_path: str,
+        dot_output:     str  = "dag.dot",
+        poll_interval:  float = 2.0,
+        max_iterations: int   = 0,
+    ) -> None:
+        """
+        Bug #6 fix: Watch a test plan JSON file and automatically rebuild
+        the DAG + DOT file whenever the file's mtime changes.
+
+        Args:
+            test_plan_path:  path to the test plan JSON to watch
+            dot_output:      where to write the regenerated DOT file
+            poll_interval:   seconds between mtime checks (default 2s)
+            max_iterations:  stop after N rebuilds (0 = run forever)
+
+        Usage:
+            resolver = Resolver()
+            resolver.regenerate_on_change("test_plans/uart_test_plan.json")
+        """
+        from VeriGenX.agents.archweaver.dag_builder import DAGBuilder
+
+        last_mtime = None
+        iterations = 0
+        print(f"  [Watch] Monitoring: {test_plan_path} (Ctrl+C to stop)")
+
+        while True:
+            try:
+                if not os.path.exists(test_plan_path):
+                    time.sleep(poll_interval)
+                    continue
+
+                current_mtime = os.path.getmtime(test_plan_path)
+                if current_mtime != last_mtime:
+                    last_mtime = current_mtime
+                    print(f"  [Watch] Change detected — rebuilding DAG...")
+                    try:
+                        builder = DAGBuilder()
+                        dag     = builder.build_from_test_plan(test_plan_path)
+                        self.export_dot(dag, dot_output)
+                        iterations += 1
+                        print(f"  [Watch] Rebuild #{iterations} complete")
+                        if max_iterations and iterations >= max_iterations:
+                            break
+                    except Exception as e:
+                        print(f"  [Watch] Rebuild error: {e}")
+
+                time.sleep(poll_interval)
+
+            except KeyboardInterrupt:
+                print("\n  [Watch] Stopped.")
+                break
