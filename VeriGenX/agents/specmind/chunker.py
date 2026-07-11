@@ -21,7 +21,8 @@ class Chunker:
             if not section.strip():
                 continue
             
-            if len(section) > self.chunk_size * 1.5:
+            section_words = section.split()
+            if len(section_words) > self.chunk_size * 1.5:
                 sub_chunks = self._split_long_section(section)
                 for j, sub in enumerate(sub_chunks):
                     chunks.append({

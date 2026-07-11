@@ -1,0 +1,88 @@
+{
+  "design_name": "fifo",
+  "version": "1.0",
+  "generated_at": "2026-07-11T23:21:22.195239",
+  "extraction_method": "heuristic",
+  "signals": [
+    {
+      "name": "clk",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "wr_en",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "rd_en",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "wr_data",
+      "width": 8,
+      "direction": "input"
+    },
+    {
+      "name": "rd_data",
+      "width": 8,
+      "direction": "output"
+    },
+    {
+      "name": "full",
+      "width": 1,
+      "direction": "output"
+    },
+    {
+      "name": "empty",
+      "width": 1,
+      "direction": "output"
+    },
+    {
+      "name": "clock",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "write",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "read",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "status",
+      "width": 1,
+      "direction": "output"
+    }
+  ],
+  "fsm_states": [
+    "FIFO",
+    "FSM",
+    "EMPTY",
+    "PARTIAL",
+    "FULL"
+  ],
+  "register_map": [],
+  "timing_constraints": {},
+  "functional_points": [
+    {
+      "id": "FP_005",
+      "description": "Reset and initialisation"
+    }
+  ],
+  "protocol_handshake_rules": [
+    "Full assertion prevents write acknowledgment",
+    "Empty assertion prevents read data propagation"
+  ],
+  "firmware_programming_model": [
+    "Assert rst_n to clear internal buffers",
+    "Check empty flag before reading rd_data"
+  ],
+  "source_file": "fifo_spec.txt",
+  "embedded_chunks": 0
+}

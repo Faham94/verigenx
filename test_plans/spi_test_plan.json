@@ -1,0 +1,101 @@
+{
+  "design_name": "spi",
+  "version": "1.0",
+  "generated_at": "2026-07-11T23:21:09.878049",
+  "extraction_method": "heuristic",
+  "signals": [
+    {
+      "name": "clk",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "mosi",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "miso",
+      "width": 1,
+      "direction": "output"
+    },
+    {
+      "name": "sclk",
+      "width": 1,
+      "direction": "output"
+    },
+    {
+      "name": "cs_n",
+      "width": 1,
+      "direction": "output"
+    },
+    {
+      "name": "clock",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "master",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "serial",
+      "width": 1,
+      "direction": "output"
+    },
+    {
+      "name": "chip",
+      "width": 1,
+      "direction": "output"
+    }
+  ],
+  "fsm_states": [
+    "IDLE",
+    "ACTIVE",
+    "DONE"
+  ],
+  "register_map": [
+    {
+      "address": "0X00",
+      "name": "spi_ctrl",
+      "width": 8,
+      "access": "RW",
+      "reset_value": "0X00"
+    },
+    {
+      "address": "0X04",
+      "name": "spi_status",
+      "width": 8,
+      "access": "RO",
+      "reset_value": "0X02"
+    },
+    {
+      "address": "0X08",
+      "name": "spi_data",
+      "width": 8,
+      "access": "RW",
+      "reset_value": "0X00"
+    }
+  ],
+  "timing_constraints": {
+    "max_frequency_mhz": 50.0
+  },
+  "functional_points": [
+    {
+      "id": "FP_005",
+      "description": "Reset and initialisation"
+    }
+  ],
+  "protocol_handshake_rules": [
+    "CS_N asserted low initiates clock and data transfer",
+    "SCLK toggles on active edges determined by CPOL/CPHA"
+  ],
+  "firmware_programming_model": [
+    "Write configuration options to spi_ctrl",
+    "Write transmit byte to spi_data",
+    "Poll spi_status until transfer is complete"
+  ],
+  "source_file": "spi_spec.txt",
+  "embedded_chunks": 0
+}

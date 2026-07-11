@@ -2,7 +2,7 @@
 # Install with: pip install -r requirements.txt
 
 # Core HTTP and LLM
-requests>=2.34.0
+requests>=2.31.0
 
 # Document Parsing
 PyMuPDF>=1.23.0          # PDF parsing (fitz)
@@ -10,14 +10,6 @@ python-docx>=1.1.0       # DOCX parsing
 
 # ChromaDB RAG
 chromadb>=0.5.0
-
-# LLM and Embeddings (OpenAI-compatible interface for Ollama)
-openai>=1.30.0
-tiktoken>=0.7.0
-
-# LangChain (optional orchestration utilities)
-langchain>=0.2.0
-langchain-community>=0.2.0
 
 # Data and Validation
 pydantic>=2.7.0

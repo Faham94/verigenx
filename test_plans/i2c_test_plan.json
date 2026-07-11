@@ -1,0 +1,80 @@
+{
+  "design_name": "i2c",
+  "version": "1.0",
+  "generated_at": "2026-07-11T23:21:13.994815",
+  "extraction_method": "heuristic",
+  "signals": [
+    {
+      "name": "clk",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "scl",
+      "width": 1,
+      "direction": "inout"
+    },
+    {
+      "name": "sda",
+      "width": 1,
+      "direction": "inout"
+    },
+    {
+      "name": "clock",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "serial",
+      "width": 1,
+      "direction": "inout"
+    }
+  ],
+  "fsm_states": [
+    "IDLE",
+    "START",
+    "DATA",
+    "ACK",
+    "STOP"
+  ],
+  "register_map": [
+    {
+      "address": "0X00",
+      "name": "i2c_addr",
+      "width": 7,
+      "access": "RW",
+      "reset_value": "0X00"
+    },
+    {
+      "address": "0X04",
+      "name": "i2c_ctrl",
+      "width": 8,
+      "access": "RW",
+      "reset_value": "0X00"
+    },
+    {
+      "address": "0X08",
+      "name": "i2c_status",
+      "width": 8,
+      "access": "RO",
+      "reset_value": "0X00"
+    }
+  ],
+  "timing_constraints": {},
+  "functional_points": [
+    {
+      "id": "FP_005",
+      "description": "Reset and initialisation"
+    }
+  ],
+  "protocol_handshake_rules": [
+    "The I2C controller uses a 6-state FSM: IDLE, START, ADDR, DATA, ACK, STOP"
+  ],
+  "firmware_programming_model": [
+    "Set target address in i2c_addr",
+    "Configure command in i2c_ctrl and initiate START",
+    "Poll i2c_status for transfer complete or arbitration loss"
+  ],
+  "source_file": "i2c_spec.txt",
+  "embedded_chunks": 0
+}

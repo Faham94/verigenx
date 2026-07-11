@@ -1,0 +1,24 @@
+AXI-Lite Specification v1.0
+
+1. Overview
+The AXI-Lite module implements sub-portions of memory mapped channels.
+
+2. Interface Signals
+- aclk: 1-bit input clock
+- aresetn: 1-bit active-low reset
+- awaddr: 32-bit input write address
+- awvalid: 1-bit input write address valid
+- awready: 1-bit output write address ready
+- wdata: 32-bit input write data
+- wvalid: 1-bit input write data valid
+- wready: 1-bit output write data ready
+- bresp: 2-bit output write response
+- bvalid: 1-bit output write response valid
+- bready: 1-bit input write response ready
+
+3. FSM States
+The AXI controller uses a 4-state FSM: IDLE, AW_PHASE, W_PHASE, B_PHASE
+
+4. Register Map
+- 0x000: ctrl_reg (32-bit) - RW - Reset: 0x00000000 - Control register
+- 0x004: status_reg (32-bit) - RO - Reset: 0x00000002 - Status indicator

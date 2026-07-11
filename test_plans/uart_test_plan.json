@@ -1,15 +1,11 @@
 {
   "design_name": "uart",
   "version": "1.0",
-  "generated_at": "2026-07-11T21:49:34.033380",
+  "generated_at": "2026-07-11T23:21:05.781853",
+  "extraction_method": "heuristic",
   "signals": [
     {
       "name": "clk",
-      "width": 1,
-      "direction": "input"
-    },
-    {
-      "name": "rst_n",
       "width": 1,
       "direction": "input"
     },
@@ -22,6 +18,21 @@
       "name": "rx_data",
       "width": 8,
       "direction": "output"
+    },
+    {
+      "name": "clock",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "transmit",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "received",
+      "width": 1,
+      "direction": "output"
     }
   ],
   "fsm_states": [
@@ -32,24 +43,45 @@
   ],
   "register_map": [
     {
-      "address": "0x00",
+      "address": "0X00",
       "name": "baud_divisor",
-      "width": 16
+      "width": 16,
+      "access": "RW",
+      "reset_value": "0X0001"
     },
     {
-      "address": "0x04",
+      "address": "0X04",
       "name": "control",
-      "width": 8
+      "width": 8,
+      "access": "RW",
+      "reset_value": "0X00"
     }
   ],
+  "timing_constraints": {
+    "baud_rate": 9600
+  },
   "functional_points": [
     {
       "id": "FP_001",
-      "description": "8-bit data transmission"
+      "description": "Data transmission functionality"
     },
     {
-      "id": "FP_002",
+      "id": "FP_003",
       "description": "Baud rate configuration"
+    },
+    {
+      "id": "FP_005",
+      "description": "Reset and initialisation"
     }
-  ]
+  ],
+  "protocol_handshake_rules": [
+    "Start bit (low) initiates transmission",
+    "Stop bit (high) finalizes transmission"
+  ],
+  "firmware_programming_model": [
+    "Write the baud rate divisor to baud_divisor register",
+    "Configure character length, parity, and stop bits in control register"
+  ],
+  "source_file": "uart_spec.txt",
+  "embedded_chunks": 0
 }

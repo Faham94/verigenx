@@ -1,0 +1,21 @@
+UART Specification v1.0
+
+1. Overview
+The UART module implements serial communication at configurable baud rates.
+
+2. Interface Signals
+- clk: 1-bit input clock
+- rst_n: 1-bit active-low reset
+- tx_data: 8-bit input transmit data
+- rx_data: 8-bit output received data
+
+3. FSM States
+The UART controller uses a 4-state FSM: IDLE, START, DATA, STOP
+
+4. Register Map
+- 0x00: baud_divisor (16-bit) - RW - Reset: 0x0001 - Sets divisor
+- 0x04: control (8-bit) - RW - Reset: 0x00 - Control register
+
+5. Timing
+- Clock period: 10ns
+- Baud rate: 9600 baud

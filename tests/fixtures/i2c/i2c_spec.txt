@@ -1,0 +1,18 @@
+I2C Specification v1.0
+
+1. Overview
+The I2C module implements 2-wire serial bus interface.
+
+2. Interface Signals
+- clk: 1-bit input clock
+- rst_n: 1-bit active-low reset
+- scl: 1-bit inout serial clock
+- sda: 1-bit inout serial data
+
+3. FSM States
+The I2C controller uses a 6-state FSM: IDLE, START, ADDR, DATA, ACK, STOP
+
+4. Register Map
+- 0x00: i2c_addr (7-bit) - RW - Reset: 0x00 - Slave address
+- 0x04: i2c_ctrl (8-bit) - RW - Reset: 0x00 - Control command
+- 0x08: i2c_status (8-bit) - RO - Reset: 0x00 - Status flags

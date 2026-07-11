@@ -11,6 +11,26 @@ from typing import List, Dict, Optional
 from VeriGenX.config import CHROMADB_PATH
 
 
+class OllamaEmbeddingFunction:
+    """
+    Bug #1 fix: Custom embedding function wrapper that calls the nomic-embed-text
+    model via the local OllamaClient. Falls back to zero vectors if Ollama is offline.
+    """
+    def __init__(self):
+        from VeriGenX.llm.ollama_client import get_ollama_client
+        self.client = get_ollama_client()
+
+    def __call__(self, input: List[str]) -> List[List[float]]:
+        embeddings = []
+        for text in input:
+            emb = self.client.embed(text)
+            if not emb:
+                # Fallback mock embedding if Ollama offline (768 dimensions for nomic-embed-text)
+                emb = [0.0] * 768
+            embeddings.append(emb)
+        return embeddings
+
+
 class Embedder:
 
     def __init__(self, collection_name: str = "verigenx_specs"):
@@ -33,6 +53,7 @@ class Embedder:
             self._client     = chromadb.PersistentClient(path=CHROMADB_PATH)   # FIXED
             self._collection = self._client.get_or_create_collection(
                 self.collection_name,
+                embedding_function=OllamaEmbeddingFunction(),  # FIXED: Bug #1
                 metadata={"hnsw:space": "cosine"},
             )
         except Exception as e:

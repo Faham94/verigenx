@@ -1,0 +1,23 @@
+SPI Specification v1.0
+
+1. Overview
+The SPI module implements 4-wire serial interface for synchronous data transfers.
+
+2. Interface Signals
+- clk: 1-bit input clock
+- rst_n: 1-bit active-low reset
+- mosi: 1-bit input master-out-slave-in
+- miso: 1-bit output master-in-slave-out
+- sclk: 1-bit output serial clock
+- cs_n: 1-bit output chip select
+
+3. FSM States
+The SPI controller uses a 3-state FSM: IDLE, ACTIVE, DONE
+
+4. Register Map
+- 0x00: spi_ctrl (8-bit) - RW - Reset: 0x00 - Control options
+- 0x04: spi_status (8-bit) - RO - Reset: 0x02 - Status indicator
+- 0x08: spi_data (8-bit) - RW - Reset: 0x00 - Data buffer
+
+5. Timing
+- Max frequency: 50MHz

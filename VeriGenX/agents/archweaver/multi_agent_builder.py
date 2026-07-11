@@ -42,9 +42,9 @@ class MultiAgentDAGBuilder:
         self.components = list(self.SHARED_COMPONENTS)  # start with shared
         self.dependencies = {
             "interface":    [],
-            "sequence_item": ["interface"],
-            "scoreboard":   ["sequence_item", "interface"],
-            "coverage":     ["sequence_item", "interface"],
+            "sequence_item": [],                              # FIXED: Bug #9 regression
+            "scoreboard":   ["sequence_item"],                # FIXED: Bug #9 regression
+            "coverage":     ["sequence_item"],                # FIXED: Bug #9 regression
         }
 
         # Create per-agent components
@@ -60,7 +60,7 @@ class MultiAgentDAGBuilder:
 
             self.dependencies[drv]  = ["sequence_item", "interface"]
             self.dependencies[mon]  = ["interface"]
-            self.dependencies[seq]  = ["sequence_item", "interface"]
+            self.dependencies[seq]  = ["sequence_item"]      # FIXED: Bug #9 regression
             self.dependencies[agt]  = [drv, mon, seq]
 
         # Env depends on all agent instances + scoreboard + coverage
@@ -70,7 +70,7 @@ class MultiAgentDAGBuilder:
         self.components.extend(["test_base", "test_directed"])
         self.dependencies["test_base"]    = ["env"] + [f"{n}_sequence" for n in agent_names]
         self.dependencies["test_directed"] = ["test_base"]
-        self.dependencies["top"]           = ["test_base", "interface", "env"]
+        self.dependencies["top"]           = ["test_base", "interface", "env", "test_directed"]  # FIXED: keep top last
 
         return {
             "components":   self.components,

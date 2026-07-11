@@ -53,6 +53,22 @@ _PROMPTS: Dict[str, str] = {
         "No explanation, no markdown fences."
     ),
 
+    "specmind_handshake_extraction": (
+        "You are an expert RTL verification engineer.\n"
+        "Extract ALL protocol handshake rules (e.g., request/acknowledge signals, valid/ready behaviors, status triggers) from the specification below.\n"
+        "Return a JSON array of strings, where each string describes a specific handshake rule.\n\n"
+        "Specification:\n{context}\n\n"
+        "Return ONLY a valid JSON array. No explanation, no markdown fences."
+    ),
+
+    "specmind_firmware_extraction": (
+        "You are an expert RTL verification engineer.\n"
+        "Extract the firmware programming model obligations (e.g., initialization sequences, register configuration orders, status polling sequences) from the specification below.\n"
+        "Return a JSON array of strings, where each string represents a step or obligation in the programming model.\n\n"
+        "Specification:\n{context}\n\n"
+        "Return ONLY a valid JSON array. No explanation, no markdown fences."
+    ),
+
     "specmind_functional_points_extraction": (
         "You are an expert RTL verification engineer.\n"
         "Extract ALL functional coverage points from the specification below.\n"

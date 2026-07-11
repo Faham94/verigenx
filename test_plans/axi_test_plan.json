@@ -1,0 +1,107 @@
+{
+  "design_name": "axi",
+  "version": "1.0",
+  "generated_at": "2026-07-11T23:20:03.632297",
+  "extraction_method": "heuristic",
+  "signals": [
+    {
+      "name": "aclk",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "awaddr",
+      "width": 32,
+      "direction": "input"
+    },
+    {
+      "name": "awvalid",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "awready",
+      "width": 1,
+      "direction": "output"
+    },
+    {
+      "name": "wdata",
+      "width": 32,
+      "direction": "input"
+    },
+    {
+      "name": "wvalid",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "wready",
+      "width": 1,
+      "direction": "output"
+    },
+    {
+      "name": "bresp",
+      "width": 2,
+      "direction": "output"
+    },
+    {
+      "name": "bvalid",
+      "width": 1,
+      "direction": "output"
+    },
+    {
+      "name": "bready",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "clock",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "write",
+      "width": 1,
+      "direction": "input"
+    }
+  ],
+  "fsm_states": [
+    "IDLE"
+  ],
+  "register_map": [
+    {
+      "address": "0X000",
+      "name": "ctrl_reg",
+      "width": 32,
+      "access": "RW",
+      "reset_value": "0X00000000"
+    },
+    {
+      "address": "0X004",
+      "name": "status_reg",
+      "width": 32,
+      "access": "RO",
+      "reset_value": "0X00000002"
+    }
+  ],
+  "timing_constraints": {},
+  "functional_points": [
+    {
+      "id": "FP_005",
+      "description": "Reset and initialisation"
+    }
+  ],
+  "protocol_handshake_rules": [
+    "- awvalid: 1-bit input write address valid",
+    "- awready: 1-bit output write address ready",
+    "- wvalid: 1-bit input write data valid",
+    "- wready: 1-bit output write data ready",
+    "- bvalid: 1-bit output write response valid"
+  ],
+  "firmware_programming_model": [
+    "Issue AXI write request to target base address",
+    "Read status_reg to verify completion"
+  ],
+  "source_file": "axi_lite_spec.txt",
+  "embedded_chunks": 0
+}

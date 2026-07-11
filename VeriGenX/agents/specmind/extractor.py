@@ -52,6 +52,20 @@ class Extractor:
         response = self.client.generate(prompt)
         return self.validator.extract_signals(response)  # same list-of-dicts extraction
 
+    def extract_handshake_rules(self, context: str) -> List[str]:
+        """Bug #3: Extract protocol handshake rules"""
+        prompt   = get_prompt("specmind_handshake_extraction").format(context=context)
+        response = self.client.generate(prompt)
+        data     = self.validator.validate_json_array(response)
+        return [str(item) for item in data] if data and isinstance(data, list) else []
+
+    def extract_firmware_model(self, context: str) -> List[str]:
+        """Bug #3: Extract firmware programming model obligations"""
+        prompt   = get_prompt("specmind_firmware_extraction").format(context=context)
+        response = self.client.generate(prompt)
+        data     = self.validator.validate_json_array(response)
+        return [str(item) for item in data] if data and isinstance(data, list) else []
+
     # ------------------------------------------------------------------ #
     #  Confidence scoring (Bug #9 fix)                                     #
     # ------------------------------------------------------------------ #
@@ -84,32 +98,38 @@ class Extractor:
         Run all extractions and return results with confidence scores.
         Bug #9 fix: each extraction result is annotated with a confidence value.
         """
-        signals    = self.extract_signals(context)
-        fsm_states = self.extract_fsm_states(context)
-        registers  = self.extract_registers(context)
-        timing     = self.extract_timing(context)
-        func_pts   = self.extract_functional_points(context)
+        signals     = self.extract_signals(context)
+        fsm_states  = self.extract_fsm_states(context)
+        registers   = self.extract_registers(context)
+        timing      = self.extract_timing(context)
+        func_pts    = self.extract_functional_points(context)
+        handshakes  = self.extract_handshake_rules(context)
+        firmware    = self.extract_firmware_model(context)
 
         # Confidence scoring — Bug #9 fix
         confidence = {
-            "signals":    self._score_confidence(signals, expected_min=2),
-            "fsm_states": self._score_confidence(fsm_states, expected_min=2),
-            "registers":  self._score_confidence(registers, expected_min=1),
-            "timing":     self._score_confidence(timing, expected_min=1),
-            "func_pts":   self._score_confidence(func_pts, expected_min=1),
+            "signals":              self._score_confidence(signals, expected_min=2),
+            "fsm_states":           self._score_confidence(fsm_states, expected_min=2),
+            "registers":            self._score_confidence(registers, expected_min=1),
+            "timing":               self._score_confidence(timing, expected_min=1),
+            "func_pts":             self._score_confidence(func_pts, expected_min=1),
+            "protocol_handshakes":  self._score_confidence(handshakes, expected_min=1),
+            "firmware_obligations":  self._score_confidence(firmware, expected_min=1),
         }
         confidence["overall"] = round(
             sum(confidence.values()) / len(confidence), 3
         )
 
         return {
-            "signals":              signals,
-            "fsm_states":           fsm_states,
-            "register_map":         registers,
-            "timing_constraints":   timing,
-            "functional_points":    func_pts,
-            "confidence":           confidence,
-            "llm_available":        self.client.is_available(),
+            "signals":                    signals,
+            "fsm_states":                 fsm_states,
+            "register_map":               registers,
+            "timing_constraints":         timing,
+            "functional_points":          func_pts,
+            "protocol_handshake_rules":   handshakes,
+            "firmware_programming_model": firmware,
+            "confidence":                 confidence,
+            "llm_available":              self.client.is_available(),
         }
 
     # ------------------------------------------------------------------ #
