@@ -1,7 +1,7 @@
 {
   "design_name": "uart",
   "version": "1.0",
-  "generated_at": "2026-07-10T22:36:52.184181",
+  "generated_at": "2026-07-11T21:49:34.033380",
   "signals": [
     {
       "name": "clk",
