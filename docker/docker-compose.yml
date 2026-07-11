@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+
+  # Ollama LLM server
+  ollama:
+    image: ollama/ollama:latest
+    container_name: verigenx_ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+
+  # VeriGenX main application
+  verigenx:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: verigenx_app
+    ports:
+      - "8501:8501"
+    volumes:
+      - ../input_designs:/app/input_designs
+      - ../generated_uvm:/app/generated_uvm
+      - ../test_plans:/app/test_plans
+      - ../logs:/app/logs
+      - ../chromadb_store:/app/chromadb_store
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - PYTHONIOENCODING=utf-8
+    depends_on:
+      - ollama
+    restart: unless-stopped
+
+volumes:
+  ollama_data:
