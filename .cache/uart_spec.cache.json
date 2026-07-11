@@ -1,0 +1,11 @@
+{
+  "hash": "d0ee7601d6b147a0096c8056866aec51e6806968a43b20972aa993bf6797cbfe",
+  "result": {
+    "text": "\nUART Specification v1.0\n\n1. Overview\nThe UART module implements serial communication at configurable baud rates.\n\n2. Interface Signals\n- clk: 1-bit input clock\n- rst_n: 1-bit active-low reset\n- tx_data: 8-bit input transmit data\n- rx_data: 8-bit output received data\n\n3. FSM States\nThe UART controller uses a 4-state FSM: IDLE, START, DATA, STOP\n\n4. Register Map\n- 0x00: baud_divisor (16-bit) - Sets baud rate divisor\n- 0x04: control (8-bit) - Control register\n\n5. Timing\n- Clock period: 10ns\n- Baud rate: configurable via baud_divisor\n",
+    "file_type": "txt",
+    "metadata": {
+      "title": "uart_spec.txt",
+      "chars": 537
+    }
+  }
+}
