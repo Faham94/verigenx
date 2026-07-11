@@ -48,7 +48,28 @@ class Resolver:
                     queue.append(neighbor)
 
         if len(sorted_order) != len(components):
-            raise Exception("Circular dependency detected in UVM components!")
+            cyclic_comps = [c for c in components if indegree[c] > 0]
+            cycle_desc = f"Circular dependency detected in UVM components! Loop contains: {cyclic_comps}"
+            
+            # Query LLM resolver to suggest cycle breaking (Bug #5 integration)
+            try:
+                from VeriGenX.agents.archweaver.llm_conflict_resolver import LLMConflictResolver
+                llm_resolver = LLMConflictResolver()
+                spec_context = dag.get("design_name", "design") + " UVM components cycle"
+                cycle_conflict = [{
+                    "type": "circular_dependency",
+                    "severity": "error",
+                    "description": cycle_desc,
+                    "suggestion": "Break the dependency loop by restructuring component edges."
+                }]
+                resolved = llm_resolver.resolve(cycle_conflict, spec_context, dag=dag, generation_order=sorted_order)
+                advice = resolved[0].get("llm_resolution", "")
+                if advice:
+                    cycle_desc += f"\nLLM Resolution Advice: {advice}"
+            except Exception:
+                pass
+                
+            raise Exception(cycle_desc)
 
         return sorted_order
 

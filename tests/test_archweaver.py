@@ -429,6 +429,30 @@ class TestLLMResolverIntegration:
         resolved  = LLMConflictResolver().resolve(conflicts, spec_context="spec")
         assert resolved[0]["llm_resolution"] != ""
 
+    def test_resolve_accepts_dag_and_order(self):
+        """Bug #5 fix: verify resolve accepts topological sort and DAG context"""
+        from VeriGenX.agents.archweaver.llm_conflict_resolver import LLMConflictResolver
+        resolver = LLMConflictResolver()
+        conflicts = [{"type": "t", "severity": "warning", "description": "d", "suggestion": "s"}]
+        dag = {"components": ["a", "b"], "dependencies": {"b": ["a"]}}
+        order = ["a", "b"]
+        resolved = resolver.resolve(conflicts, spec_context="spec", dag=dag, generation_order=order)
+        assert "llm_resolution" in resolved[0]
+
+    def test_cyclic_dependency_advice_included(self):
+        """Bug #5 fix: Resolver should suggest loop breaking advice when cycle is found"""
+        from VeriGenX.agents.archweaver.resolver import Resolver
+        resolver = Resolver()
+        bad_dag = {
+            "design_name": "cycle_test",
+            "components": ["a", "b"],
+            "dependencies": {"a": ["b"], "b": ["a"]}
+        }
+        with pytest.raises(Exception) as excinfo:
+            resolver.resolve(bad_dag)
+        # Should raise explaining cycle
+        assert "Circular dependency" in str(excinfo.value)
+
 
 # ================================================================== #
 #  9. Dynamic DAG regeneration (Bug #6)                               #
