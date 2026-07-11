@@ -3,6 +3,32 @@
 import pytest
 import os
 import json
+import requests
+
+
+# ==================================================================== #
+#  Bug #16 fix: mock Ollama network calls in unit tests                #
+#                                                                        #
+#  No test in this suite mocked the LLM client, so every test that      #
+#  touched Extractor/OllamaClient made a real HTTP call to               #
+#  localhost:11434. On a machine without Ollama running (the common     #
+#  case for CI) every one of those calls fails via a real TCP           #
+#  connection-refused round trip, which is slow (the full suite took    #
+#  ~3.5 minutes) and makes test behavior depend on whatever happens to  #
+#  be listening on that port on the machine running the suite. All      #
+#  LLM-dependent code already has a graceful heuristic/fallback path    #
+#  for "Ollama unavailable" — this fixture exercises that exact path    #
+#  deterministically and instantly instead of relying on a real         #
+#  (usually absent) local Ollama server.                                #
+# ==================================================================== #
+
+@pytest.fixture(autouse=True)
+def _mock_ollama_unavailable(monkeypatch):
+    def _raise_connection_error(*args, **kwargs):
+        raise requests.exceptions.ConnectionError("Ollama mocked as unavailable in tests")
+
+    monkeypatch.setattr(requests.Session, "get", _raise_connection_error)
+    monkeypatch.setattr(requests.Session, "post", _raise_connection_error)
 
 
 # ==================================================================== #

@@ -3,24 +3,34 @@ SpecMind: ChromaDB Embedder
 Stores and retrieves document chunks using ChromaDB PersistentClient.
 
 Fixes applied:
-  - Bug #4: Was using ephemeral Client() — now uses PersistentClient(CHROMADB_PATH)
-  - Bug #5: Was expecting "id" key — now reads "chunk_index" from chunker output
+  - Bug #4:  Was using ephemeral Client() — now uses PersistentClient(CHROMADB_PATH)
+  - Bug #5:  Was expecting "id" key — now reads "chunk_index" from chunker output
+  - Bug #12: OllamaEmbeddingFunction didn't implement the chromadb >=0.6
+             EmbeddingFunction protocol (name(), get_config(), build_from_config()),
+             so get_or_create_collection() raised AttributeError on every real run
+             and embedding silently no-op'd. Now subclasses chromadb.EmbeddingFunction
+             and implements the full protocol.
 """
 import os
-from typing import List, Dict, Optional
+from typing import Any, Dict, List, Optional
+from chromadb import EmbeddingFunction, Documents, Embeddings
 from VeriGenX.config import CHROMADB_PATH
 
 
-class OllamaEmbeddingFunction:
+class OllamaEmbeddingFunction(EmbeddingFunction):
     """
     Bug #1 fix: Custom embedding function wrapper that calls the nomic-embed-text
     model via the local OllamaClient. Falls back to zero vectors if Ollama is offline.
+
+    Bug #12 fix: implements the full chromadb EmbeddingFunction protocol
+    (name / get_config / build_from_config) so ChromaDB accepts it as a
+    non-legacy embedding function instead of raising AttributeError.
     """
     def __init__(self):
         from VeriGenX.llm.ollama_client import get_ollama_client
         self.client = get_ollama_client()
 
-    def __call__(self, input: List[str]) -> List[List[float]]:
+    def __call__(self, input: Documents) -> Embeddings:
         embeddings = []
         for text in input:
             emb = self.client.embed(text)
@@ -29,6 +39,17 @@ class OllamaEmbeddingFunction:
                 emb = [0.0] * 768
             embeddings.append(emb)
         return embeddings
+
+    @staticmethod
+    def name() -> str:
+        return "verigenx_ollama"
+
+    def get_config(self) -> Dict[str, Any]:
+        return {}
+
+    @staticmethod
+    def build_from_config(config: Dict[str, Any]) -> "OllamaEmbeddingFunction":
+        return OllamaEmbeddingFunction()
 
 
 class Embedder:

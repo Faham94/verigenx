@@ -165,6 +165,29 @@ DESIGN_DEFAULTS: Dict[str, Dict] = {
     }
 }
 
+# Bug #15 fix: `_infer_design_name` recognizes several protocol names
+# (apb, ahb, pcie, usb, ethernet, can) that have no entry in DESIGN_DEFAULTS.
+# Falling back to DESIGN_DEFAULTS["uart"] for those meant a PCIe/CAN/USB/etc.
+# spec that the LLM and regex heuristics both failed to parse would silently
+# get UART's clk/rst_n/tx_data/rx_data signals and IDLE/START/DATA/STOP FSM —
+# exactly the "UART leak" this module is supposed to prevent, just for a
+# different set of protocols. A protocol we have no real default knowledge of
+# should get an honest, minimal, protocol-agnostic stand-in instead of a
+# UART impersonation.
+GENERIC_DEFAULT: Dict = {
+    "signals": [
+        {"name": "clk",   "width": 1, "direction": "input"},
+        {"name": "rst_n", "width": 1, "direction": "input"},
+    ],
+    "fsm_states": ["IDLE", "ACTIVE"],
+    "register_map": [],
+    "functional_points": [
+        {"id": "FP_001", "description": "Reset and initialisation"},
+    ],
+    "protocol_handshake_rules": [],
+    "firmware_programming_model": [],
+}
+
 
 class TestPlanGenerator:
 
@@ -184,7 +207,10 @@ class TestPlanGenerator:
         # Infer design name
         inferred_name = design_name or self._infer_design_name(text)
         default_key   = "axi" if "axi" in inferred_name else inferred_name
-        proto_defaults = DESIGN_DEFAULTS.get(default_key, DESIGN_DEFAULTS["uart"])
+        # Bug #15 fix: unmodeled protocols (apb, ahb, pcie, usb, ethernet, can,
+        # or an unrecognized "design") get a generic minimal fallback instead
+        # of silently impersonating UART.
+        proto_defaults = DESIGN_DEFAULTS.get(default_key, GENERIC_DEFAULT)
 
         # --- Attempt LLM extraction ---
         extracted = {}
@@ -261,32 +287,69 @@ class TestPlanGenerator:
     # ------------------------------------------------------------------ #
 
     def _heuristic_signals(self, text: str) -> List[Dict]:
+        """
+        Bug #13 fix: the old implementation ran the RTL-style pattern
+        (`input/output/inout <word>`) against the *whole document* independent
+        of the colon+bit pattern, so it also fired inside descriptive prose on
+        lines that had already matched the colon+bit format — e.g. "- mosi:
+        1-bit input master-out-slave-in" produced a bogus signal named
+        "master", and "- clk: 1-bit input clock" produced a bogus signal named
+        "clock". Real specs describe each signal on its own line ("name: N-bit
+        direction description"), so once a line matches that format there is
+        no reason to also run the bare RTL-declaration pattern against it.
+        Now processed per-line: the RTL pattern only runs on lines that did
+        NOT already match the colon+bit format.
+        """
         signals = []
-        patterns = [
+        seen = set()
+
+        colon_bit_patterns = [
             r"\b(\w+)\s*:\s*(\d+)[\s-]*bit\s*(input|output|inout)",
-            r"\b(input|output|inout)\s+(?:\[(\d+):\d+\]\s+)?(\w+)",
             r"-\s+(\w+)\s*:\s*(\d+)[\s-]*bit\s*(input|output|inout)",
         ]
-        seen = set()
-        for pat in patterns:
-            for m in re.finditer(pat, text, re.IGNORECASE):
-                groups = m.groups()
-                if len(groups) == 3 and groups[0].lower() in ("input", "output", "inout"):
-                    direction, width_str, name = groups
-                    width = int(width_str) + 1 if width_str else 1
-                else:
-                    name, width_str, direction = groups[0], groups[1], groups[2]
-                    width = int(width_str) if width_str and width_str.isdigit() else 1
+        rtl_pattern = r"\b(input|output|inout)\s+(?:wire\s+|reg\s+|logic\s+)?(?:\[(\d+):\d+\]\s+)?(\w+)"
 
-                name = name.strip()
-                if name.lower() in seen or len(name) < 2:
-                    continue
-                seen.add(name.lower())
-                signals.append({
-                    "name":      name,
-                    "width":     int(width),
-                    "direction": direction.lower(),
-                })
+        # Bug #17 fix: reset lines are conventionally described without an
+        # explicit "input" keyword — e.g. "- rst_n: 1-bit active-low reset"
+        # or "- aresetn: 1-bit active-low reset" — so neither pattern above
+        # ever matched them and rst_n/aresetn were silently dropped from
+        # every reference design's signal list. Reset signals are, by
+        # convention, always inputs to the DUT, so infer direction=input
+        # when a "name: N-bit ..." line's description mentions reset and no
+        # explicit direction keyword is present.
+        reset_name_width_pattern = r"\b(\w+)\s*:\s*(\d+)[\s-]*bit\b"
+        reset_keyword_pattern = r"\breset\b|\brst\b"
+
+        def add_signal(name: str, width, direction: str) -> None:
+            name = name.strip()
+            if name.lower() in seen or len(name) < 2:
+                return
+            seen.add(name.lower())
+            signals.append({"name": name, "width": int(width), "direction": direction.lower()})
+
+        for line in text.split("\n"):
+            line_matched = False
+            for pat in colon_bit_patterns:
+                for m in re.finditer(pat, line, re.IGNORECASE):
+                    name, width_str, direction = m.group(1), m.group(2), m.group(3)
+                    width = int(width_str) if width_str and width_str.isdigit() else 1
+                    add_signal(name, width, direction)
+                    line_matched = True
+
+            if not line_matched:
+                for m in re.finditer(rtl_pattern, line, re.IGNORECASE):
+                    direction, width_str, name = m.group(1), m.group(2), m.group(3)
+                    width = int(width_str) + 1 if width_str else 1
+                    add_signal(name, width, direction)
+                    line_matched = True
+
+            if not line_matched and re.search(reset_keyword_pattern, line, re.IGNORECASE):
+                m = re.search(reset_name_width_pattern, line, re.IGNORECASE)
+                if m:
+                    name, width_str = m.group(1), m.group(2)
+                    width = int(width_str) if width_str.isdigit() else 1
+                    add_signal(name, width, "input")
+
         return signals
 
     def _heuristic_fsm(self, text: str) -> List[str]:
@@ -365,17 +428,43 @@ class TestPlanGenerator:
         return timing
 
     def _heuristic_functional_points(self, text: str) -> List[Dict]:
+        """
+        Bug #14 fix: this only recognised UART vocabulary (tx/rx/baud/parity/
+        reset), so protocols like SPI/I2C/AXI whose specs use different terms
+        (chip-select, valid/ready, ack/nack, arbitration, burst) silently
+        under-extracted functional points. Expanded to cover common signal-
+        protocol terminology across the reference designs, while keeping the
+        original UART-specific checks.
+        """
+        checks = [
+            (r"\btx\b|\btransmit\b|\bsend\b",                              "Data transmission functionality"),
+            (r"\brx\b|\breceive\b|\brecv\b",                               "Data reception functionality"),
+            (r"\bbaud\b|\bbit\s*rate\b",                                   "Baud rate configuration"),
+            (r"\bpariti\b|\bparity\b",                                     "Parity error detection"),
+            (r"\breset\b|\brst\b",                                         "Reset and initialisation"),
+            (r"\bhandshake\b|\bvalid\b.{0,20}\bready\b|\bready\b.{0,20}\bvalid\b",
+                                                                            "Valid/ready handshake sequencing"),
+            (r"\back\b|\backnowledge\b|\bnack\b",                          "Acknowledge/no-acknowledge handling"),
+            (r"\bchip[\s_-]select\b|\bcs_?n?\b",                           "Chip-select assertion and de-assertion"),
+            (r"\bfull\b",                                                  "Full-condition boundary behavior"),
+            (r"\bempty\b",                                                 "Empty-condition boundary behavior"),
+            (r"\barbitrat",                                                "Multi-master arbitration"),
+            (r"\binterrupt\b|\birq\b",                                     "Interrupt generation and servicing"),
+            (r"\bburst\b",                                                 "Burst transfer handling"),
+            (r"\baddress\b.{0,20}\bphase\b|\baddress\s+channel\b",         "Address-phase handshake"),
+            (r"\bmulti[\s-]?master\b",                                     "Multi-master bus contention"),
+        ]
+
         fps = []
-        if re.search(r"\btx\b|\btransmit\b|\bsend\b", text, re.I):
-            fps.append({"id": "FP_001", "description": "Data transmission functionality"})
-        if re.search(r"\brx\b|\breceive\b|\brecv\b", text, re.I):
-            fps.append({"id": "FP_002", "description": "Data reception functionality"})
-        if re.search(r"\bbaud\b|\brate\b", text, re.I):
-            fps.append({"id": "FP_003", "description": "Baud rate configuration"})
-        if re.search(r"\bpariti\b|\bparity\b", text, re.I):
-            fps.append({"id": "FP_004", "description": "Parity error detection"})
-        if re.search(r"\breset\b|\brst\b", text, re.I):
-            fps.append({"id": "FP_005", "description": "Reset and initialisation"})
+        seen_desc = set()
+        idx = 1
+        for pattern, description in checks:
+            if description in seen_desc:
+                continue
+            if re.search(pattern, text, re.IGNORECASE):
+                fps.append({"id": f"FP_{idx:03d}", "description": description})
+                seen_desc.add(description)
+                idx += 1
         return fps
 
     def _heuristic_handshake_rules(self, text: str) -> List[str]:
