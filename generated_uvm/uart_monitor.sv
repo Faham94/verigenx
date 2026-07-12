@@ -22,7 +22,7 @@ class uart_monitor extends uvm_monitor;
         uart_seq_item tx;
         forever begin
             @(posedge vif.clk);
-            tx = uart_seq_item::type_id::create("tx");
+            tx = uart_seq_item::type_id::create("tx"); // uart_seq_item replaced dynamically in caller
             tx.tx_data = vif.tx_data;
             tx.rx_data = vif.rx_data;
             ap.write(tx);

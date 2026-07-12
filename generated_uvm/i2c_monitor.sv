@@ -22,7 +22,7 @@ class i2c_monitor extends uvm_monitor;
         i2c_seq_item tx;
         forever begin
             @(posedge vif.clk);
-            tx = i2c_seq_item::type_id::create("tx");
+            tx = i2c_seq_item::type_id::create("tx"); // i2c_seq_item replaced dynamically in caller
             tx.scl = vif.scl;
             tx.sda = vif.sda;
             ap.write(tx);

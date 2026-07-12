@@ -1,7 +1,7 @@
 {
   "design_name": "fifo",
   "version": "1.0",
-  "generated_at": "2026-07-12T22:55:09.318640",
+  "generated_at": "2026-07-13T02:02:45.937552",
   "extraction_method": "heuristic",
   "signals": [
     {

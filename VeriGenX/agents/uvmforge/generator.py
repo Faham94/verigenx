@@ -13,7 +13,10 @@ from VeriGenX.state_bus import get_state_bus
 from VeriGenX.agents.archweaver.resolver import Resolver
 from VeriGenX.agents.uvmforge.llm_filler import LLMFiller
 from VeriGenX.agents.uvmforge.repair import UVMForgeRepair
+from VeriGenX.agents.uvmforge.logger import get_logger
 from VeriGenX.config import GENERATED_UVM_DIR
+
+logger = get_logger("generation")
 
 
 class LlmFillExtension(Extension):
@@ -121,7 +124,7 @@ class UVMForgeGenerator:
             "top": "top.sv.j2",
         }
 
-        print(f"\n[UVMForge] Starting testbench generation for design: {dut_name}")
+        logger.info(f"Starting testbench generation for design: {dut_name}")
         
         for item in generation_order:
             comp = item["component"]
@@ -129,15 +132,15 @@ class UVMForgeGenerator:
             
             tmpl_name = comp_to_template.get(comp)
             if not tmpl_name:
-                print(f"  [Warning] No template found for component: {comp}. Skipping.")
+                logger.warning(f"No template found for component: {comp}. Skipping.")
                 continue
 
-            print(f"  [{item['order']}/{len(generation_order)}] Generating {comp} -> {filename}...")
+            logger.info(f"[{item['order']}/{len(generation_order)}] Generating {comp} -> {filename}...")
             
             try:
                 template = self.jinja_env.get_template(tmpl_name)
             except Exception as e:
-                print(f"  [Error] Failed to load template {tmpl_name}: {e}")
+                logger.error(f"Failed to load template {tmpl_name}: {e}")
                 continue
 
             # Render template
@@ -199,13 +202,35 @@ class UVMForgeGenerator:
                     "errors": ""
                 }
 
+        # Post-generation Validation step
+        logger.info("Running post-generation validation checks...")
+        missing_files = []
+        empty_files = []
+        for item in generation_order:
+            filename = item["filename"]
+            filepath = os.path.join(GENERATED_UVM_DIR, filename)
+            if not os.path.exists(filepath):
+                missing_files.append(filename)
+            else:
+                with open(filepath, "r", encoding="utf-8") as f:
+                    content = f.read().strip()
+                if not content:
+                    empty_files.append(filename)
+                    
+        if missing_files or empty_files:
+            err_msg = f"Post-generation validation failed! Missing: {missing_files}, Empty/Whitespace-only: {empty_files}"
+            logger.error(err_msg)
+            raise Exception(err_msg)
+        else:
+            logger.info(f"Post-generation validation passed! All {len(generation_order)} expected files generated successfully.")
+
         # Log compile metrics if compiling was active
         if total_compiled > 0:
             rate = (first_attempt_clean / total_compiled) * 100
-            print(f"\n[UVMForge] Compile Success Rate on first attempt: {rate:.1f}% ({first_attempt_clean}/{total_compiled})")
+            logger.info(f"Compile Success Rate on first attempt: {rate:.1f}% ({first_attempt_clean}/{total_compiled})")
         else:
             rate = 0.0
-            print("\n[UVMForge] Verilator not available. Compilation checks were skipped.")
+            logger.info("Verilator not available. Compilation checks were skipped.")
 
         # Save compile report JSON
         report_path = os.path.join(GENERATED_UVM_DIR, "compile_report.json")
@@ -228,7 +253,14 @@ class UVMForgeGenerator:
             with open(report_path, "w", encoding="utf-8") as f:
                 json.dump(existing_report, f, indent=4)
         except Exception as e:
-            print(f"  [Warning] Failed to write compile report: {e}")
+            logger.warning(f"Failed to write compile report: {e}")
+
+        # Integrate metrics tracker call
+        try:
+            from VeriGenX.agents.uvmforge.metrics import update_metrics
+            update_metrics()
+        except Exception as e:
+            logger.warning(f"Failed to run metrics tracker update: {e}")
 
         # Update State Bus
         self.state_bus.update_state(generated_files=generated_filepaths)

@@ -1,0 +1,203 @@
+{
+    "current_phase": "",
+    "test_plan": {
+        "design_name": "uart",
+        "version": "1.0",
+        "generated_at": "2026-07-11T00:00:00",
+        "extraction_method": "heuristic",
+        "signals": [
+            {
+                "name": "clk",
+                "width": 1,
+                "direction": "input"
+            },
+            {
+                "name": "rst_n",
+                "width": 1,
+                "direction": "input"
+            },
+            {
+                "name": "tx_data",
+                "width": 8,
+                "direction": "input"
+            },
+            {
+                "name": "rx_data",
+                "width": 8,
+                "direction": "output"
+            }
+        ],
+        "fsm_states": [
+            "IDLE",
+            "START",
+            "DATA",
+            "STOP"
+        ],
+        "register_map": [
+            {
+                "address": "0x00",
+                "name": "baud_divisor",
+                "width": 16
+            },
+            {
+                "address": "0x04",
+                "name": "control",
+                "width": 8
+            }
+        ],
+        "timing_constraints": {},
+        "functional_points": [
+            {
+                "id": "FP_001",
+                "description": "8-bit data transmission"
+            },
+            {
+                "id": "FP_002",
+                "description": "Baud rate configuration"
+            }
+        ]
+    },
+    "dependency_graph": {
+        "components": [
+            "interface",
+            "sequence_item",
+            "sequence",
+            "driver",
+            "monitor",
+            "agent",
+            "scoreboard",
+            "coverage",
+            "env",
+            "test_base",
+            "test_directed",
+            "top"
+        ],
+        "dependencies": {
+            "interface": [],
+            "sequence_item": [],
+            "sequence": [
+                "sequence_item"
+            ],
+            "driver": [
+                "sequence_item",
+                "interface"
+            ],
+            "monitor": [
+                "interface"
+            ],
+            "agent": [
+                "driver",
+                "monitor",
+                "sequence"
+            ],
+            "scoreboard": [
+                "sequence_item"
+            ],
+            "coverage": [
+                "sequence_item"
+            ],
+            "env": [
+                "agent",
+                "scoreboard",
+                "coverage"
+            ],
+            "test_base": [
+                "env",
+                "sequence"
+            ],
+            "test_directed": [
+                "test_base"
+            ],
+            "top": [
+                "test_base",
+                "interface",
+                "env",
+                "test_directed"
+            ]
+        },
+        "design_name": "uart",
+        "signals": [
+            {
+                "name": "clk",
+                "width": 1,
+                "direction": "input"
+            },
+            {
+                "name": "rst_n",
+                "width": 1,
+                "direction": "input"
+            },
+            {
+                "name": "tx_data",
+                "width": 8,
+                "direction": "input"
+            },
+            {
+                "name": "rx_data",
+                "width": 8,
+                "direction": "output"
+            }
+        ],
+        "fsm_states": [
+            "IDLE",
+            "START",
+            "DATA",
+            "STOP"
+        ],
+        "register_map": [
+            {
+                "address": "0x00",
+                "name": "baud_divisor",
+                "width": 16
+            },
+            {
+                "address": "0x04",
+                "name": "control",
+                "width": 8
+            }
+        ],
+        "functional_points": [
+            {
+                "id": "FP_001",
+                "description": "8-bit data transmission"
+            },
+            {
+                "id": "FP_002",
+                "description": "Baud rate configuration"
+            }
+        ],
+        "component_filenames": {
+            "interface": "uart_interface.sv",
+            "sequence_item": "uart_sequence_item.sv",
+            "sequence": "uart_sequence.sv",
+            "driver": "uart_driver.sv",
+            "monitor": "uart_monitor.sv",
+            "agent": "uart_agent.sv",
+            "scoreboard": "uart_scoreboard.sv",
+            "coverage": "uart_coverage.sv",
+            "env": "uart_env.sv",
+            "test_base": "uart_test_base.sv",
+            "test_directed": "uart_test_directed.sv",
+            "top": "uart_top.sv"
+        }
+    },
+    "generated_files": [
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-39\\test_generate_all_writes_all_f0\\uart_interface.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-39\\test_generate_all_writes_all_f0\\uart_sequence_item.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-39\\test_generate_all_writes_all_f0\\uart_monitor.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-39\\test_generate_all_writes_all_f0\\uart_sequence.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-39\\test_generate_all_writes_all_f0\\uart_driver.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-39\\test_generate_all_writes_all_f0\\uart_scoreboard.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-39\\test_generate_all_writes_all_f0\\uart_coverage.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-39\\test_generate_all_writes_all_f0\\uart_agent.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-39\\test_generate_all_writes_all_f0\\uart_env.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-39\\test_generate_all_writes_all_f0\\uart_test_base.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-39\\test_generate_all_writes_all_f0\\uart_test_directed.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-39\\test_generate_all_writes_all_f0\\uart_top.sv"
+    ],
+    "simulation_results": null,
+    "coverage_data": null,
+    "anomalies": [],
+    "traceability_matrix": null,
+    "errors": []
+}

@@ -1,0 +1,57 @@
+{
+    "processed_designs": [
+        "uart",
+        "spi",
+        "i2c",
+        "axi_lite",
+        "fifo",
+        "axi"
+    ],
+    "skipped_designs": [
+        "counter",
+        "riscv"
+    ],
+    "metrics": {
+        "total_runs": 40,
+        "first_pass_success": 72,
+        "repair_success": 0,
+        "failures": 0,
+        "first_pass_rate": 100.0,
+        "overall_success_rate": 100.0,
+        "avg_repair_iterations": 0.0
+    },
+    "details": {
+        "uart": {
+            "status": "passed",
+            "files_count": 12
+        },
+        "spi": {
+            "status": "passed",
+            "files_count": 12
+        },
+        "i2c": {
+            "status": "passed",
+            "files_count": 12
+        },
+        "axi_lite": {
+            "status": "passed",
+            "files_count": 12
+        },
+        "fifo": {
+            "status": "passed",
+            "files_count": 12
+        },
+        "axi": {
+            "status": "passed",
+            "files_count": 12
+        },
+        "counter": {
+            "status": "skipped",
+            "reason": "Test plan JSON file not found in test_plans/"
+        },
+        "riscv": {
+            "status": "skipped",
+            "reason": "Test plan JSON file not found in test_plans/"
+        }
+    }
+}

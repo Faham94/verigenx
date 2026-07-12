@@ -1,0 +1,25 @@
+{
+    "benchmark_results": {
+        "uart": {
+            "status": "success",
+            "files_count": 12
+        },
+        "spi": {
+            "status": "success",
+            "files_count": 12
+        },
+        "i2c": {
+            "status": "success",
+            "files_count": 12
+        }
+    },
+    "metrics": {
+        "total_runs": 44,
+        "first_pass_success": 36,
+        "repair_success": 0,
+        "failures": 0,
+        "first_pass_rate": 100.0,
+        "overall_success_rate": 100.0,
+        "avg_repair_iterations": 0.0
+    }
+}

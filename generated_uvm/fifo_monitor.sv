@@ -22,7 +22,7 @@ class fifo_monitor extends uvm_monitor;
         fifo_seq_item tx;
         forever begin
             @(posedge vif.clk);
-            tx = fifo_seq_item::type_id::create("tx");
+            tx = fifo_seq_item::type_id::create("tx"); // fifo_seq_item replaced dynamically in caller
             tx.wr_en = vif.wr_en;
             tx.rd_en = vif.rd_en;
             tx.wr_data = vif.wr_data;

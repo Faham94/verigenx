@@ -61,6 +61,8 @@ class uvm_object extends uvm_void;
     virtual function string get_name(); return ""; endfunction
     virtual function string convert2string(); return ""; endfunction
     virtual function bit compare(uvm_object rhs); return 1; endfunction
+    virtual function void copy(uvm_object rhs); endfunction
+    virtual function uvm_object clone(); return this; endfunction
 endclass
 
 class uvm_report_object extends uvm_object;

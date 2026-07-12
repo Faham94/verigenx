@@ -140,6 +140,48 @@ _PROMPTS: Dict[str, str] = {
         "Generate the corrected, complete SystemVerilog code for this file. Ensure it is fully compliant with UVM 1.2 and compiles cleanly on Verilator 5.x.\n"
         "Return ONLY the complete raw SystemVerilog file content. No markdown fences, no explanations."
     ),
+    "uvmforge_fill_sequence_item": (
+        "You are an expert UVM verification engineer.\n"
+        "Given the design signals:\n{signals}\n\n"
+        "Generate the SystemVerilog code block for sequence item '{block_type}'.\n"
+        "If block_type is 'fields', return rand bit declarations, enums, or structs.\n"
+        "If block_type is 'constraints', return randomization constraint blocks.\n"
+        "If block_type is 'macros', return UVM field macro registrations (`uvm_field_int, etc.).\n"
+        "Return ONLY the raw code inside the block, no class wrapper, no markdown fences."
+    ),
+    "uvmforge_fill_driver_behavior": (
+        "You are an expert UVM verification engineer.\n"
+        "Generate SystemVerilog clocking block-based driver logic for these signals:\n{signals}\n\n"
+        "Based on these protocol rules:\n{protocol}\n\n"
+        "Return ONLY the raw driving logic, no function/task header/footer."
+    ),
+    "uvmforge_fill_monitor_behavior": (
+        "You are an expert UVM verification engineer.\n"
+        "Generate SystemVerilog monitor signal sampling logic for these signals:\n{signals}\n\n"
+        "Based on these protocol rules:\n{protocol}\n\n"
+        "The logic must sample signals and write transactions to the analysis port.\n"
+        "Return ONLY the raw monitor loop logic."
+    ),
+    "uvmforge_fill_scoreboard": (
+        "You are an expert UVM verification engineer.\n"
+        "Generate SystemVerilog scoreboard check/compare logic for design: {dut_name}.\n"
+        "Compare the actual monitored transaction against the expected transaction from reference model.\n"
+        "Use functional points for reference:\n{functional_points}\n\n"
+        "Return ONLY the compare and error reporting code."
+    ),
+    "uvmforge_fill_coverage": (
+        "You are an expert UVM verification engineer.\n"
+        "Generate SystemVerilog coverage bins/cross coverage for signals:\n{signals}\n\n"
+        "And functional points:\n{functional_points}\n\n"
+        "Return ONLY the coverpoint/cross declarations for the covergroup."
+    ),
+    "uvmforge_generate_reference_model": (
+        "You are an expert verification engineer.\n"
+        "Generate reference model prediction logic for DUT behavior:\n{dut_behavior}\n\n"
+        "Produce code to compute expected transaction outputs from input transactions.\n"
+        "If an invalid behavior is detected, use `uvm_report_error` or `uvm_error` to flag it.\n"
+        "Return ONLY the prediction function body."
+    ),
 }
 
 

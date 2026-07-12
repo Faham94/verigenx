@@ -1,0 +1,9 @@
+{
+    "total_runs": 53,
+    "first_pass_success": 60,
+    "repair_success": 0,
+    "failures": 0,
+    "first_pass_rate": 100.0,
+    "overall_success_rate": 100.0,
+    "avg_repair_iterations": 0.0
+}
