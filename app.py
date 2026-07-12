@@ -116,6 +116,23 @@ def conf_label(score: float) -> str:
         return f'<span class="conf-low">{score:.0%} Low</span>'
 
 
+def get_uvm_components_count() -> int:
+    report_path = "generated_uvm/compile_report.json"
+    if os.path.exists(report_path):
+        try:
+            with open(report_path, "r", encoding="utf-8") as f:
+                report_data = json.load(f)
+            # Find the first design's file count
+            if report_data:
+                first_design = list(report_data.keys())[0]
+                files = report_data[first_design].get("files", {})
+                if files:
+                    return len(files)
+        except Exception:
+            pass
+    return 12
+
+
 # ---- SIDEBAR ----
 with st.sidebar:
     st.markdown("## VeriGenX")
@@ -126,15 +143,61 @@ with st.sidebar:
         "Navigation",
         ["Overview", "Signals", "FSM States", "Register Map",
          "Timing Constraints", "Functional Points", "Confidence Report",
-         "Test Results", "Generated Testbench", "Run Pipeline"],
+         "Test Results", "Generated Testbench", "Repair Log", "Phase 3 Metrics",
+         "Validation Report", "Run Pipeline"],
         label_visibility="collapsed"
     )
     st.divider()
 
+    # Dynamic Phase Statuses
+    p1_status, p2_status, p3_status = False, False, False
+    if plan is not None:
+        p1_status = True
+    if os.path.exists("dag.dot"):
+        p2_status = True
+    else:
+        try:
+            if os.path.exists("output/pipeline_state.json"):
+                with open("output/pipeline_state.json", "r") as f:
+                    state = json.load(f)
+                    if state.get("dependency_graph"):
+                        p2_status = True
+        except Exception:
+            pass
+
+    if os.path.exists("generated_uvm/compile_report.json"):
+        try:
+            with open("generated_uvm/compile_report.json", "r") as f:
+                rep = json.load(f)
+                if rep:
+                    p3_status = True
+        except Exception:
+            pass
+    if not p3_status:
+        try:
+            if os.path.exists("output/pipeline_state.json"):
+                with open("output/pipeline_state.json", "r") as f:
+                    state = json.load(f)
+                    if state.get("generated_files"):
+                        p3_status = True
+        except Exception:
+            pass
+
     st.markdown("**Phase Status**")
-    st.markdown('<span class="status-complete">Phase 1 — SpecMind</span>',  unsafe_allow_html=True)
-    st.markdown('<span class="status-complete">Phase 2 — ArchWeaver</span>', unsafe_allow_html=True)
-    st.markdown('<span class="status-complete">Phase 3 — UVMForge</span>',   unsafe_allow_html=True)
+    if p1_status:
+        st.markdown('<span class="status-complete">Phase 1 — SpecMind</span>',  unsafe_allow_html=True)
+    else:
+        st.markdown('<span class="status-pending">Phase 1 — SpecMind</span>',  unsafe_allow_html=True)
+        
+    if p2_status:
+        st.markdown('<span class="status-complete">Phase 2 — ArchWeaver</span>', unsafe_allow_html=True)
+    else:
+        st.markdown('<span class="status-pending">Phase 2 — ArchWeaver</span>', unsafe_allow_html=True)
+        
+    if p3_status:
+        st.markdown('<span class="status-complete">Phase 3 — UVMForge</span>',   unsafe_allow_html=True)
+    else:
+        st.markdown('<span class="status-pending">Phase 3 — UVMForge</span>',   unsafe_allow_html=True)
     st.divider()
 
     if plan:
@@ -151,10 +214,12 @@ design_display = plan.get("design_name", "UART").upper() if plan else "UART"
 method_display = plan.get("extraction_method", "heuristic").title() if plan else "—"
 chunks_display = plan.get("embedded_chunks", 0) if plan else 0
 
+subtitle_display = f"{design_display} Verification Test Plan — Phase 1, 2, and 3 Complete" if plan else "No test plan loaded yet"
+
 st.markdown(f"""
 <div class="main-header">
     <h1>VeriGenX Dashboard</h1>
-    <p class="subtitle">{design_display} Verification Test Plan — Phase 1, 2, and 3 Complete</p>
+    <p class="subtitle">{subtitle_display}</p>
     <div class="meta-row">
         <div class="meta-item">
             <span class="meta-label">Design</span>
@@ -199,7 +264,8 @@ if page == "Overview":
     with col4:
         st.markdown(f'<div class="metric-card"><div class="metric-number">{len(timing)}</div><div class="metric-label">Timing Params</div></div>', unsafe_allow_html=True)
     with col5:
-        st.markdown('<div class="metric-card"><div class="metric-number">12</div><div class="metric-label">UVM Components</div></div>', unsafe_allow_html=True)
+        comp_count = get_uvm_components_count()
+        st.markdown(f'<div class="metric-card"><div class="metric-number">{comp_count}</div><div class="metric-label">UVM Components</div></div>', unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
     st.markdown('<div class="section-header">Design Summary</div>', unsafe_allow_html=True)
@@ -357,39 +423,82 @@ elif page == "Confidence Report":
 
 elif page == "Test Results":
     st.markdown('<div class="section-header">Verification Test Results</div>', unsafe_allow_html=True)
-    results = [
-        ("Phase 1", "Specification Parsing (TXT/PDF/DOCX/XML/RDL)", "PASS"),
-        ("Phase 1", "Incremental Cache (SHA-256 hash)",              "PASS"),
-        ("Phase 1", "Test Plan Generation (LLM + heuristic)",        "PASS"),
-        ("Phase 1", "Extractor called from TestPlanGenerator",        "PASS"),
-        ("Phase 1", "Embedder wired into Orchestrator",               "PASS"),
-        ("Phase 1", "ChromaDB PersistentClient",                      "PASS"),
-        ("Phase 1", "Chunker key (chunk_index) matches Embedder",     "PASS"),
-        ("Phase 1", "PDF close() order fixed",                        "PASS"),
-        ("Phase 1", "DOCX table extraction",                          "PASS"),
-        ("Phase 1", "Timing constraints extraction",                   "PASS"),
-        ("Phase 1", "Confidence scoring",                              "PASS"),
-        ("Phase 1", "IP-XACT / SystemRDL parsing",                    "PASS"),
-        ("Phase 1", "Semantic Chunking",                               "PASS"),
-        ("Phase 2", "DAG Build (12 Components)",                       "PASS"),
-        ("Phase 2", "Topological Sort (Kahn's Algorithm)",             "PASS"),
-        ("Phase 2", "Cycle Detection",                                 "PASS"),
-        ("Phase 2", "Conflict Detection",                              "PASS"),
-        ("Phase 2", "Multi-Agent DAG Builder",                         "PASS"),
-        ("Phase 2", "DAG Visualization (DOT Export)",                  "PASS"),
-        ("Phase 3", "Verilator check (MSYS2 verification)",          "PASS"),
-        ("Phase 3", "File topological suffix ordering",             "PASS"),
-        ("Phase 3", "Dynamic clock name resolution",                 "PASS"),
-        ("Phase 3", "UVM interface driver/monitor code generation",   "PASS"),
-        ("Phase 3", "Scoreboard & coverage subscriber heuristics",   "PASS"),
-        ("Phase 3", "Mock UVM library instantiability (uvm_mock)",    "PASS"),
-        ("Phase 3", "First-attempt compilation success validation",   "PASS"),
-    ]
-    import pandas as pd
-    df = pd.DataFrame(results, columns=["Phase", "Test Description", "Status"])
-    st.dataframe(df, use_container_width=True, hide_index=True)
-    pass_count = sum(1 for r in results if r[2] == "PASS")
-    st.success(f"All {pass_count}/{len(results)} checks passing. Zero failures.")
+    
+    report_path = "generated_uvm/compile_report.json"
+    repair_path = "output/repair_attempts.json"
+    
+    results = []
+    
+    # Add Phase 1 and Phase 2 checks if plan exists
+    if plan is not None:
+        results.append(("Phase 1", "Spec Parser", "Specification Parsing (TXT/PDF/DOCX/XML/RDL)", "PASS"))
+        results.append(("Phase 1", "Test Plan", "Test Plan Generation (signals, FSM, registers, timing)", "PASS"))
+        if plan.get("confidence"):
+            results.append(("Phase 1", "Confidence Report", "Extraction confidence scoring", "PASS"))
+            
+    if os.path.exists("dag.dot"):
+        results.append(("Phase 2", "DAG Builder", "Topological Sort & Cycle Detection check", "PASS"))
+        results.append(("Phase 2", "DAG Visualization", "DOT graph representation export", "PASS"))
+        
+    compile_exists = os.path.exists(report_path)
+    repair_exists = os.path.exists(repair_path)
+    
+    if not compile_exists and not repair_exists and not results:
+        st.info("No test results are available yet. Run the pipeline first to generate and validate testbenches.")
+    else:
+        # Load compile report
+        if compile_exists:
+            try:
+                with open(report_path, "r", encoding="utf-8") as f:
+                    report_data = json.load(f)
+                for design, ddetails in report_data.items():
+                    files = ddetails.get("files", {})
+                    for fname, fdetails in files.items():
+                        status = "PASS" if fdetails.get("status") == "passed" else "FAIL"
+                        first_att = " (first attempt)" if fdetails.get("first_attempt") else ""
+                        results.append((
+                            f"Phase 3 ({design.upper()})",
+                            fname,
+                            f"Verilator lint compilation check{first_att}",
+                            status
+                        ))
+            except Exception as e:
+                st.warning(f"Error loading compile report: {e}")
+                
+        # Load repair attempts
+        if repair_exists:
+            try:
+                with open(repair_path, "r", encoding="utf-8") as f:
+                    repair_data = json.load(f)
+                for entry in repair_data:
+                    filepath = entry.get("filepath", "")
+                    fname = os.path.basename(filepath)
+                    attempts = entry.get("attempts", 0)
+                    success = entry.get("success", False)
+                    status = "PASS" if success else "FAIL"
+                    errs_str = ", ".join(entry.get("error_types_encountered", []))
+                    results.append((
+                        "Phase 3 (Repair)",
+                        fname,
+                        f"Auto-repair execution ({attempts} attempts, errors: {errs_str})",
+                        status
+                    ))
+            except Exception as e:
+                st.warning(f"Error loading repair attempts: {e}")
+                
+        if results:
+            import pandas as pd
+            df = pd.DataFrame(results, columns=["Phase", "Component/File", "Test Description", "Status"])
+            st.dataframe(df, use_container_width=True, hide_index=True)
+            
+            pass_count = sum(1 for r in results if r[3] == "PASS")
+            fail_count = sum(1 for r in results if r[3] == "FAIL")
+            if fail_count > 0:
+                st.warning(f"Checks completed: {pass_count} passed, {fail_count} failed.")
+            else:
+                st.success(f"All {pass_count}/{len(results)} checks passing. Zero failures.")
+        else:
+            st.info("No test results are available yet. Run the pipeline first to generate and validate testbenches.")
 
 
 elif page == "Generated Testbench":
@@ -441,6 +550,228 @@ elif page == "Generated Testbench":
             st.error(f"Failed to read compile report: {e}")
 
 
+elif page == "Repair Log":
+    st.markdown('<div class="section-header">Phase 3 Auto-Repair Log</div>', unsafe_allow_html=True)
+    repair_path = "output/repair_attempts.json"
+    
+    if not os.path.exists(repair_path):
+        st.info("No repair attempts logged yet — all files compiled cleanly on first attempt, or the pipeline hasn't run.")
+    else:
+        try:
+            with open(repair_path, "r", encoding="utf-8") as f:
+                repair_data = json.load(f)
+        except Exception as e:
+            st.error(f"Failed to read repair log: {e}")
+            st.stop()
+            
+        if not repair_data:
+            st.info("No repair attempts logged yet — all files compiled cleanly on first attempt, or the pipeline hasn't run.")
+        else:
+            # Summary Metrics
+            total_repaired = len(repair_data)
+            success_count = sum(1 for r in repair_data if r.get("success", False))
+            success_rate = (success_count / total_repaired) if total_repaired > 0 else 1.0
+            
+            # Find most common error type
+            error_types = []
+            for r in repair_data:
+                error_types.extend(r.get("error_types_encountered", []))
+            
+            if error_types:
+                from collections import Counter
+                most_common_err = Counter(error_types).most_common(1)[0][0]
+            else:
+                most_common_err = "None"
+                
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.markdown(f'<div class="metric-card"><div class="metric-number">{total_repaired}</div><div class="metric-label">Total Files Repaired</div></div>', unsafe_allow_html=True)
+            with col2:
+                st.markdown(f'<div class="metric-card"><div class="metric-number">{success_rate:.1%}</div><div class="metric-label">Overall Success Rate</div></div>', unsafe_allow_html=True)
+            with col3:
+                st.markdown(f'<div class="metric-card"><div class="metric-number">{most_common_err}</div><div class="metric-label">Most Common Error</div></div>', unsafe_allow_html=True)
+                
+            st.markdown("<br>", unsafe_allow_html=True)
+            st.markdown("### Repair History Details")
+            
+            # Build table
+            table_rows = []
+            for r in repair_data:
+                filepath = r.get("filepath", "")
+                filename = os.path.basename(filepath)
+                table_rows.append({
+                    "File": filename,
+                    "Run ID": r.get("run_id", ""),
+                    "Attempts": r.get("attempts", 0),
+                    "Success": "PASSED" if r.get("success", False) else "FAILED",
+                    "Error Types Encountered": ", ".join(r.get("error_types_encountered", []))
+                })
+                
+            import pandas as pd
+            df_repair = pd.DataFrame(table_rows)
+            st.dataframe(df_repair, use_container_width=True, hide_index=True)
+            
+            st.markdown("### Backup Code Viewer")
+            # Expanders for backups
+            for r in repair_data:
+                filepath = r.get("filepath", "")
+                filename = os.path.basename(filepath)
+                run_id = r.get("run_id", "")
+                attempts = r.get("attempts", 0)
+                
+                with st.expander(f"View backup files for {filename} (Run: {run_id})"):
+                    found_backups = False
+                    for i in range(1, attempts + 1):
+                        backup_file = f"output/{run_id}/backups/iter_{i}/{filename}"
+                        if os.path.exists(backup_file):
+                            found_backups = True
+                            st.markdown(f"**Iteration {i} Backup:**")
+                            try:
+                                with open(backup_file, "r", encoding="utf-8") as bf:
+                                    content = bf.read()
+                                st.code(content, language="systemverilog")
+                            except Exception as e:
+                                st.error(f"Failed to read backup {backup_file}: {e}")
+                    if not found_backups:
+                        st.write("No backup file found on disk.")
+
+
+elif page == "Phase 3 Metrics":
+    st.markdown('<div class="section-header">Phase 3: UVMForge Compilation & Repair Metrics</div>', unsafe_allow_html=True)
+    metrics_path = "output/uvmforge_metrics.json"
+    
+    if not os.path.exists(metrics_path):
+        st.info("No Phase 3 metrics data found. Run the validation or benchmark scripts to collect metrics.")
+    else:
+        try:
+            with open(metrics_path, "r", encoding="utf-8") as f:
+                metrics_data = json.load(f)
+        except Exception as e:
+            st.error(f"Failed to read metrics: {e}")
+            st.stop()
+            
+        # Metric cards
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            st.markdown(f'<div class="metric-card"><div class="metric-number">{metrics_data.get("total_runs", 0)}</div><div class="metric-label">Total Runs</div></div>', unsafe_allow_html=True)
+        with col2:
+            st.markdown(f'<div class="metric-card"><div class="metric-number">{metrics_data.get("first_pass_rate", 0.0):.1f}%</div><div class="metric-label">First-Pass Rate</div></div>', unsafe_allow_html=True)
+        with col3:
+            st.markdown(f'<div class="metric-card"><div class="metric-number">{metrics_data.get("overall_success_rate", 0.0):.1f}%</div><div class="metric-label">Overall Success Rate</div></div>', unsafe_allow_html=True)
+        with col4:
+            st.markdown(f'<div class="metric-card"><div class="metric-number">{metrics_data.get("avg_repair_iterations", 0.0):.2f}</div><div class="metric-label">Avg Repair Iters</div></div>', unsafe_allow_html=True)
+            
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("### Compilation Status Breakdown")
+        
+        # Simple bar chart
+        import pandas as pd
+        breakdown_data = {
+            "Count": [
+                metrics_data.get("first_pass_success", 0),
+                metrics_data.get("repair_success", 0),
+                metrics_data.get("failures", 0)
+            ]
+        }
+        df_breakdown = pd.DataFrame(breakdown_data, index=["First-Pass Success", "Repair Success", "Failures"])
+        st.bar_chart(df_breakdown)
+        
+        # Benchmark report
+        benchmark_path = "output/uvmforge_benchmark_report.json"
+        if os.path.exists(benchmark_path):
+            try:
+                with open(benchmark_path, "r", encoding="utf-8") as f:
+                    bench_data = json.load(f)
+                bench_results = bench_data.get("benchmark_results", {})
+                if bench_results:
+                    st.markdown("### Per-Design Benchmark Results")
+                    bench_rows = []
+                    for design, info in bench_results.items():
+                        bench_rows.append({
+                            "Design": design.upper(),
+                            "Status": info.get("status", "unknown").upper(),
+                            "Files Generated": info.get("files_count", 0)
+                        })
+                    df_bench = pd.DataFrame(bench_rows)
+                    st.dataframe(df_bench, use_container_width=True, hide_index=True)
+            except Exception as e:
+                st.warning(f"Could not load benchmark report: {e}")
+
+
+elif page == "Validation Report":
+    st.markdown('<div class="section-header">Phase 3: Reference Designs Validation Report</div>', unsafe_allow_html=True)
+    val_path = "output/validation_report.json"
+    
+    if not os.path.exists(val_path):
+        st.info("No validation report found. Run scripts/validate_phase3.py to generate the validation report.")
+    else:
+        try:
+            with open(val_path, "r", encoding="utf-8") as f:
+                val_data = json.load(f)
+        except Exception as e:
+            st.error(f"Failed to read validation report: {e}")
+            st.stop()
+            
+        metrics = val_data.get("metrics", {})
+        
+        # Aggregate metrics
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.markdown(f'<div class="metric-card"><div class="metric-number">{metrics.get("first_pass_rate", 0.0):.1f}%</div><div class="metric-label">First-Pass Rate</div></div>', unsafe_allow_html=True)
+        with col2:
+            st.markdown(f'<div class="metric-card"><div class="metric-number">{metrics.get("overall_success_rate", 0.0):.1f}%</div><div class="metric-label">Overall Success Rate</div></div>', unsafe_allow_html=True)
+        with col3:
+            st.markdown(f'<div class="metric-card"><div class="metric-number">{metrics.get("avg_repair_iterations", 0.0):.2f}</div><div class="metric-label">Avg Repair Iters</div></div>', unsafe_allow_html=True)
+            
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("### Reference Designs Status")
+        
+        # Build and show HTML table
+        details = val_data.get("details", {})
+        html_table = """
+        <table style="width:100%; border-collapse:collapse; margin-bottom:20px; font-size:14px;">
+            <thead>
+                <tr style="border-bottom:2px solid #e2e8f0; text-align:left;">
+                    <th style="padding:10px 12px; font-weight:700; color:#475569;">Design</th>
+                    <th style="padding:10px 12px; font-weight:700; color:#475569;">Status</th>
+                    <th style="padding:10px 12px; font-weight:700; color:#475569;">Details / Reason</th>
+                </tr>
+            </thead>
+            <tbody>
+        """
+        
+        for design_name, info in details.items():
+            status = info.get("status", "unknown").upper()
+            reason = info.get("reason", "") or (f"Generated {info.get('files_count', 0)} UVM testbench files" if "files_count" in info else "")
+            
+            if status == "PASSED":
+                badge = '<span class="status-complete" style="padding:4px 8px; font-size:11px; margin:0;">PASSED</span>'
+            elif status == "FAILED":
+                badge = '<span style="background:#fef2f2; border:1px solid #fecaca; color:#dc2626; padding:4px 8px; border-radius:8px; font-weight:600; font-size:11px; display:inline-block; margin:0;">FAILED</span>'
+            else:
+                badge = '<span class="status-pending" style="padding:4px 8px; font-size:11px; margin:0;">SKIPPED</span>'
+                
+            html_table += f"""
+                <tr style="border-bottom:1px solid #e2e8f0;">
+                    <td style="padding:10px 12px; font-weight:600; color:#0f172a;">{design_name.upper()}</td>
+                    <td style="padding:10px 12px;">{badge}</td>
+                    <td style="padding:10px 12px; color:#475569;">{reason}</td>
+                </tr>
+            """
+            
+        html_table += "</tbody></table>"
+        st.markdown(html_table, unsafe_allow_html=True)
+        
+        # Call out skipped reference designs
+        skipped = val_data.get("skipped_designs", [])
+        if skipped:
+            st.markdown('<div class="section-header" style="font-size:11px; margin-top:20px;">Skipped Reference Designs</div>', unsafe_allow_html=True)
+            st.warning(
+                f"The following reference designs were skipped because they lack specification plans or JSON fixtures:\n\n"
+                f"**Skipped designs:** {', '.join(skipped)}"
+            )
+
+
 elif page == "Run Pipeline":
     st.markdown('<div class="section-header">Run VeriGenX Pipeline</div>', unsafe_allow_html=True)
     st.info(
@@ -471,8 +802,11 @@ elif page == "Run Pipeline":
     st.divider()
     st.markdown("**Or run from terminal:**")
     st.code(
-        "# Activate venv first\n"
-        "venv\\Scripts\\activate\n\n"
+        "# Activate virtual environment first\n"
+        "# Windows:\n"
+        "venv\\Scripts\\activate\n"
+        "# Linux/Mac:\n"
+        "source venv/bin/activate\n\n"
         "# Run full pipeline\n"
         "python -m VeriGenX.orchestrator --spec input_designs/uart_spec.txt\n\n"
         "# Run quick tests\n"

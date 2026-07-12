@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- NOTE: This file is dynamically updated by scripts/generate_static_reports.py. Do not hand-edit metrics or table rows directly. -->
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -274,22 +275,22 @@
   <div class="status-strip">
     <div class="status-card green">
       <div class="sc-label">Phase 1 — SpecMind</div>
-      <div class="sc-value">Complete</div>
+      <div class="sc-value"><!-- P1_STATUS_START -->Complete<!-- P1_STATUS_END --></div>
       <div class="sc-sub">Specification parsed and structured</div>
     </div>
     <div class="status-card green">
       <div class="sc-label">Phase 2 — ArchWeaver</div>
-      <div class="sc-value">Complete</div>
+      <div class="sc-value"><!-- P2_STATUS_START -->Complete<!-- P2_STATUS_END --></div>
       <div class="sc-sub">Dependency graph resolved (12 components)</div>
     </div>
     <div class="status-card green">
       <div class="sc-label">Phase 3 — UVMForge</div>
-      <div class="sc-value">Complete</div>
+      <div class="sc-value"><!-- P3_STATUS_START -->Complete<!-- P3_STATUS_END --></div>
       <div class="sc-sub">Testbench generated and compiled cleanly</div>
     </div>
     <div class="status-card">
       <div class="sc-label">UVM Components</div>
-      <div class="sc-value">12</div>
+      <div class="sc-value"><!-- COMP_COUNT_START -->12<!-- COMP_COUNT_END --></div>
       <div class="sc-sub">Topologically sorted, no cycles</div>
     </div>
   </div>
@@ -395,12 +396,17 @@
   <div class="section">
     <div class="section-title">Verification Results</div>
     <div class="results-grid">
+      <!-- CLIENT_RESULTS_START -->
       <div class="result-row">
         <span class="result-label">Specification Parsing (TXT)</span>
         <span class="result-pass">PASS</span>
       </div>
       <div class="result-row">
         <span class="result-label">Test Plan Generation (JSON)</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">Semantic Chunking</span>
         <span class="result-pass">PASS</span>
       </div>
       <div class="result-row">
@@ -424,21 +430,246 @@
         <span class="result-pass">PASS</span>
       </div>
       <div class="result-row">
-        <span class="result-label">Semantic Chunking</span>
+        <span class="result-label">UART: uart_interface.sv check</span>
         <span class="result-pass">PASS</span>
       </div>
       <div class="result-row">
-        <span class="result-label">UVM Interface/Driver/Monitor generation</span>
+        <span class="result-label">UART: uart_sequence_item.sv check</span>
         <span class="result-pass">PASS</span>
       </div>
       <div class="result-row">
-        <span class="result-label">UVM Scoreboard & Coverage Generation</span>
+        <span class="result-label">UART: uart_monitor.sv check</span>
         <span class="result-pass">PASS</span>
       </div>
       <div class="result-row">
-        <span class="result-label">Verilator Compilation Check</span>
+        <span class="result-label">UART: uart_sequence.sv check</span>
         <span class="result-pass">PASS</span>
       </div>
+      <div class="result-row">
+        <span class="result-label">UART: uart_driver.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">UART: uart_scoreboard.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">UART: uart_coverage.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">UART: uart_agent.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">UART: uart_env.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">UART: uart_test_base.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">UART: uart_test_directed.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">UART: uart_top.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">SPI: spi_interface.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">SPI: spi_sequence_item.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">SPI: spi_monitor.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">SPI: spi_sequence.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">SPI: spi_driver.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">SPI: spi_scoreboard.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">SPI: spi_coverage.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">SPI: spi_agent.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">SPI: spi_env.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">SPI: spi_test_base.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">SPI: spi_test_directed.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">SPI: spi_top.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">I2C: i2c_interface.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">I2C: i2c_sequence_item.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">I2C: i2c_monitor.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">I2C: i2c_sequence.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">I2C: i2c_driver.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">I2C: i2c_scoreboard.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">I2C: i2c_coverage.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">I2C: i2c_agent.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">I2C: i2c_env.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">I2C: i2c_test_base.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">I2C: i2c_test_directed.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">I2C: i2c_top.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">AXI_LITE: axi_lite_interface.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">AXI_LITE: axi_lite_sequence_item.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">AXI_LITE: axi_lite_monitor.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">AXI_LITE: axi_lite_sequence.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">AXI_LITE: axi_lite_driver.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">AXI_LITE: axi_lite_scoreboard.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">AXI_LITE: axi_lite_coverage.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">AXI_LITE: axi_lite_agent.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">AXI_LITE: axi_lite_env.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">AXI_LITE: axi_lite_test_base.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">AXI_LITE: axi_lite_test_directed.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">AXI_LITE: axi_lite_top.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">FIFO: fifo_interface.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">FIFO: fifo_sequence_item.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">FIFO: fifo_monitor.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">FIFO: fifo_sequence.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">FIFO: fifo_driver.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">FIFO: fifo_scoreboard.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">FIFO: fifo_coverage.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">FIFO: fifo_agent.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">FIFO: fifo_env.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">FIFO: fifo_test_base.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">FIFO: fifo_test_directed.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <div class="result-row">
+        <span class="result-label">FIFO: fifo_top.sv check</span>
+        <span class="result-pass">PASS</span>
+      </div>
+      <!-- CLIENT_RESULTS_END -->
     </div>
   </div>
 

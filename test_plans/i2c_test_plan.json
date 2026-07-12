@@ -1,7 +1,7 @@
 {
   "design_name": "i2c",
   "version": "1.0",
-  "generated_at": "2026-07-13T02:02:47.655216",
+  "generated_at": "2026-07-13T03:09:38.815430",
   "extraction_method": "heuristic",
   "signals": [
     {
