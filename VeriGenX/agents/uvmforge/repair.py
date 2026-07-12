@@ -21,12 +21,11 @@ class UVMForgeRepair:
     def is_verilator_available(self) -> bool:
         """Checks if verilator command is available in PATH."""
         try:
-            # On Windows, shell=True is needed or check for executable
             subprocess.run(
                 ["verilator", "--version"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                shell=True,
+                shell=False,
                 check=True
             )
             return True
@@ -67,7 +66,7 @@ class UVMForgeRepair:
                 ["verilator", "--lint-only", "-Wall", filepath],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                shell=True,
+                shell=False,
                 text=True
             )
             if result.returncode == 0:

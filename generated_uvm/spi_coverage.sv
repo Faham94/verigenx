@@ -9,13 +9,13 @@ class spi_coverage extends uvm_subscriber #(spi_seq_item);
         
         // FP_001: Reset and initialisation
         // {% llm_fill "FP_001" %}
-        cp_FP_001: coverpoint t.clk;
+        cp_FP_001: coverpoint t.miso;
 // {% endllm_fill %}
         
         
         // FP_002: Chip-select assertion and de-assertion
         // {% llm_fill "FP_002" %}
-        cp_FP_002: coverpoint t.clk;
+        cp_FP_002: coverpoint t.cs_n;
 // {% endllm_fill %}
         
         
@@ -28,8 +28,7 @@ class spi_coverage extends uvm_subscriber #(spi_seq_item);
 
     virtual function void write(spi_seq_item t);
         // {% llm_fill "coverage_sample" %}
-        // Sample auto-derived covergroups
-        // cgroup.sample();
+        spi_cg.sample();
 // {% endllm_fill %}
     endfunction
 

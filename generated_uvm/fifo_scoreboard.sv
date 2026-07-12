@@ -41,8 +41,11 @@ class fifo_scoreboard extends uvm_scoreboard;
         // {% llm_fill "scoreboard_write" %}
         fifo_seq_item expected;
         ref_model.predict(item, expected);
-        // Compare item (actual) against expected
-        `uvm_info("SB", $sformatf("Verified transaction: %s", item.convert2string()), UVM_MEDIUM)
+        if (!item.compare(expected)) begin
+            `uvm_error("SB_MISMATCH", $sformatf("Transaction mismatch! Actual: %s, Expected: %s", item.convert2string(), expected.convert2string()))
+        end else begin
+            `uvm_info("SB_MATCH", $sformatf("Transaction match: %s", item.convert2string()), UVM_MEDIUM)
+        end
 // {% endllm_fill %}
     endfunction
 

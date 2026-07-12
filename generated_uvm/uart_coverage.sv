@@ -9,19 +9,19 @@ class uart_coverage extends uvm_subscriber #(uart_seq_item);
         
         // FP_001: Data transmission functionality
         // {% llm_fill "FP_001" %}
-        cp_FP_001: coverpoint t.clk;
+        cp_FP_001: coverpoint t.tx_data;
 // {% endllm_fill %}
         
         
         // FP_002: Baud rate configuration
         // {% llm_fill "FP_002" %}
-        cp_FP_002: coverpoint t.clk;
+        cp_FP_002: coverpoint t.tx_data;
 // {% endllm_fill %}
         
         
         // FP_003: Reset and initialisation
         // {% llm_fill "FP_003" %}
-        cp_FP_003: coverpoint t.clk;
+        cp_FP_003: coverpoint t.rx_data;
 // {% endllm_fill %}
         
         
@@ -34,8 +34,7 @@ class uart_coverage extends uvm_subscriber #(uart_seq_item);
 
     virtual function void write(uart_seq_item t);
         // {% llm_fill "coverage_sample" %}
-        // Sample auto-derived covergroups
-        // cgroup.sample();
+        uart_cg.sample();
 // {% endllm_fill %}
     endfunction
 

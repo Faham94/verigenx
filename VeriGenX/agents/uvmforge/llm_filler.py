@@ -180,13 +180,74 @@ class LLMFiller:
         elif block_name == "scoreboard_write":
             return f"""        {dut_name}_seq_item expected;
         ref_model.predict(item, expected);
-        // Compare item (actual) against expected
-        `uvm_info("SB", $sformatf("Verified transaction: %s", item.convert2string()), UVM_MEDIUM)"""
+        if (!item.compare(expected)) begin
+            `uvm_error("SB_MISMATCH", $sformatf("Transaction mismatch! Actual: %s, Expected: %s", item.convert2string(), expected.convert2string()))
+        end else begin
+            `uvm_info("SB_MATCH", $sformatf("Transaction match: %s", item.convert2string()), UVM_MEDIUM)
+        end"""
 
         elif block_name == "coverage_sample":
-            return "        // Sample auto-derived covergroups\n        // cgroup.sample();"
+            return f"        {dut_name}_cg.sample();"
 
         elif block_name.startswith("FP_"):
-            return f"        cp_{block_name}: coverpoint t.{signals[0]['name'] if len(signals) > 0 else 'clk'};"
+            # Try to match keywords in description to find relevant signal
+            desc = ""
+            for fp in test_plan.get("functional_points", []):
+                if fp.get("id") == block_name:
+                    desc = fp.get("description", "").lower()
+                    break
+            
+            chosen_sig = None
+            if desc:
+                # Rank signals based on keyword overlap
+                for s in signals:
+                    sname = s["name"].lower()
+                    if sname not in ["clk", "rst_n", "aclk", "aresetn"] and sname in desc:
+                        chosen_sig = s["name"]
+                        break
+            
+            # Fallback 1: match keywords/synonyms
+            if not chosen_sig and desc:
+                term_map = {
+                    "transmit": ["tx", "mosi", "sda"],
+                    "receive": ["rx", "miso", "sda"],
+                    "data": ["data", "sda", "mosi", "miso", "wdata", "rdata"],
+                    "address": ["addr", "awaddr", "araddr"],
+                    "valid": ["valid", "ready"],
+                    "ready": ["ready", "valid"],
+                    "select": ["cs", "cs_n", "sel"],
+                    "enable": ["en", "wr_en", "rd_en"],
+                    "full": ["full"],
+                    "empty": ["empty"],
+                    "reset": ["rst", "reset"],
+                }
+                for term, synonyms in term_map.items():
+                    if term in desc:
+                        for syn in synonyms:
+                            for s in signals:
+                                if syn in s["name"].lower() and s["name"].lower() not in ["clk", "rst_n", "aclk", "aresetn"]:
+                                    chosen_sig = s["name"]
+                                    break
+                            if chosen_sig:
+                                break
+                    if chosen_sig:
+                        break
+            
+            # Fallback 2: cycle through signals
+            if not chosen_sig:
+                filtered_sigs = [s["name"] for s in signals if s["name"].lower() not in ["clk", "rst_n", "aclk", "aresetn"]]
+                if not filtered_sigs:
+                    filtered_sigs = [s["name"] for s in signals]
+                
+                if filtered_sigs:
+                    try:
+                        fp_num = int(block_name.split("_")[-1])
+                    except Exception:
+                        fp_num = 0
+                    chosen_sig = filtered_sigs[fp_num % len(filtered_sigs)]
+                else:
+                    chosen_sig = "clk"
+
+            return f"        cp_{block_name}: coverpoint t.{chosen_sig};"
 
         return "    // Heuristic fill fallback"

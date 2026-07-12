@@ -9,19 +9,19 @@ class fifo_coverage extends uvm_subscriber #(fifo_seq_item);
         
         // FP_001: Reset and initialisation
         // {% llm_fill "FP_001" %}
-        cp_FP_001: coverpoint t.clk;
+        cp_FP_001: coverpoint t.rd_en;
 // {% endllm_fill %}
         
         
         // FP_002: Full-condition boundary behavior
         // {% llm_fill "FP_002" %}
-        cp_FP_002: coverpoint t.clk;
+        cp_FP_002: coverpoint t.full;
 // {% endllm_fill %}
         
         
         // FP_003: Empty-condition boundary behavior
         // {% llm_fill "FP_003" %}
-        cp_FP_003: coverpoint t.clk;
+        cp_FP_003: coverpoint t.empty;
 // {% endllm_fill %}
         
         
@@ -34,8 +34,7 @@ class fifo_coverage extends uvm_subscriber #(fifo_seq_item);
 
     virtual function void write(fifo_seq_item t);
         // {% llm_fill "coverage_sample" %}
-        // Sample auto-derived covergroups
-        // cgroup.sample();
+        fifo_cg.sample();
 // {% endllm_fill %}
     endfunction
 

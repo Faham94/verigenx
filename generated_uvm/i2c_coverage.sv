@@ -9,13 +9,13 @@ class i2c_coverage extends uvm_subscriber #(i2c_seq_item);
         
         // FP_001: Reset and initialisation
         // {% llm_fill "FP_001" %}
-        cp_FP_001: coverpoint t.clk;
+        cp_FP_001: coverpoint t.sda;
 // {% endllm_fill %}
         
         
         // FP_002: Acknowledge/no-acknowledge handling
         // {% llm_fill "FP_002" %}
-        cp_FP_002: coverpoint t.clk;
+        cp_FP_002: coverpoint t.scl;
 // {% endllm_fill %}
         
         
@@ -28,8 +28,7 @@ class i2c_coverage extends uvm_subscriber #(i2c_seq_item);
 
     virtual function void write(i2c_seq_item t);
         // {% llm_fill "coverage_sample" %}
-        // Sample auto-derived covergroups
-        // cgroup.sample();
+        i2c_cg.sample();
 // {% endllm_fill %}
     endfunction
 

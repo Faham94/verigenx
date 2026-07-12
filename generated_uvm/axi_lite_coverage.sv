@@ -9,7 +9,7 @@ class axi_lite_coverage extends uvm_subscriber #(axi_lite_seq_item);
         
         // FP_001: Reset and initialisation
         // {% llm_fill "FP_001" %}
-        cp_FP_001: coverpoint t.aclk;
+        cp_FP_001: coverpoint t.awvalid;
 // {% endllm_fill %}
         
         
@@ -22,8 +22,7 @@ class axi_lite_coverage extends uvm_subscriber #(axi_lite_seq_item);
 
     virtual function void write(axi_lite_seq_item t);
         // {% llm_fill "coverage_sample" %}
-        // Sample auto-derived covergroups
-        // cgroup.sample();
+        axi_lite_cg.sample();
 // {% endllm_fill %}
     endfunction
 
