@@ -2,6 +2,8 @@ class {{ dut_name }}_coverage extends uvm_subscriber #({{ dut_name }}_seq_item);
 
     `uvm_component_utils({{ dut_name }}_coverage)
 
+    {{ dut_name }}_seq_item t;
+
     // Auto-derived covergroups from functional points
     covergroup {{ dut_name }}_cg;
         option.per_instance = 1;
@@ -20,6 +22,7 @@ class {{ dut_name }}_coverage extends uvm_subscriber #({{ dut_name }}_seq_item);
     endfunction
 
     virtual function void write({{ dut_name }}_seq_item t);
+        this.t = t;
         // {% llm_fill "coverage_sample" %}
         // {{ dut_name }}_cg.sample();
         // {% endllm_fill %}

@@ -105,6 +105,13 @@ class LLMFiller:
         """
         signals = test_plan.get("signals", [])
         
+        # Find clock name
+        clk_name = "clk"
+        for s in signals:
+            if s["name"].lower() in ["clk", "clock", "aclk"]:
+                clk_name = s["name"]
+                break
+        
         if block_name == "interface_assertions":
             return "    // TODO: Add SystemVerilog assertions for protocol compliance checking"
             
@@ -141,9 +148,9 @@ class LLMFiller:
                 if "rst" in s["name"].lower() or "reset" in s["name"].lower():
                     rst_name = s["name"]
                     break
-            return f"""        vif.cb.{rst_name} <= 0;
+            return f"""        vif.{rst_name} <= 0;
         #100;
-        vif.cb.{rst_name} <= 1;"""
+        vif.{rst_name} <= 1;"""
 
         elif block_name == "driver_drive_item":
             # Generate code to drive inputs
@@ -152,7 +159,7 @@ class LLMFiller:
                 if s["direction"] == "input" and s["name"] not in ["clk", "rst_n", "aclk", "aresetn"]:
                     drive_stmts.append(f"            vif.cb.{s['name']} <= req.{s['name']};")
             drive_code = "\n".join(drive_stmts)
-            return f"""        @(posedge vif.clk);
+            return f"""        @(posedge vif.{clk_name});
 {drive_code}
         #10;"""
 
@@ -161,11 +168,11 @@ class LLMFiller:
             mon_stmts = []
             for s in signals:
                 if s["name"] not in ["clk", "rst_n", "aclk", "aresetn"]:
-                    mon_stmts.append(f"            tx.{s['name']} = vif.cb.{s['name']};")
+                    mon_stmts.append(f"            tx.{s['name']} = vif.{s['name']};")
             mon_code = "\n".join(mon_stmts)
             return f"""        {dut_name}_seq_item tx;
         forever begin
-            @(posedge vif.clk);
+            @(posedge vif.{clk_name});
             tx = {dut_name}_seq_item::type_id::create("tx");
 {mon_code}
             ap.write(tx);

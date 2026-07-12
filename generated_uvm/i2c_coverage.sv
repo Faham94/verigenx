@@ -2,6 +2,8 @@ class i2c_coverage extends uvm_subscriber #(i2c_seq_item);
 
     `uvm_component_utils(i2c_coverage)
 
+    i2c_seq_item t;
+
     // Auto-derived covergroups from functional points
     covergroup i2c_cg;
         option.per_instance = 1;
@@ -27,6 +29,7 @@ class i2c_coverage extends uvm_subscriber #(i2c_seq_item);
     endfunction
 
     virtual function void write(i2c_seq_item t);
+        this.t = t;
         // {% llm_fill "coverage_sample" %}
         i2c_cg.sample();
 // {% endllm_fill %}

@@ -23,10 +23,10 @@ class spi_monitor extends uvm_monitor;
         forever begin
             @(posedge vif.clk);
             tx = spi_seq_item::type_id::create("tx");
-            tx.mosi = vif.cb.mosi;
-            tx.miso = vif.cb.miso;
-            tx.sclk = vif.cb.sclk;
-            tx.cs_n = vif.cb.cs_n;
+            tx.mosi = vif.mosi;
+            tx.miso = vif.miso;
+            tx.sclk = vif.sclk;
+            tx.cs_n = vif.cs_n;
             ap.write(tx);
         end
 // {% endllm_fill %}

@@ -23,12 +23,12 @@ class fifo_monitor extends uvm_monitor;
         forever begin
             @(posedge vif.clk);
             tx = fifo_seq_item::type_id::create("tx");
-            tx.wr_en = vif.cb.wr_en;
-            tx.rd_en = vif.cb.rd_en;
-            tx.wr_data = vif.cb.wr_data;
-            tx.rd_data = vif.cb.rd_data;
-            tx.full = vif.cb.full;
-            tx.empty = vif.cb.empty;
+            tx.wr_en = vif.wr_en;
+            tx.rd_en = vif.rd_en;
+            tx.wr_data = vif.wr_data;
+            tx.rd_data = vif.rd_data;
+            tx.full = vif.full;
+            tx.empty = vif.empty;
             ap.write(tx);
         end
 // {% endllm_fill %}

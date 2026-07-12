@@ -1,0 +1,332 @@
+{
+    "uart": {
+        "verilator_available": true,
+        "first_attempt_success_rate": 100.0,
+        "files": {
+            "uart_interface.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "uart_sequence_item.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "uart_monitor.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "uart_sequence.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "uart_driver.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "uart_scoreboard.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "uart_coverage.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "uart_agent.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "uart_env.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "uart_test_base.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "uart_test_directed.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "uart_top.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            }
+        }
+    },
+    "spi": {
+        "verilator_available": true,
+        "first_attempt_success_rate": 100.0,
+        "files": {
+            "spi_interface.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "spi_sequence_item.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "spi_monitor.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "spi_sequence.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "spi_driver.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "spi_scoreboard.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "spi_coverage.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "spi_agent.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "spi_env.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "spi_test_base.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "spi_test_directed.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "spi_top.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            }
+        }
+    },
+    "i2c": {
+        "verilator_available": true,
+        "first_attempt_success_rate": 100.0,
+        "files": {
+            "i2c_interface.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "i2c_sequence_item.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "i2c_monitor.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "i2c_sequence.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "i2c_driver.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "i2c_scoreboard.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "i2c_coverage.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "i2c_agent.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "i2c_env.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "i2c_test_base.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "i2c_test_directed.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "i2c_top.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            }
+        }
+    },
+    "axi_lite": {
+        "verilator_available": true,
+        "first_attempt_success_rate": 100.0,
+        "files": {
+            "axi_lite_interface.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "axi_lite_sequence_item.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "axi_lite_monitor.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "axi_lite_sequence.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "axi_lite_driver.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "axi_lite_scoreboard.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "axi_lite_coverage.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "axi_lite_agent.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "axi_lite_env.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "axi_lite_test_base.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "axi_lite_test_directed.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "axi_lite_top.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            }
+        }
+    },
+    "fifo": {
+        "verilator_available": true,
+        "first_attempt_success_rate": 100.0,
+        "files": {
+            "fifo_interface.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "fifo_sequence_item.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "fifo_monitor.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "fifo_sequence.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "fifo_driver.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "fifo_scoreboard.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "fifo_coverage.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "fifo_agent.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "fifo_env.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "fifo_test_base.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "fifo_test_directed.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            },
+            "fifo_top.sv": {
+                "status": "passed",
+                "first_attempt": true,
+                "errors": ""
+            }
+        }
+    }
+}

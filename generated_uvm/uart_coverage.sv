@@ -2,6 +2,8 @@ class uart_coverage extends uvm_subscriber #(uart_seq_item);
 
     `uvm_component_utils(uart_coverage)
 
+    uart_seq_item t;
+
     // Auto-derived covergroups from functional points
     covergroup uart_cg;
         option.per_instance = 1;
@@ -33,6 +35,7 @@ class uart_coverage extends uvm_subscriber #(uart_seq_item);
     endfunction
 
     virtual function void write(uart_seq_item t);
+        this.t = t;
         // {% llm_fill "coverage_sample" %}
         uart_cg.sample();
 // {% endllm_fill %}

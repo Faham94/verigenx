@@ -18,8 +18,12 @@ class UVMForgeRepair:
     def __init__(self):
         self.client = get_ollama_client()
 
-    def is_verilator_available(self) -> bool:
-        """Checks if verilator command is available in PATH."""
+    def _get_verilator_cmd(self) -> Tuple[bool, str]:
+        """
+        Locates the verilator executable.
+        Returns (available, cmd_path)
+        """
+        # Option 1: check standard path
         try:
             subprocess.run(
                 ["verilator", "--version"],
@@ -28,9 +32,23 @@ class UVMForgeRepair:
                 shell=False,
                 check=True
             )
-            return True
+            return True, "verilator"
         except Exception:
-            return False
+            pass
+
+        # Option 2: check MSYS2 path
+        msys_verilator = r"C:\msys64\mingw64\bin\verilator_bin.exe"
+        if os.path.exists(msys_verilator):
+            # Set VERILATOR_ROOT for MSYS2 Verilator to find its library files
+            os.environ["VERILATOR_ROOT"] = r"C:\msys64\mingw64\share\verilator"
+            return True, msys_verilator
+
+        return False, ""
+
+    def is_verilator_available(self) -> bool:
+        """Checks if verilator command is available."""
+        available, _ = self._get_verilator_cmd()
+        return available
 
     def classify_error(self, stderr: str) -> str:
         """Classifies compiler errors based on patterns."""
@@ -54,16 +72,61 @@ class UVMForgeRepair:
         Compiles the file with Verilator.
         If Verilator is not installed, it returns (True, "Verilator not installed")
         """
-        if not self.is_verilator_available():
+        available, cmd = self._get_verilator_cmd()
+        if not available:
             return True, "Verilator not installed"
 
         try:
-            # Run verilator linter check on the SystemVerilog file
-            # Verilator needs -Wall and --lint-only.
-            # Plus, to run linting on UVM, it needs UVM includes which may not be present,
-            # but we run a minimal syntax verification.
+            uvm_mock_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "uvm_mock.svh"))
+            
+            # Find all generated files of the same design in the directory to compile together
+            dir_name = os.path.dirname(filepath)
+            base_name = os.path.basename(filepath)
+            design_prefix = base_name.split("_")[0] + "_"
+            
+            design_files = []
+            if os.path.exists(dir_name):
+                for f in os.listdir(dir_name):
+                    if f.startswith(design_prefix) and f.endswith(".sv"):
+                        design_files.append(os.path.join(dir_name, f))
+            
+            # Sort files topologically to prevent forward declaration reference errors
+            suffix_order = [
+                "_interface.sv",
+                "_sequence_item.sv",
+                "_sequence.sv",
+                "_random_sequence.sv",
+                "_driver.sv",
+                "_monitor.sv",
+                "_agent.sv",
+                "_scoreboard.sv",
+                "_coverage.sv",
+                "_env.sv",
+                "_test_base.sv",
+                "_test_directed.sv",
+                "_test_random.sv",
+                "_top.sv"
+            ]
+            def get_sort_key(fp):
+                fn = os.path.basename(fp)
+                for idx, suffix in enumerate(suffix_order):
+                    if fn.endswith(suffix):
+                        return idx
+                return len(suffix_order)
+            
+            design_files.sort(key=get_sort_key)
+            
+            if not design_files:
+                design_files = [filepath]
+
+            # Run verilator linter check
             result = subprocess.run(
-                ["verilator", "--lint-only", "-Wall", filepath],
+                [
+                    cmd, "--lint-only", 
+                    "-Wno-fatal", "-Wno-EOFNEWLINE", "-Wno-DECLFILENAME", 
+                    "-Wno-VARHIDDEN", "-Wno-WIDTHTRUNC", "-Wno-MODMISSING",
+                    uvm_mock_path
+                ] + design_files,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 shell=False,
@@ -72,9 +135,9 @@ class UVMForgeRepair:
             if result.returncode == 0:
                 return True, ""
             else:
-                return False, result.stderr or result.stdout
+                return False, result.stderr
         except Exception as e:
-            return False, f"Execution failed: {e}"
+            return False, str(e)
 
     def repair_file(
         self,

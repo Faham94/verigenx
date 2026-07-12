@@ -17,9 +17,9 @@ class fifo_driver extends uvm_driver #(fifo_seq_item);
 
     virtual task run_phase(uvm_phase phase);
         // {% llm_fill "driver_reset" %}
-        vif.cb.rst_n <= 0;
+        vif.rst_n <= 0;
         #100;
-        vif.cb.rst_n <= 1;
+        vif.rst_n <= 1;
 // {% endllm_fill %}
 
         forever begin

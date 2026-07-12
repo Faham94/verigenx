@@ -17,15 +17,15 @@ class axi_lite_driver extends uvm_driver #(axi_lite_seq_item);
 
     virtual task run_phase(uvm_phase phase);
         // {% llm_fill "driver_reset" %}
-        vif.cb.aresetn <= 0;
+        vif.aresetn <= 0;
         #100;
-        vif.cb.aresetn <= 1;
+        vif.aresetn <= 1;
 // {% endllm_fill %}
 
         forever begin
             seq_item_port.get_next_item(req);
             // {% llm_fill "driver_drive_item" %}
-        @(posedge vif.clk);
+        @(posedge vif.aclk);
             vif.cb.awaddr <= req.awaddr;
             vif.cb.awvalid <= req.awvalid;
             vif.cb.wdata <= req.wdata;

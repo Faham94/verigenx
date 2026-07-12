@@ -2,6 +2,8 @@ class spi_coverage extends uvm_subscriber #(spi_seq_item);
 
     `uvm_component_utils(spi_coverage)
 
+    spi_seq_item t;
+
     // Auto-derived covergroups from functional points
     covergroup spi_cg;
         option.per_instance = 1;
@@ -27,6 +29,7 @@ class spi_coverage extends uvm_subscriber #(spi_seq_item);
     endfunction
 
     virtual function void write(spi_seq_item t);
+        this.t = t;
         // {% llm_fill "coverage_sample" %}
         spi_cg.sample();
 // {% endllm_fill %}

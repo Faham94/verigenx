@@ -2,6 +2,8 @@ class axi_lite_coverage extends uvm_subscriber #(axi_lite_seq_item);
 
     `uvm_component_utils(axi_lite_coverage)
 
+    axi_lite_seq_item t;
+
     // Auto-derived covergroups from functional points
     covergroup axi_lite_cg;
         option.per_instance = 1;
@@ -21,6 +23,7 @@ class axi_lite_coverage extends uvm_subscriber #(axi_lite_seq_item);
     endfunction
 
     virtual function void write(axi_lite_seq_item t);
+        this.t = t;
         // {% llm_fill "coverage_sample" %}
         axi_lite_cg.sample();
 // {% endllm_fill %}

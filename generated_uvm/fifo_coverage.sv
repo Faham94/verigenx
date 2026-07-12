@@ -2,6 +2,8 @@ class fifo_coverage extends uvm_subscriber #(fifo_seq_item);
 
     `uvm_component_utils(fifo_coverage)
 
+    fifo_seq_item t;
+
     // Auto-derived covergroups from functional points
     covergroup fifo_cg;
         option.per_instance = 1;
@@ -33,6 +35,7 @@ class fifo_coverage extends uvm_subscriber #(fifo_seq_item);
     endfunction
 
     virtual function void write(fifo_seq_item t);
+        this.t = t;
         // {% llm_fill "coverage_sample" %}
         fifo_cg.sample();
 // {% endllm_fill %}

@@ -3,6 +3,7 @@ UVMForge: Generator Orchestrator
 Loads templates, renders static structures, triggers LLM filler, and runs repair loops.
 """
 import os
+import json
 from typing import Dict, Any, List, Tuple
 
 from jinja2 import Environment, FileSystemLoader, nodes
@@ -101,6 +102,7 @@ class UVMForgeGenerator:
         # Keep track of compile metrics
         total_compiled = 0
         first_attempt_clean = 0
+        compile_results = {}
         
         # Mapping from DAG component names to template files
         comp_to_template = {
@@ -166,19 +168,67 @@ class UVMForgeGenerator:
             # Run compile checks and repair loop
             if self.repair_helper.is_verilator_available():
                 total_compiled += 1
-                clean, _ = self.repair_helper.compile_file(filepath)
+                clean, err_msg = self.repair_helper.compile_file(filepath)
+                first_attempt = clean
                 if clean:
                     first_attempt_clean += 1
+                    status = "passed"
+                    errors = ""
+                else:
+                    status = "failed"
+                    errors = err_msg
+                    # Run repair loop if compile failed
+                    self.repair_helper.repair_file(filepath, comp, test_plan)
+                    # Check if compile is fixed after repair
+                    repaired_clean, repaired_err = self.repair_helper.compile_file(filepath)
+                    if repaired_clean:
+                        status = "passed"
+                        errors = ""
+                    else:
+                        errors = repaired_err
                 
-                # Run repair loop if compile failed
-                self.repair_helper.repair_file(filepath, comp, test_plan)
+                compile_results[filename] = {
+                    "status": status,
+                    "first_attempt": first_attempt,
+                    "errors": errors
+                }
+            else:
+                compile_results[filename] = {
+                    "status": "not-tested",
+                    "first_attempt": False,
+                    "errors": ""
+                }
 
         # Log compile metrics if compiling was active
         if total_compiled > 0:
             rate = (first_attempt_clean / total_compiled) * 100
             print(f"\n[UVMForge] Compile Success Rate on first attempt: {rate:.1f}% ({first_attempt_clean}/{total_compiled})")
         else:
+            rate = 0.0
             print("\n[UVMForge] Verilator not available. Compilation checks were skipped.")
+
+        # Save compile report JSON
+        report_path = os.path.join(GENERATED_UVM_DIR, "compile_report.json")
+        existing_report = {}
+        if os.path.exists(report_path):
+            try:
+                with open(report_path, "r", encoding="utf-8") as f:
+                    existing_report = json.load(f)
+            except Exception:
+                pass
+        
+        verilator_avail = self.repair_helper.is_verilator_available()
+        existing_report[dut_name] = {
+            "verilator_available": verilator_avail,
+            "first_attempt_success_rate": rate,
+            "files": compile_results
+        }
+        
+        try:
+            with open(report_path, "w", encoding="utf-8") as f:
+                json.dump(existing_report, f, indent=4)
+        except Exception as e:
+            print(f"  [Warning] Failed to write compile report: {e}")
 
         # Update State Bus
         self.state_bus.update_state(generated_files=generated_filepaths)

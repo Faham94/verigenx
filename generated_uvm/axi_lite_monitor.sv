@@ -21,17 +21,17 @@ class axi_lite_monitor extends uvm_monitor;
         // {% llm_fill "monitor_run" %}
         axi_lite_seq_item tx;
         forever begin
-            @(posedge vif.clk);
+            @(posedge vif.aclk);
             tx = axi_lite_seq_item::type_id::create("tx");
-            tx.awaddr = vif.cb.awaddr;
-            tx.awvalid = vif.cb.awvalid;
-            tx.awready = vif.cb.awready;
-            tx.wdata = vif.cb.wdata;
-            tx.wvalid = vif.cb.wvalid;
-            tx.wready = vif.cb.wready;
-            tx.bresp = vif.cb.bresp;
-            tx.bvalid = vif.cb.bvalid;
-            tx.bready = vif.cb.bready;
+            tx.awaddr = vif.awaddr;
+            tx.awvalid = vif.awvalid;
+            tx.awready = vif.awready;
+            tx.wdata = vif.wdata;
+            tx.wvalid = vif.wvalid;
+            tx.wready = vif.wready;
+            tx.bresp = vif.bresp;
+            tx.bvalid = vif.bvalid;
+            tx.bready = vif.bready;
             ap.write(tx);
         end
 // {% endllm_fill %}
