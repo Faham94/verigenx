@@ -1,0 +1,43 @@
+// Reference model base class for injection
+class {{ dut_name }}_ref_model extends uvm_object;
+    `uvm_object_utils({{ dut_name }}_ref_model)
+
+    function new(string name = "{{ dut_name }}_ref_model");
+        super.new(name);
+    endfunction
+
+    // {% llm_fill "ref_model_predict" %}
+    // virtual function void predict({{ dut_name }}_seq_item item, ref {{ dut_name }}_seq_item expected);
+    // endfunction
+    // {% endllm_fill %}
+endclass
+
+
+class {{ dut_name }}_scoreboard extends uvm_scoreboard;
+
+    uvm_analysis_imp #({{ dut_name }}_seq_item, {{ dut_name }}_scoreboard) item_export;
+    {{ dut_name }}_ref_model ref_model;
+
+    `uvm_component_utils({{ dut_name }}_scoreboard)
+
+    function new(string name = "{{ dut_name }}_scoreboard", uvm_component parent = null);
+        super.new(name, parent);
+    endfunction
+
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        item_export = new("item_export", this);
+        
+        // Configuration DB retrieval of injectable reference model
+        if (!uvm_config_db#({{ dut_name }}_ref_model)::get(this, "", "ref_model", ref_model)) begin
+            `uvm_info("SB", "No reference model injected. Creating default reference model.", UVM_MEDIUM)
+            ref_model = {{ dut_name }}_ref_model::type_id::create("ref_model");
+        end
+    endfunction
+
+    virtual function void write({{ dut_name }}_seq_item item);
+        // {% llm_fill "scoreboard_write" %}
+        // {% endllm_fill %}
+    endfunction
+
+endclass

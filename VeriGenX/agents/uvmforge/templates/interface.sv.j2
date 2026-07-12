@@ -1,0 +1,33 @@
+interface {{ dut_name }}_if (
+    input logic {{ clk_name }},
+    input logic {{ rst_name }}
+);
+
+    // Signals declaration
+    {% for s in signals %}
+    {% if s.name != clk_name and s.name != rst_name %}
+    logic {{ "[" ~ (s.width-1) ~ ":0]" if s.width > 1 else "" }} {{ s.name }};
+    {% endif %}
+    {% endfor %}
+
+    // Clocking block for testbench synchronization
+    clocking cb @(posedge {{ clk_name }});
+        default input #1ns output #1ns;
+        {% for s in signals %}
+        {% if s.name != clk_name and s.name != rst_name %}
+        {{ "output" if s.direction == "input" else "input" }} {{ s.name }};
+        {% endif %}
+        {% endfor %}
+    endclocking
+
+    // TB modport
+    modport tb (
+        clocking cb,
+        input {{ clk_name }},
+        input {{ rst_name }}
+    );
+
+    // {% llm_fill "interface_assertions" %}
+    // {% endllm_fill %}
+
+endinterface

@@ -1,11 +1,16 @@
 {
   "design_name": "spi",
   "version": "1.0",
-  "generated_at": "2026-07-11T23:21:09.878049",
+  "generated_at": "2026-07-12T22:01:13.579935",
   "extraction_method": "heuristic",
   "signals": [
     {
       "name": "clk",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "rst_n",
       "width": 1,
       "direction": "input"
     },
@@ -26,26 +31,6 @@
     },
     {
       "name": "cs_n",
-      "width": 1,
-      "direction": "output"
-    },
-    {
-      "name": "clock",
-      "width": 1,
-      "direction": "input"
-    },
-    {
-      "name": "master",
-      "width": 1,
-      "direction": "input"
-    },
-    {
-      "name": "serial",
-      "width": 1,
-      "direction": "output"
-    },
-    {
-      "name": "chip",
       "width": 1,
       "direction": "output"
     }
@@ -83,8 +68,12 @@
   },
   "functional_points": [
     {
-      "id": "FP_005",
+      "id": "FP_001",
       "description": "Reset and initialisation"
+    },
+    {
+      "id": "FP_002",
+      "description": "Chip-select assertion and de-assertion"
     }
   ],
   "protocol_handshake_rules": [
@@ -97,5 +86,5 @@
     "Poll spi_status until transfer is complete"
   ],
   "source_file": "spi_spec.txt",
-  "embedded_chunks": 0
+  "embedded_chunks": 6
 }

@@ -1,11 +1,16 @@
 {
   "design_name": "uart",
   "version": "1.0",
-  "generated_at": "2026-07-11T23:21:05.781853",
+  "generated_at": "2026-07-12T22:01:13.443443",
   "extraction_method": "heuristic",
   "signals": [
     {
       "name": "clk",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "rst_n",
       "width": 1,
       "direction": "input"
     },
@@ -17,21 +22,6 @@
     {
       "name": "rx_data",
       "width": 8,
-      "direction": "output"
-    },
-    {
-      "name": "clock",
-      "width": 1,
-      "direction": "input"
-    },
-    {
-      "name": "transmit",
-      "width": 1,
-      "direction": "input"
-    },
-    {
-      "name": "received",
-      "width": 1,
       "direction": "output"
     }
   ],
@@ -66,11 +56,11 @@
       "description": "Data transmission functionality"
     },
     {
-      "id": "FP_003",
+      "id": "FP_002",
       "description": "Baud rate configuration"
     },
     {
-      "id": "FP_005",
+      "id": "FP_003",
       "description": "Reset and initialisation"
     }
   ],
@@ -83,5 +73,5 @@
     "Configure character length, parity, and stop bits in control register"
   ],
   "source_file": "uart_spec.txt",
-  "embedded_chunks": 0
+  "embedded_chunks": 6
 }

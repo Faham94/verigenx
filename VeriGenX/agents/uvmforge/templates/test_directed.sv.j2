@@ -1,0 +1,22 @@
+class {{ dut_name }}_test_directed extends {{ dut_name }}_test_base;
+
+    `uvm_component_utils({{ dut_name }}_test_directed)
+
+    function new(string name = "{{ dut_name }}_test_directed", uvm_component parent = null);
+        super.new(name, parent);
+    endfunction
+
+    virtual task run_phase(uvm_phase phase);
+        {{ dut_name }}_sequence seq;
+        phase.raise_objection(this);
+        
+        seq = {{ dut_name }}_sequence::type_id::create("seq");
+        
+        // {% llm_fill "test_directed_run" %}
+        seq.start(env.agent.sequencer);
+        // {% endllm_fill %}
+        
+        phase.drop_objection(this);
+    endtask
+
+endclass

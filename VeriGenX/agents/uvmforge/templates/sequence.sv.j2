@@ -1,0 +1,14 @@
+class {{ dut_name }}_sequence extends uvm_sequence #({{ dut_name }}_seq_item);
+
+    `uvm_object_utils({{ dut_name }}_sequence)
+
+    function new(string name = "{{ dut_name }}_sequence");
+        super.new(name);
+    endfunction
+
+    virtual task body();
+        // {% llm_fill "sequence_body" %}
+        // {% endllm_fill %}
+    endtask
+
+endclass

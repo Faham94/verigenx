@@ -1,0 +1,21 @@
+class {{ dut_name }}_seq_item extends uvm_sequence_item;
+
+    // {% llm_fill "transaction_fields" %}
+    // rand bit [7:0] data;
+    // {% endllm_fill %}
+
+    `uvm_object_utils_begin({{ dut_name }}_seq_item)
+        // {% llm_fill "field_macros" %}
+        // `uvm_field_int(data, UVM_ALL_ON)
+        // {% endllm_fill %}
+    `uvm_object_utils_end
+
+    function new(string name = "{{ dut_name }}_seq_item");
+        super.new(name);
+    endfunction
+
+    // {% llm_fill "constraints" %}
+    // constraint c_data { data inside {[0:255]}; }
+    // {% endllm_fill %}
+
+endclass

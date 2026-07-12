@@ -45,6 +45,9 @@ class Orchestrator:
             print("\n[Phase 2] ArchWeaver — Dependency Graph Engine")
             self._run_archweaver()
 
+            print("\n[Phase 3] UVMForge — UVM Code Generator")
+            self._run_uvmforge()
+
             elapsed = time.time() - self.start_time
             print("\n" + "=" * 60)
             print(f"PIPELINE COMPLETE in {elapsed:.2f}s")
@@ -146,6 +149,24 @@ class Orchestrator:
         dot_file = resolver.export_dot(dag, "dag.dot")
 
         print(f"  ArchWeaver complete — DAG saved to {dot_file}")
+
+    # ------------------------------------------------------------------ #
+    #  Phase 3 — UVMForge                                                  #
+    # ------------------------------------------------------------------ #
+
+    def _run_uvmforge(self) -> None:
+        state_plan = self.state.get_state().test_plan
+        state_dag  = self.state.get_state().dependency_graph
+
+        if not state_plan or not state_dag:
+            print("  [Warning] Missing test plan or dependency graph in state. Cannot run UVMForge.")
+            return
+
+        print("  Generating UVM testbench components topologically...")
+        from VeriGenX.agents.uvmforge.generator import UVMForgeGenerator
+        generator = UVMForgeGenerator()
+        generated_files = generator.generate_all(state_plan, state_dag)
+        print(f"  UVMForge complete — Generated {len(generated_files)} SystemVerilog files")
 
     # ------------------------------------------------------------------ #
     #  ArchWeaver-only entry (for testing / standalone use)               #

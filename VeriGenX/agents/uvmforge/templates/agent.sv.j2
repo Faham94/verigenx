@@ -1,0 +1,31 @@
+class {{ dut_name }}_agent extends uvm_agent;
+
+    uvm_sequencer #({{ dut_name }}_seq_item) sequencer;
+    {{ dut_name }}_driver driver;
+    {{ dut_name }}_monitor monitor;
+
+    `uvm_component_utils({{ dut_name }}_agent)
+
+    function new(string name = "{{ dut_name }}_agent", uvm_component parent = null);
+        super.new(name, parent);
+    endfunction
+
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        
+        monitor = {{ dut_name }}_monitor::type_id::create("monitor", this);
+        
+        if (get_is_active() == UVM_ACTIVE) begin
+            sequencer = uvm_sequencer#({{ dut_name }}_seq_item)::type_id::create("sequencer", this);
+            driver = {{ dut_name }}_driver::type_id::create("driver", this);
+        end
+    endfunction
+
+    virtual function void connect_phase(uvm_phase phase);
+        super.connect_phase(phase);
+        if (get_is_active() == UVM_ACTIVE) begin
+            driver.seq_item_port.connect(sequencer.seq_item_export);
+        end
+    endfunction
+
+endclass

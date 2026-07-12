@@ -1,0 +1,49 @@
+// Reference model base class for injection
+class uart_ref_model extends uvm_object;
+    `uvm_object_utils(uart_ref_model)
+
+    function new(string name = "uart_ref_model");
+        super.new(name);
+    endfunction
+
+    // {% llm_fill "ref_model_predict" %}
+    virtual function void predict(uart_seq_item item, ref uart_seq_item expected);
+        expected = uart_seq_item::type_id::create("expected");
+        // Predict next expected outputs based on inputs
+    endfunction
+// {% endllm_fill %}
+endclass
+
+
+class uart_scoreboard extends uvm_scoreboard;
+
+    uvm_analysis_imp #(uart_seq_item, uart_scoreboard) item_export;
+    uart_ref_model ref_model;
+
+    `uvm_component_utils(uart_scoreboard)
+
+    function new(string name = "uart_scoreboard", uvm_component parent = null);
+        super.new(name, parent);
+    endfunction
+
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        item_export = new("item_export", this);
+        
+        // Configuration DB retrieval of injectable reference model
+        if (!uvm_config_db#(uart_ref_model)::get(this, "", "ref_model", ref_model)) begin
+            `uvm_info("SB", "No reference model injected. Creating default reference model.", UVM_MEDIUM)
+            ref_model = uart_ref_model::type_id::create("ref_model");
+        end
+    endfunction
+
+    virtual function void write(uart_seq_item item);
+        // {% llm_fill "scoreboard_write" %}
+        uart_seq_item expected;
+        ref_model.predict(item, expected);
+        // Compare item (actual) against expected
+        `uvm_info("SB", $sformatf("Verified transaction: %s", item.convert2string()), UVM_MEDIUM)
+// {% endllm_fill %}
+    endfunction
+
+endclass

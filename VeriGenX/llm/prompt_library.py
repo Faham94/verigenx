@@ -108,6 +108,38 @@ _PROMPTS: Dict[str, str] = {
         "Provide a single, concrete resolution suggestion in one or two sentences.\n"
         "Be specific about what to rename or restructure."
     ),
+
+    "uvmforge_placeholder_fill": (
+        "You are an expert RTL verification engineer specializing in UVM 1.2.\n"
+        "We are generating UVM code for the DUT '{dut_name}' with the following design test plan details:\n"
+        "{test_plan_context}\n\n"
+        "You need to generate the SystemVerilog code for the placeholder block '{block_name}' in the component '{component_name}'.\n"
+        "The surrounding code is:\n"
+        "```systemverilog\n"
+        "{code_context}\n"
+        "```\n\n"
+        "Guidelines:\n"
+        "1. Write clean, synthesizable-by-Verilator SystemVerilog/UVM code.\n"
+        "2. Do NOT write class shells, package imports, or factory macros. Only write the code to go inside the placeholder block.\n"
+        "3. Respect protocol handshake rules and register mappings if applicable.\n"
+        "4. Return ONLY the raw SystemVerilog code. No markdown fences, no explanation."
+    ),
+
+    "uvmforge_repair_fix": (
+        "You are an expert RTL verification engineer.\n"
+        "A compilation error was detected in the generated UVM file '{filename}' for component '{component_name}'.\n"
+        "Error Type: {error_type}\n"
+        "Compiler Output:\n"
+        "```\n"
+        "{compiler_output}\n"
+        "```\n\n"
+        "Current File Content:\n"
+        "```systemverilog\n"
+        "{file_content}\n"
+        "```\n\n"
+        "Generate the corrected, complete SystemVerilog code for this file. Ensure it is fully compliant with UVM 1.2 and compiles cleanly on Verilator 5.x.\n"
+        "Return ONLY the complete raw SystemVerilog file content. No markdown fences, no explanations."
+    ),
 }
 
 

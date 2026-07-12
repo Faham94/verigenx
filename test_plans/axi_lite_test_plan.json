@@ -1,11 +1,16 @@
 {
   "design_name": "axi_lite",
   "version": "1.0",
-  "generated_at": "2026-07-11T23:21:18.128611",
+  "generated_at": "2026-07-12T22:01:13.160411",
   "extraction_method": "heuristic",
   "signals": [
     {
       "name": "aclk",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "aresetn",
       "width": 1,
       "direction": "input"
     },
@@ -53,16 +58,6 @@
       "name": "bready",
       "width": 1,
       "direction": "input"
-    },
-    {
-      "name": "clock",
-      "width": 1,
-      "direction": "input"
-    },
-    {
-      "name": "write",
-      "width": 1,
-      "direction": "input"
     }
   ],
   "fsm_states": [
@@ -87,7 +82,7 @@
   "timing_constraints": {},
   "functional_points": [
     {
-      "id": "FP_005",
+      "id": "FP_001",
       "description": "Reset and initialisation"
     }
   ],
@@ -103,5 +98,5 @@
     "Read status_reg to verify completion"
   ],
   "source_file": "axi_lite_spec.txt",
-  "embedded_chunks": 0
+  "embedded_chunks": 6
 }

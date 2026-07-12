@@ -16,6 +16,9 @@ DEEPSEEK_MODEL     = "deepseek-coder-v2:16b"
 EMBEDDING_MODEL    = "nomic-embed-text"
 CHROMADB_PATH      = os.path.join(BASE_DIR, "chromadb_store")
 
+UVM_CODEGEN_MODEL  = "deepseek-coder-v2:16b"
+REPAIR_MODEL       = "qwen2.5-coder:7b"
+
 # LLM generation settings
 LLM_TEMPERATURE    = 0.3
 LLM_MAX_TOKENS     = 4096

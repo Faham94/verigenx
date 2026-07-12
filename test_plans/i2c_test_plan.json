@@ -1,11 +1,16 @@
 {
   "design_name": "i2c",
   "version": "1.0",
-  "generated_at": "2026-07-11T23:21:13.994815",
+  "generated_at": "2026-07-12T22:01:13.724618",
   "extraction_method": "heuristic",
   "signals": [
     {
       "name": "clk",
+      "width": 1,
+      "direction": "input"
+    },
+    {
+      "name": "rst_n",
       "width": 1,
       "direction": "input"
     },
@@ -16,16 +21,6 @@
     },
     {
       "name": "sda",
-      "width": 1,
-      "direction": "inout"
-    },
-    {
-      "name": "clock",
-      "width": 1,
-      "direction": "input"
-    },
-    {
-      "name": "serial",
       "width": 1,
       "direction": "inout"
     }
@@ -63,8 +58,12 @@
   "timing_constraints": {},
   "functional_points": [
     {
-      "id": "FP_005",
+      "id": "FP_001",
       "description": "Reset and initialisation"
+    },
+    {
+      "id": "FP_002",
+      "description": "Acknowledge/no-acknowledge handling"
     }
   ],
   "protocol_handshake_rules": [
@@ -76,5 +75,5 @@
     "Poll i2c_status for transfer complete or arbitration loss"
   ],
   "source_file": "i2c_spec.txt",
-  "embedded_chunks": 0
+  "embedded_chunks": 6
 }

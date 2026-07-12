@@ -1,0 +1,25 @@
+class {{ dut_name }}_monitor extends uvm_monitor;
+
+    virtual {{ dut_name }}_if vif;
+    uvm_analysis_port #({{ dut_name }}_seq_item) ap;
+
+    `uvm_component_utils({{ dut_name }}_monitor)
+
+    function new(string name = "{{ dut_name }}_monitor", uvm_component parent = null);
+        super.new(name, parent);
+    endfunction
+
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        ap = new("ap", this);
+        if (!uvm_config_db#(virtual {{ dut_name }}_if)::get(this, "", "vif", vif)) begin
+            `uvm_fatal("MON", "Failed to get virtual interface from config DB")
+        end
+    endfunction
+
+    virtual task run_phase(uvm_phase phase);
+        // {% llm_fill "monitor_run" %}
+        // {% endllm_fill %}
+    endtask
+
+endclass

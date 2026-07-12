@@ -1,0 +1,45 @@
+module top;
+
+    // Clock and Reset Generation
+    logic clk;
+    logic rst_n;
+
+    // Clock generation
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+
+    // Reset generation
+    initial begin
+        rst_n = 0;
+        #20 rst_n = 1;
+    end
+
+    // Interface instantiation
+    {{ dut_name }}_if iface (
+        .{{ clk_name }}(clk),
+        .{{ rst_name }}(rst_n)
+    );
+
+    // DUT instantiation
+    {{ dut_name }} dut (
+        .{{ clk_name }}(clk),
+        .{{ rst_name }}(rst_n)
+        {% for s in signals %}
+        {% if s.name != clk_name and s.name != rst_name %}
+        , .{{ s.name }}(iface.{{ s.name }})
+        {% endif %}
+        {% endfor %}
+    );
+
+    // Test run and interface configuration
+    initial begin
+        uvm_config_db#(virtual {{ dut_name }}_if)::set(null, "uvm_test_top*", "vif", iface);
+        run_test();
+    end
+
+    // {% llm_fill "top_extra" %}
+    // {% endllm_fill %}
+
+endmodule
