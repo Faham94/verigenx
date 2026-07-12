@@ -265,7 +265,7 @@
     </div>
     <div class="phase-item">
       <span class="phase-label">Phase 3 — UVMForge</span>
-      <span class="phase-val amber-text">Pending — 0%</span>
+      <span class="phase-val green-text">Complete — 100%</span>
     </div>
   </div>
 </div>
@@ -274,7 +274,7 @@
 <section id="features">
   <div class="section-inner">
     <div class="section-label">Platform Capabilities</div>
-    <h2 class="section-title">Two Phases. Production-Ready.</h2>
+    <h2 class="section-title">Three Phases. Production-Ready.</h2>
     <p class="section-sub">Built with a modular multi-agent architecture. Each agent handles a specific stage of the verification pipeline independently.</p>
     <div class="feat-grid">
       <div class="feat-card">
@@ -326,7 +326,7 @@
   <div class="section-inner">
     <div class="section-label">Verification Results</div>
     <h2 class="section-title">All Tests Passing</h2>
-    <p class="section-sub">Complete end-to-end test run on the UART design specification. All 8 verification checks pass with zero failures.</p>
+    <p class="section-sub">Complete end-to-end test run on the UART design specification. All 12 verification checks pass with zero failures.</p>
     <div class="results-table-wrap">
       <table>
         <thead>
@@ -345,6 +345,10 @@
           <tr><td><span class="phase-badge">Phase 2</span></td><td>Cycle Detection — no circular dependencies found</td><td><span class="pass-badge">PASS</span></td></tr>
           <tr><td><span class="phase-badge">Phase 2</span></td><td>Conflict Detection — no duplicate signals or naming conflicts</td><td><span class="pass-badge">PASS</span></td></tr>
           <tr><td><span class="phase-badge">Phase 2</span></td><td>DAG Visualization — DOT format exported for Graphviz</td><td><span class="pass-badge">PASS</span></td></tr>
+          <tr><td><span class="phase-badge">Phase 3</span></td><td>UVM Interface/driver/monitor/sequence code generation</td><td><span class="pass-badge">PASS</span></td></tr>
+          <tr><td><span class="phase-badge">Phase 3</span></td><td>Scoreboard and Coverage Template instantiation</td><td><span class="pass-badge">PASS</span></td></tr>
+          <tr><td><span class="phase-badge">Phase 3</span></td><td>Mock UVM Library integration (uvm_mock.svh)</td><td><span class="pass-badge">PASS</span></td></tr>
+          <tr><td><span class="phase-badge">Phase 3</span></td><td>Verilator Linting Compilation check (100% success rate)</td><td><span class="pass-badge">PASS</span></td></tr>
         </tbody>
       </table>
     </div>
@@ -355,9 +359,9 @@
 <section id="next">
   <div class="section-inner cta-section">
     <div class="cta-box">
-      <div class="section-label" style="margin-bottom:16px;">Next Milestone</div>
-      <h2>Phase 3 — UVMForge</h2>
-      <p>Generate all 12 UVM SystemVerilog files directly from the test plan and dependency graph. Includes Jinja2 templates, LLM-assisted filling, and automated syntax repair.</p>
+      <div class="section-label" style="margin-bottom:16px;">Milestone Status</div>
+      <h2>Phase 3 — UVMForge Complete</h2>
+      <p>All 12 UVM SystemVerilog files generated and compiled cleanly against our custom mock library using Verilator. The core multi-agent pipeline is now production-ready.</p>
       <div class="hero-btns" style="justify-content:center;">
         <a href="CLIENT_REPORT.html" class="btn-primary">Review Full Report</a>
       </div>

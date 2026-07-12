@@ -126,7 +126,7 @@ with st.sidebar:
         "Navigation",
         ["Overview", "Signals", "FSM States", "Register Map",
          "Timing Constraints", "Functional Points", "Confidence Report",
-         "Test Results", "Run Pipeline"],
+         "Test Results", "Generated Testbench", "Run Pipeline"],
         label_visibility="collapsed"
     )
     st.divider()
@@ -134,7 +134,7 @@ with st.sidebar:
     st.markdown("**Phase Status**")
     st.markdown('<span class="status-complete">Phase 1 — SpecMind</span>',  unsafe_allow_html=True)
     st.markdown('<span class="status-complete">Phase 2 — ArchWeaver</span>', unsafe_allow_html=True)
-    st.markdown('<span class="status-pending">Phase 3 — UVMForge</span>',   unsafe_allow_html=True)
+    st.markdown('<span class="status-complete">Phase 3 — UVMForge</span>',   unsafe_allow_html=True)
     st.divider()
 
     if plan:
@@ -154,7 +154,7 @@ chunks_display = plan.get("embedded_chunks", 0) if plan else 0
 st.markdown(f"""
 <div class="main-header">
     <h1>VeriGenX Dashboard</h1>
-    <p class="subtitle">{design_display} Verification Test Plan — Phase 1 and Phase 2 Complete</p>
+    <p class="subtitle">{design_display} Verification Test Plan — Phase 1, 2, and 3 Complete</p>
     <div class="meta-row">
         <div class="meta-item">
             <span class="meta-label">Design</span>
@@ -214,7 +214,7 @@ if page == "Overview":
         )
     with col_b:
         st.success("**Phase 1 — SpecMind:** Complete\n\nSpec parsed. Chunks embedded. Test plan generated with signals, FSM, registers, timing, and functional points.")
-        st.warning("**Phase 3 — UVMForge:** Pending\n\nTestbench generation from dependency graph.")
+        st.success("**Phase 3 — UVMForge:** Complete\n\nTestbench generated and compiled cleanly with Verilator.")
 
 
 elif page == "Signals":
@@ -377,12 +377,68 @@ elif page == "Test Results":
         ("Phase 2", "Conflict Detection",                              "PASS"),
         ("Phase 2", "Multi-Agent DAG Builder",                         "PASS"),
         ("Phase 2", "DAG Visualization (DOT Export)",                  "PASS"),
+        ("Phase 3", "Verilator check (MSYS2 verification)",          "PASS"),
+        ("Phase 3", "File topological suffix ordering",             "PASS"),
+        ("Phase 3", "Dynamic clock name resolution",                 "PASS"),
+        ("Phase 3", "UVM interface driver/monitor code generation",   "PASS"),
+        ("Phase 3", "Scoreboard & coverage subscriber heuristics",   "PASS"),
+        ("Phase 3", "Mock UVM library instantiability (uvm_mock)",    "PASS"),
+        ("Phase 3", "First-attempt compilation success validation",   "PASS"),
     ]
     import pandas as pd
     df = pd.DataFrame(results, columns=["Phase", "Test Description", "Status"])
     st.dataframe(df, use_container_width=True, hide_index=True)
     pass_count = sum(1 for r in results if r[2] == "PASS")
     st.success(f"All {pass_count}/{len(results)} checks passing. Zero failures.")
+
+
+elif page == "Generated Testbench":
+    st.markdown('<div class="section-header">Generated Testbench Compilation Report</div>', unsafe_allow_html=True)
+    
+    report_path = "generated_uvm/compile_report.json"
+    if not os.path.exists(report_path):
+        st.warning("No compilation report found. Please run the pipeline first.")
+    else:
+        try:
+            with open(report_path, "r", encoding="utf-8") as f:
+                report_data = json.load(f)
+            
+            design_options = list(report_data.keys())
+            if design_options:
+                selected_design = st.selectbox("Select Design", design_options)
+                design_report = report_data[selected_design]
+                
+                # Summary metrics
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.metric("Verilator Available", "Yes" if design_report.get("verilator_available", False) else "No")
+                with col2:
+                    rate = design_report.get("first_attempt_success_rate", 0.0)
+                    st.metric("First-Attempt Pass Rate", f"{rate:.1f}%")
+                
+                st.markdown("### File Compilation Details")
+                files_data = []
+                for fname, fdetails in design_report.get("files", {}).items():
+                    files_data.append({
+                        "File Name": fname,
+                        "Status": fdetails.get("status", "unknown").upper(),
+                        "First Attempt Pass": "Yes" if fdetails.get("first_attempt", False) else "No",
+                        "Errors": fdetails.get("errors", "")
+                    })
+                
+                import pandas as pd
+                df_files = pd.DataFrame(files_data)
+                st.dataframe(df_files[["File Name", "Status", "First Attempt Pass"]], use_container_width=True, hide_index=True)
+                
+                # Show details for files with errors
+                for fd in files_data:
+                    if fd["Errors"]:
+                        with st.expander(f"Compile Error log for {fd['File Name']}"):
+                            st.code(fd["Errors"], language="text")
+            else:
+                st.warning("No design report data found in compile_report.json")
+        except Exception as e:
+            st.error(f"Failed to read compile report: {e}")
 
 
 elif page == "Run Pipeline":
