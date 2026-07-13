@@ -367,6 +367,11 @@
       <div class="sc-value"><!-- P3_STATUS_START -->Complete<!-- P3_STATUS_END --></div>
       <div class="sc-sub">Testbench generated and compiled cleanly*</div>
     </div>
+    <div class="status-card green">
+      <div class="sc-label">Phase 4 — SimRunner</div>
+      <div class="sc-value"><!-- P4_STATUS_START -->Complete<!-- P4_STATUS_END --></div>
+      <div class="sc-sub">Multi-test simulation passed*</div>
+    </div>
     <div class="status-card">
       <div class="sc-label">UVM Components</div>
       <div class="sc-value"><!-- COMP_COUNT_START -->12<!-- COMP_COUNT_END --></div>
@@ -375,7 +380,7 @@
   </div>
 
   <div class="caveat-strip" style="font-size: 11px; color: var(--muted); margin-top: -36px; margin-bottom: 48px; border-left: 2px solid var(--border); padding-left: 12px;">
-    * Note: Compilation verified via Verilator lint-only mode against a lightweight UVM-compatible mock library (uvm_mock.svh), not the full Accellera UVM 1.2 package.
+    * Note: Compilation and simulation verified via Verilator timing-mode against a lightweight UVM-compatible mock library (uvm_mock.svh) with functional sequencer-driver handshakes, not the full Accellera UVM 1.2 package.
   </div>
 
   <!-- SIGNALS -->

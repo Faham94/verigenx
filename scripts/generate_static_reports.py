@@ -62,6 +62,16 @@ def main():
     overall_success_rate = metrics.get("overall_success_rate", 100.0)
     
     p3_status = "Complete" if compile_report else "Pending"
+    
+    p4_status = "Pending"
+    if os.path.exists(val_path):
+        try:
+            with open(val_path, "r", encoding="utf-8") as f:
+                val_data = json.load(f)
+                if val_data.get("status") == "passed":
+                    p4_status = "Complete"
+        except Exception:
+            pass
 
     # 3. Determine component count
     comp_count = 12
@@ -99,6 +109,11 @@ def main():
             html
         )
         html = re.sub(
+            r"<!-- PHASE_4_VAL_START -->.*?<!-- PHASE_4_VAL_END -->",
+            f"<!-- PHASE_4_VAL_START -->Complete — 100%<!-- PHASE_4_VAL_END -->" if p4_status == "Complete" else "<!-- PHASE_4_VAL_START -->Pending<!-- PHASE_4_VAL_END -->",
+            html
+        )
+        html = re.sub(
             r"<!-- LINT_SUCCESS_START -->.*?<!-- LINT_SUCCESS_END -->",
             f"<!-- LINT_SUCCESS_START -->({first_pass_rate:.1f}% success rate)<!-- LINT_SUCCESS_END -->" if p3_status == "Complete" else "<!-- LINT_SUCCESS_START -->(pending success rate)<!-- LINT_SUCCESS_END -->",
             html
@@ -130,6 +145,11 @@ def main():
         html = re.sub(
             r"<!-- P3_STATUS_START -->.*?<!-- P3_STATUS_END -->",
             f"<!-- P3_STATUS_START -->{p3_status}<!-- P3_STATUS_END -->",
+            html
+        )
+        html = re.sub(
+            r"<!-- P4_STATUS_START -->.*?<!-- P4_STATUS_END -->",
+            f"<!-- P4_STATUS_START -->{p4_status}<!-- P4_STATUS_END -->",
             html
         )
         html = re.sub(

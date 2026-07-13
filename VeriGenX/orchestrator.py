@@ -48,6 +48,9 @@ class Orchestrator:
             print("\n[Phase 3] UVMForge — UVM Code Generator")
             self._run_uvmforge()
 
+            print("\n[Phase 4] SimRunner — Simulation Orchestration")
+            self._run_simrunner()
+
             elapsed = time.time() - self.start_time
             print("\n" + "=" * 60)
             print(f"PIPELINE COMPLETE in {elapsed:.2f}s")
@@ -167,6 +170,29 @@ class Orchestrator:
         generator = UVMForgeGenerator()
         generated_files = generator.generate_all(state_plan, state_dag)
         print(f"  UVMForge complete — Generated {len(generated_files)} SystemVerilog files")
+
+    # ------------------------------------------------------------------ #
+    #  Phase 4 — SimRunner                                                 #
+    # ------------------------------------------------------------------ #
+
+    def _run_simrunner(self) -> None:
+        state_plan = self.state.get_state().test_plan
+        state_dag  = self.state.get_state().dependency_graph
+        state_files = self.state.get_state().generated_files
+
+        if not state_plan or not state_dag or not state_files:
+            print("  [Warning] Missing test plan, DAG, or generated files in state. Skipping SimRunner.")
+            return
+
+        design = state_plan.get("design_name", "design")
+        from VeriGenX.agents.simrunner import SimRunner
+        runner = SimRunner()
+        results = runner.run_simulations(design, state_plan, state_files)
+        self.state.update_state(
+            simulation_results=results,
+            coverage_data=results.get("coverage")
+        )
+        print(f"  SimRunner complete — Overall Status: {results['status'].upper()}")
 
     # ------------------------------------------------------------------ #
     #  ArchWeaver-only entry (for testing / standalone use)               #

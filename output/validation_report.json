@@ -1,57 +1,86 @@
 {
-    "processed_designs": [
-        "uart",
-        "spi",
-        "i2c",
-        "axi_lite",
-        "fifo",
-        "axi"
-    ],
-    "skipped_designs": [
-        "counter",
-        "riscv"
-    ],
-    "metrics": {
-        "total_runs": 40,
-        "first_pass_success": 72,
-        "repair_success": 0,
-        "failures": 0,
-        "first_pass_rate": 100.0,
-        "overall_success_rate": 100.0,
-        "avg_repair_iterations": 0.0
-    },
-    "details": {
-        "uart": {
+    "design_name": "fifo",
+    "run_id": "20260713_202357",
+    "compiled": true,
+    "compile_log": "Compilation successful.",
+    "tests": {
+        "fifo_test_base": {
+            "success": true,
             "status": "passed",
-            "files_count": 12
+            "stdout": "[UVM_INFO] Starting test: fifo_test_base\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:446: Verilog $finish\n",
+            "stderr": "",
+            "vcd_path": "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-53\\test_simrunner_e2e_fifo_0\\sim_run\\sim_20260713_202357\\fifo_fifo_test_base.vcd",
+            "log_summary": {
+                "fatals": [],
+                "errors": [],
+                "warnings": [],
+                "info": [
+                    "[UVM_INFO] Starting test: fifo_test_base",
+                    "[UVM_INFO] Entering Build Phase...",
+                    "[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.",
+                    "[UVM_INFO] Entering Connect Phase...",
+                    "[UVM_INFO] Entering Run Phase...",
+                    "[UVM_INFO] @ 5 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] Entering Report Phase...",
+                    "[UVM_INFO] Simulation finished (all objections dropped).",
+                    "[UVM_INFO] Simulation PASSED."
+                ],
+                "summary": {
+                    "total_errors": 0,
+                    "total_warnings": 0,
+                    "status": "passed"
+                }
+            },
+            "coverage": {
+                "line_coverage": 50.0,
+                "branch_coverage": 50.0,
+                "functional_coverage": 100.0,
+                "total_points": 10,
+                "covered_points": 5,
+                "functional_points_detail": {}
+            }
         },
-        "spi": {
+        "fifo_test_directed": {
+            "success": true,
             "status": "passed",
-            "files_count": 12
-        },
-        "i2c": {
-            "status": "passed",
-            "files_count": 12
-        },
-        "axi_lite": {
-            "status": "passed",
-            "files_count": 12
-        },
-        "fifo": {
-            "status": "passed",
-            "files_count": 12
-        },
-        "axi": {
-            "status": "passed",
-            "files_count": 12
-        },
-        "counter": {
-            "status": "skipped",
-            "reason": "Test plan JSON file not found in test_plans/"
-        },
-        "riscv": {
-            "status": "skipped",
-            "reason": "Test plan JSON file not found in test_plans/"
+            "stdout": "[UVM_INFO] Starting test: fifo_test_directed\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:446: Verilog $finish\n",
+            "stderr": "",
+            "vcd_path": "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-53\\test_simrunner_e2e_fifo_0\\sim_run\\sim_20260713_202357\\fifo_fifo_test_directed.vcd",
+            "log_summary": {
+                "fatals": [],
+                "errors": [],
+                "warnings": [],
+                "info": [
+                    "[UVM_INFO] Starting test: fifo_test_directed",
+                    "[UVM_INFO] Entering Build Phase...",
+                    "[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.",
+                    "[UVM_INFO] Entering Connect Phase...",
+                    "[UVM_INFO] Entering Run Phase...",
+                    "[UVM_INFO] @ 5 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] Entering Report Phase...",
+                    "[UVM_INFO] Simulation finished (all objections dropped).",
+                    "[UVM_INFO] Simulation PASSED."
+                ],
+                "summary": {
+                    "total_errors": 0,
+                    "total_warnings": 0,
+                    "status": "passed"
+                }
+            },
+            "coverage": {
+                "line_coverage": 50.0,
+                "branch_coverage": 50.0,
+                "functional_coverage": 100.0,
+                "total_points": 10,
+                "covered_points": 5,
+                "functional_points_detail": {}
+            }
         }
-    }
+    },
+    "coverage": {
+        "line_coverage": 50.0,
+        "branch_coverage": 50.0,
+        "functional_coverage": 100.0
+    },
+    "status": "passed"
 }

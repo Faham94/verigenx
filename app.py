@@ -144,13 +144,13 @@ with st.sidebar:
         ["Overview", "Signals", "FSM States", "Register Map",
          "Timing Constraints", "Functional Points", "Confidence Report",
          "Test Results", "Generated Testbench", "Repair Log", "Phase 3 Metrics",
-         "Validation Report", "Run Pipeline"],
+         "Validation Report", "Simulation Report", "Run Pipeline"],
         label_visibility="collapsed"
     )
     st.divider()
 
     # Dynamic Phase Statuses
-    p1_status, p2_status, p3_status = False, False, False
+    p1_status, p2_status, p3_status, p4_status = False, False, False, False
     if plan is not None:
         p1_status = True
     if os.path.exists("dag.dot"):
@@ -183,6 +183,18 @@ with st.sidebar:
         except Exception:
             pass
 
+    if os.path.exists("output/validation_report.json"):
+        p4_status = True
+    else:
+        try:
+            if os.path.exists("output/pipeline_state.json"):
+                with open("output/pipeline_state.json", "r") as f:
+                    state = json.load(f)
+                    if state.get("simulation_results"):
+                        p4_status = True
+        except Exception:
+            pass
+
     st.markdown("**Phase Status**")
     if p1_status:
         st.markdown('<span class="status-complete">Phase 1 — SpecMind</span>',  unsafe_allow_html=True)
@@ -198,6 +210,11 @@ with st.sidebar:
         st.markdown('<span class="status-complete">Phase 3 — UVMForge</span>',   unsafe_allow_html=True)
     else:
         st.markdown('<span class="status-pending">Phase 3 — UVMForge</span>',   unsafe_allow_html=True)
+
+    if p4_status:
+        st.markdown('<span class="status-complete">Phase 4 — SimRunner</span>',  unsafe_allow_html=True)
+    else:
+        st.markdown('<span class="status-pending">Phase 4 — SimRunner</span>',  unsafe_allow_html=True)
     st.divider()
 
     if plan:
@@ -770,6 +787,81 @@ elif page == "Validation Report":
                 f"The following reference designs were skipped because they lack specification plans or JSON fixtures:\n\n"
                 f"**Skipped designs:** {', '.join(skipped)}"
             )
+
+
+elif page == "Simulation Report":
+    st.markdown('<div class="section-header">Phase 4: SimRunner Simulation Report</div>', unsafe_allow_html=True)
+    val_path = "output/validation_report.json"
+    
+    if not os.path.exists(val_path):
+        st.info("No simulation validation report found. Run the simulation pipeline to generate results.")
+    else:
+        try:
+            with open(val_path, "r", encoding="utf-8") as f:
+                val_data = json.load(f)
+        except Exception as e:
+            st.error(f"Failed to read simulation report: {e}")
+            st.stop()
+            
+        design_name = val_data.get("design_name", "unknown").upper()
+        status = val_data.get("status", "failed").upper()
+        run_id = val_data.get("run_id", "N/A")
+        
+        # Display overall simulation outcome
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            if status == "PASSED":
+                badge = '<span class="status-complete">PASSED</span>'
+            else:
+                badge = '<span style="background:#fef2f2; border:1px solid #fecaca; color:#dc2626; padding:8px 16px; border-radius:8px; font-weight:600; font-size:13px; display:inline-block;">FAILED</span>'
+            st.markdown(f"**Overall Simulation Status:** {badge}", unsafe_allow_html=True)
+        with col2:
+            st.markdown(f"**Design Name:** `{design_name}`")
+        with col3:
+            st.markdown(f"**Run ID:** `{run_id}`")
+            
+        st.markdown("<br>", unsafe_allow_html=True)
+        
+        # Coverage metrics
+        cov = val_data.get("coverage", {})
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.markdown(f'<div class="metric-card"><div class="metric-number">{cov.get("line_coverage", 0.0):.1f}%</div><div class="metric-label">Line Coverage</div></div>', unsafe_allow_html=True)
+        with col2:
+            st.markdown(f'<div class="metric-card"><div class="metric-number">{cov.get("branch_coverage", 0.0):.1f}%</div><div class="metric-label">Branch Coverage</div></div>', unsafe_allow_html=True)
+        with col3:
+            st.markdown(f'<div class="metric-card"><div class="metric-number">{cov.get("functional_coverage", 0.0):.1f}%</div><div class="metric-label">Functional Coverage</div></div>', unsafe_allow_html=True)
+            
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("### Test Classes Results")
+        
+        tests = val_data.get("tests", {})
+        for tname, tres in tests.items():
+            tstatus = "PASSED" if tres.get("success", False) else "FAILED"
+            tcolor = "#f0fdf4" if tstatus == "PASSED" else "#fef2f2"
+            tborder = "#bbf7d0" if tstatus == "PASSED" else "#fecaca"
+            tfont = "#15803d" if tstatus == "PASSED" else "#dc2626"
+            
+            with st.expander(f"{tname} — {tstatus}"):
+                st.markdown(f"**VCD Path:** `{tres.get('vcd_path', 'N/A')}`")
+                
+                # Show errors if any
+                log_summary = tres.get("log_summary", {})
+                errors_list = log_summary.get("errors", [])
+                fatals_list = log_summary.get("fatals", [])
+                
+                if errors_list or fatals_list:
+                    st.error(f"Errors detected: {len(errors_list)} Error(s), {len(fatals_list)} Fatal(s)")
+                    for err in fatals_list:
+                        st.code(err, language="text")
+                    for err in errors_list:
+                        st.code(err, language="text")
+                else:
+                    st.success("No errors detected in simulation run.")
+                    
+                # Show stdout output
+                st.markdown("**Simulation Log Output:**")
+                st.code(tres.get("stdout", ""), language="text")
 
 
 elif page == "Run Pipeline":
