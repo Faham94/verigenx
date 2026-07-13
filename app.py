@@ -25,65 +25,73 @@ st.markdown("""
     html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 
     .main-header {
-        background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #0f4c81 100%);
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
         padding: 36px 44px;
         border-radius: 14px;
         margin-bottom: 28px;
         color: white;
+        border: 1px solid #334155;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     }
-    .main-header h1 { font-size: 34px; font-weight: 800; margin: 0 0 6px 0; letter-spacing: -0.5px; }
+    .main-header h1 { font-size: 34px; font-weight: 800; margin: 0 0 6px 0; letter-spacing: -0.5px; color: #f8fafc; }
     .main-header .subtitle { color: #94a3b8; font-size: 15px; margin: 0; }
     .main-header .meta-row { display: flex; gap: 24px; margin-top: 20px; flex-wrap: wrap; }
     .main-header .meta-item { display: flex; flex-direction: column; gap: 2px; }
     .main-header .meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; }
-    .main-header .meta-val   { font-size: 13px; font-weight: 600; color: #e2e8f0; }
+    .main-header .meta-val   { font-size: 13px; font-weight: 600; color: #cbd5e1; }
 
     .status-complete {
-        background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d;
+        background: #064e3b; border: 1px solid #047857; color: #a7f3d0;
         padding: 8px 16px; border-radius: 8px; font-weight: 600;
         font-size: 13px; display: inline-block; margin: 3px 3px 3px 0;
+        box-shadow: 0 2px 10px rgba(4,120,87,0.2);
     }
     .status-pending {
-        background: #fffbeb; border: 1px solid #fde68a; color: #b45309;
+        background: #78350f; border: 1px solid #d97706; color: #fef3c7;
         padding: 8px 16px; border-radius: 8px; font-weight: 600;
         font-size: 13px; display: inline-block; margin: 3px 3px 3px 0;
+        box-shadow: 0 2px 10px rgba(217,119,6,0.2);
     }
     .metric-card {
-        background: #f8fafc; border: 1px solid #e2e8f0;
+        background: #151b2d; border: 1px solid #1e293b;
         border-radius: 12px; padding: 20px; text-align: center;
-        transition: box-shadow 0.2s;
+        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
-    .metric-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
-    .metric-number { font-size: 38px; font-weight: 800; color: #0f172a; }
-    .metric-label  { font-size: 12px; color: #64748b; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .metric-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(59,130,246,0.15); }
+    .metric-number { font-size: 38px; font-weight: 800; color: #3b82f6; }
+    .metric-label  { font-size: 12px; color: #94a3b8; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
 
     .fp-card {
-        background: #eff6ff; border-left: 4px solid #3b82f6;
+        background: #1e3a8a; border-left: 4px solid #3b82f6;
         padding: 16px 20px; border-radius: 0 10px 10px 0; margin-bottom: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
-    .fp-id   { font-size: 11px; font-weight: 700; color: #2563eb; text-transform: uppercase; letter-spacing: 1px; }
-    .fp-desc { font-size: 14px; color: #334155; margin-top: 4px; line-height: 1.5; }
+    .fp-id   { font-size: 11px; font-weight: 700; color: #93c5fd; text-transform: uppercase; letter-spacing: 1px; }
+    .fp-desc { font-size: 14px; color: #e2e8f0; margin-top: 4px; line-height: 1.5; }
 
     .section-header {
         font-size: 12px; font-weight: 700; text-transform: uppercase;
-        letter-spacing: 1.2px; color: #475569;
-        border-bottom: 2px solid #e2e8f0;
+        letter-spacing: 1.2px; color: #cbd5e1;
+        border-bottom: 2px solid #334155;
         padding-bottom: 10px; margin-bottom: 18px;
     }
 
-    .conf-high   { color: #15803d; font-weight: 700; }
-    .conf-medium { color: #b45309; font-weight: 700; }
-    .conf-low    { color: #dc2626; font-weight: 700; }
+    .conf-high   { color: #34d399; font-weight: 700; }
+    .conf-medium { color: #fbbf24; font-weight: 700; }
+    .conf-low    { color: #f87171; font-weight: 700; }
 
     .timing-card {
-        background: #fafafa; border: 1px solid #e2e8f0;
+        background: #1e293b; border: 1px solid #334155;
         border-radius: 10px; padding: 16px 20px; margin-bottom: 10px;
         display: flex; justify-content: space-between; align-items: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
-    .timing-label { font-size: 13px; color: #475569; font-weight: 500; }
-    .timing-val   { font-size: 15px; font-weight: 700; color: #0f172a;
+    .timing-label { font-size: 13px; color: #cbd5e1; font-weight: 500; }
+    .timing-val   { font-size: 15px; font-weight: 700; color: #3b82f6;
                     font-family: 'JetBrains Mono', monospace; }
 </style>
+
 """, unsafe_allow_html=True)
 
 
@@ -787,10 +795,10 @@ elif page == "Validation Report":
         html_table = """
         <table style="width:100%; border-collapse:collapse; margin-bottom:20px; font-size:14px;">
             <thead>
-                <tr style="border-bottom:2px solid #e2e8f0; text-align:left;">
-                    <th style="padding:10px 12px; font-weight:700; color:#475569;">Design</th>
-                    <th style="padding:10px 12px; font-weight:700; color:#475569;">Status</th>
-                    <th style="padding:10px 12px; font-weight:700; color:#475569;">Details / Reason</th>
+                <tr style="border-bottom:2px solid #334155; text-align:left;">
+                    <th style="padding:10px 12px; font-weight:700; color:#94a3b8;">Design</th>
+                    <th style="padding:10px 12px; font-weight:700; color:#94a3b8;">Status</th>
+                    <th style="padding:10px 12px; font-weight:700; color:#94a3b8;">Details / Reason</th>
                 </tr>
             </thead>
             <tbody>
@@ -803,15 +811,15 @@ elif page == "Validation Report":
             if status == "PASSED":
                 badge = '<span class="status-complete" style="padding:4px 8px; font-size:11px; margin:0;">PASSED</span>'
             elif status == "FAILED":
-                badge = '<span style="background:#fef2f2; border:1px solid #fecaca; color:#dc2626; padding:4px 8px; border-radius:8px; font-weight:600; font-size:11px; display:inline-block; margin:0;">FAILED</span>'
+                badge = '<span style="background:#7f1d1d; border:1px solid #b91c1c; color:#fecaca; padding:4px 8px; border-radius:8px; font-weight:600; font-size:11px; display:inline-block; margin:0;">FAILED</span>'
             else:
                 badge = '<span class="status-pending" style="padding:4px 8px; font-size:11px; margin:0;">SKIPPED</span>'
                 
             html_table += f"""
-                <tr style="border-bottom:1px solid #e2e8f0;">
-                    <td style="padding:10px 12px; font-weight:600; color:#0f172a;">{design_name.upper()}</td>
+                <tr style="border-bottom:1px solid #334155;">
+                    <td style="padding:10px 12px; font-weight:600; color:#cbd5e1;">{design_name.upper()}</td>
                     <td style="padding:10px 12px;">{badge}</td>
-                    <td style="padding:10px 12px; color:#475569;">{reason}</td>
+                    <td style="padding:10px 12px; color:#94a3b8;">{reason}</td>
                 </tr>
             """
             
