@@ -24,20 +24,26 @@ st.markdown("""
 
     html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
 
+    /* Custom scrollbars */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b0f19; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+
     .main-header {
-        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
         padding: 36px 44px;
         border-radius: 14px;
         margin-bottom: 28px;
         color: white;
-        border: 1px solid #334155;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        border: 1px solid #312e81;
+        box-shadow: 0 8px 32px rgba(99, 102, 241, 0.15);
     }
     .main-header h1 { font-size: 34px; font-weight: 800; margin: 0 0 6px 0; letter-spacing: -0.5px; color: #f8fafc; }
-    .main-header .subtitle { color: #94a3b8; font-size: 15px; margin: 0; }
+    .main-header .subtitle { color: #cbd5e1; font-size: 15px; margin: 0; }
     .main-header .meta-row { display: flex; gap: 24px; margin-top: 20px; flex-wrap: wrap; }
     .main-header .meta-item { display: flex; flex-direction: column; gap: 2px; }
-    .main-header .meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; }
+    .main-header .meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #818cf8; }
     .main-header .meta-val   { font-size: 13px; font-weight: 600; color: #cbd5e1; }
 
     .status-complete {
@@ -53,27 +59,34 @@ st.markdown("""
         box-shadow: 0 2px 10px rgba(217,119,6,0.2);
     }
     .metric-card {
-        background: #151b2d; border: 1px solid #1e293b;
+        background: linear-gradient(135deg, #131a35 0%, #0b0f19 100%); 
+        border: 1px solid #1e293b;
         border-radius: 12px; padding: 20px; text-align: center;
-        transition: transform 0.2s, box-shadow 0.2s;
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s, box-shadow 0.3s;
         box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
-    .metric-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(59,130,246,0.15); }
-    .metric-number { font-size: 38px; font-weight: 800; color: #3b82f6; }
+    .metric-card:hover { 
+        transform: translateY(-4px); 
+        border-color: #6366f1;
+        box-shadow: 0 10px 25px rgba(99,102,241,0.25); 
+    }
+    .metric-number { font-size: 38px; font-weight: 800; color: #3b82f6; text-shadow: 0 0 10px rgba(59,130,246,0.2); }
     .metric-label  { font-size: 12px; color: #94a3b8; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
 
     .fp-card {
-        background: #1e3a8a; border-left: 4px solid #3b82f6;
+        background: #1e1b4b; border-left: 4px solid #6366f1;
         padding: 16px 20px; border-radius: 0 10px 10px 0; margin-bottom: 12px;
         box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        transition: transform 0.2s;
     }
-    .fp-id   { font-size: 11px; font-weight: 700; color: #93c5fd; text-transform: uppercase; letter-spacing: 1px; }
+    .fp-card:hover { transform: translateX(4px); }
+    .fp-id   { font-size: 11px; font-weight: 700; color: #a5b4fc; text-transform: uppercase; letter-spacing: 1px; }
     .fp-desc { font-size: 14px; color: #e2e8f0; margin-top: 4px; line-height: 1.5; }
 
     .section-header {
         font-size: 12px; font-weight: 700; text-transform: uppercase;
         letter-spacing: 1.2px; color: #cbd5e1;
-        border-bottom: 2px solid #334155;
+        border-bottom: 2px solid #312e81;
         padding-bottom: 10px; margin-bottom: 18px;
     }
 
@@ -82,16 +95,36 @@ st.markdown("""
     .conf-low    { color: #f87171; font-weight: 700; }
 
     .timing-card {
-        background: #1e293b; border: 1px solid #334155;
+        background: #151b2d; border: 1px solid #1e293b;
         border-radius: 10px; padding: 16px 20px; margin-bottom: 10px;
         display: flex; justify-content: space-between; align-items: center;
         box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        transition: border-color 0.2s;
     }
+    .timing-card:hover { border-color: #6366f1; }
     .timing-label { font-size: 13px; color: #cbd5e1; font-weight: 500; }
-    .timing-val   { font-size: 15px; font-weight: 700; color: #3b82f6;
+    .timing-val   { font-size: 15px; font-weight: 700; color: #818cf8;
                     font-family: 'JetBrains Mono', monospace; }
-</style>
 
+    /* Custom styling for all buttons (primary color gradient) */
+    .stButton > button {
+        background: linear-gradient(90deg, #4f46e5 0%, #3b82f6 100%) !important;
+        color: white !important;
+        border: none !important;
+        padding: 10px 24px !important;
+        border-radius: 8px !important;
+        font-weight: 700 !important;
+        transition: all 0.2s ease-in-out !important;
+        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3) !important;
+    }
+    .stButton > button:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5) !important;
+    }
+    .stButton > button:active {
+        transform: translateY(0) !important;
+    }
+</style>
 """, unsafe_allow_html=True)
 
 
