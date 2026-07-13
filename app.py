@@ -231,7 +231,29 @@ design_display = plan.get("design_name", "UART").upper() if plan else "UART"
 method_display = plan.get("extraction_method", "heuristic").title() if plan else "—"
 chunks_display = plan.get("embedded_chunks", 0) if plan else 0
 
-subtitle_display = f"{design_display} Verification Test Plan — Phase 1, 2, and 3 Complete" if plan else "No test plan loaded yet"
+if plan:
+    completed_phases = []
+    if p1_status:
+        completed_phases.append("1")
+    if p2_status:
+        completed_phases.append("2")
+    if p3_status:
+        completed_phases.append("3")
+    if p4_status:
+        completed_phases.append("4")
+    
+    if completed_phases:
+        if len(completed_phases) == 1:
+            phase_str = f"Phase {completed_phases[0]} Complete"
+        elif len(completed_phases) == 2:
+            phase_str = f"Phase {completed_phases[0]} and {completed_phases[1]} Complete"
+        else:
+            phase_str = "Phase " + ", ".join(completed_phases[:-1]) + f", and {completed_phases[-1]} Complete"
+        subtitle_display = f"{design_display} Verification Test Plan — {phase_str}"
+    else:
+        subtitle_display = f"{design_display} Verification Test Plan — Initializing"
+else:
+    subtitle_display = "No test plan loaded yet"
 
 st.markdown(f"""
 <div class="main-header">
@@ -296,8 +318,25 @@ if page == "Overview":
             f"**Source File:** {plan.get('source_file', 'uart_spec.txt') if plan else '—'}"
         )
     with col_b:
-        st.success("**Phase 1 — SpecMind:** Complete\n\nSpec parsed. Chunks embedded. Test plan generated with signals, FSM, registers, timing, and functional points.")
-        st.success("**Phase 3 — UVMForge:** Complete\n\nTestbench generated and compiled cleanly with Verilator.")
+        if p1_status:
+            st.success("**Phase 1 — SpecMind:** Complete\n\nSpec parsed. Chunks embedded. Test plan generated with signals, FSM, registers, timing, and functional points.")
+        else:
+            st.warning("**Phase 1 — SpecMind:** Pending\n\nTest plan generation pending.")
+
+        if p2_status:
+            st.success("**Phase 2 — ArchWeaver:** Complete\n\nDependency graph resolved, topologically ordered, and interface consistency checked.")
+        else:
+            st.warning("**Phase 2 — ArchWeaver:** Pending\n\nDependency graph resolution pending.")
+
+        if p3_status:
+            st.success("**Phase 3 — UVMForge:** Complete\n\nTestbench generated and compiled cleanly with Verilator.")
+        else:
+            st.warning("**Phase 3 — UVMForge:** Pending\n\nTestbench generation and compilation pending.")
+
+        if p4_status:
+            st.success("**Phase 4 — SimRunner:** Complete\n\nMulti-test timing simulations run successfully, VCD traces generated, and distinct coverage metrics parsed.")
+        else:
+            st.warning("**Phase 4 — SimRunner:** Pending\n\nSimulations and coverage parsing pending.")
 
 
 elif page == "Signals":
