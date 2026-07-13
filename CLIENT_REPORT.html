@@ -6,24 +6,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VeriGenX — UART Verification Report</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    :root {
+      --bg: #030712;
+      --surface: #0b0f19;
+      --surface2: #161f30;
+      --border: #1f2e4d;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --accent: #06b6d4;
+      --accent2: #3b82f6;
+      --green: #10b981;
+      --font-main: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
     body {
-      font-family: 'Inter', sans-serif;
-      background: #f0f2f5;
-      color: #1a1d23;
+      font-family: var(--font-main);
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
+      line-height: 1.6;
     }
 
     /* ---- HEADER ---- */
     .header {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0f4c81 100%);
-      padding: 48px 60px 40px;
+      background: linear-gradient(135deg, #090d16 0%, #0b1528 60%, #0b2447 100%);
+      padding: 60px 4rem 48px;
       color: #fff;
       position: relative;
       overflow: hidden;
+      border-bottom: 1px solid var(--border);
     }
     .header::after {
       content: '';
@@ -31,156 +47,161 @@
       right: -80px; top: -80px;
       width: 360px; height: 360px;
       border-radius: 50%;
-      background: rgba(99,179,237,0.08);
+      background: rgba(6, 182, 212, 0.05);
     }
     .header-badge {
       display: inline-block;
-      background: rgba(99,179,237,0.18);
-      border: 1px solid rgba(99,179,237,0.4);
-      color: #93c5fd;
+      background: rgba(6, 182, 212, 0.12);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      color: var(--accent);
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      padding: 4px 14px;
-      border-radius: 20px;
-      margin-bottom: 18px;
+      padding: 6px 16px;
+      border-radius: 30px;
+      margin-bottom: 20px;
     }
     .header h1 {
-      font-size: 36px;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      margin-bottom: 8px;
+      font-size: 40px;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
     }
-    .header h1 span { color: #60a5fa; }
+    .header h1 span { color: var(--accent); }
     .header p {
-      font-size: 15px;
-      color: #94a3b8;
-      max-width: 560px;
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 650px;
       line-height: 1.6;
     }
     .header-meta {
-      margin-top: 28px;
+      margin-top: 32px;
       display: flex;
-      gap: 32px;
+      gap: 36px;
       flex-wrap: wrap;
     }
-    .meta-item { display: flex; flex-direction: column; gap: 2px; }
-    .meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; }
-    .meta-value { font-size: 14px; font-weight: 600; color: #e2e8f0; }
+    .meta-item { display: flex; flex-direction: column; gap: 4px; }
+    .meta-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); font-weight: 600; }
+    .meta-value { font-size: 15px; font-weight: 700; color: var(--text); }
 
     /* ---- MAIN CONTENT ---- */
     .container {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 40px 24px 60px;
+      padding: 48px 2rem 80px;
     }
 
     /* ---- STATUS STRIP ---- */
     .status-strip {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-bottom: 40px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-bottom: 48px;
     }
     .status-card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 20px 24px;
-      border-left: 4px solid #2563eb;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent2);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transition: all 0.2s;
     }
-    .status-card.green { border-left-color: #16a34a; }
-    .status-card.amber { border-left-color: #d97706; }
-    .status-card .sc-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; margin-bottom: 6px; }
-    .status-card .sc-value { font-size: 22px; font-weight: 700; color: #0f172a; }
-    .status-card .sc-sub { font-size: 12px; color: #64748b; margin-top: 3px; }
+    .status-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+    .status-card.green { border-left-color: var(--green); }
+    .status-card .sc-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--muted); margin-bottom: 8px; font-weight: 600; }
+    .status-card .sc-value { font-size: 24px; font-weight: 800; color: var(--text); }
+    .status-card .sc-sub { font-size: 13px; color: var(--muted); margin-top: 4px; }
 
     /* ---- SECTIONS ---- */
-    .section { margin-bottom: 40px; }
+    .section { margin-bottom: 56px; }
     .section-title {
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 14px;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: #475569;
-      margin-bottom: 16px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #e2e8f0;
+      letter-spacing: 1.5px;
+      color: var(--accent);
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
     }
 
     /* ---- TABLES ---- */
     .table-wrap {
-      background: #fff;
-      border-radius: 12px;
+      background: var(--surface);
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      border: 1px solid var(--border);
     }
     table { width: 100%; border-collapse: collapse; }
-    thead tr { background: #1e293b; }
+    thead tr { background: var(--surface2); }
     thead th {
-      padding: 13px 20px;
+      padding: 16px 24px;
       text-align: left;
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      color: #94a3b8;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
     }
-    tbody tr { border-bottom: 1px solid #f1f5f9; transition: background 0.15s; }
+    tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; }
     tbody tr:last-child { border-bottom: none; }
-    tbody tr:hover { background: #f8fafc; }
+    tbody tr:hover { background: rgba(255,255,255,0.015); }
     tbody td {
-      padding: 13px 20px;
+      padding: 16px 24px;
       font-size: 14px;
-      color: #334155;
+      color: #e2e8f0;
     }
     .mono {
-      font-family: 'JetBrains Mono', monospace;
+      font-family: var(--font-mono);
       font-size: 13px;
-      background: #f1f5f9;
-      padding: 2px 8px;
-      border-radius: 4px;
-      color: #0f4c81;
+      background: var(--surface2);
+      padding: 3px 8px;
+      border-radius: 6px;
+      color: var(--accent);
+      border: 1px solid var(--border);
     }
     .badge {
       display: inline-block;
-      padding: 3px 10px;
+      padding: 4px 12px;
       border-radius: 20px;
       font-size: 11px;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-    .badge-input  { background: #dbeafe; color: #1d4ed8; }
-    .badge-output { background: #dcfce7; color: #15803d; }
-    .badge-pass   { background: #dcfce7; color: #15803d; }
+    .badge-input  { background: rgba(59, 130, 246, 0.12); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.2); }
+    .badge-output { background: rgba(16, 185, 129, 0.12); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.2); }
+    .badge-pass   { background: rgba(16, 185, 129, 0.12); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.2); }
 
     /* ---- FSM STATES ---- */
     .fsm-flow {
-      background: #fff;
-      border-radius: 12px;
-      padding: 28px 32px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 32px;
+      border: 1px solid var(--border);
       display: flex;
       align-items: center;
       gap: 0;
       flex-wrap: wrap;
     }
     .fsm-state {
-      background: #1e293b;
-      color: #e2e8f0;
-      padding: 10px 20px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 600;
-      font-family: 'JetBrains Mono', monospace;
+      background: var(--surface2);
+      color: var(--text);
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: var(--font-mono);
       letter-spacing: 0.5px;
+      border: 1px solid var(--border);
     }
     .fsm-arrow {
-      width: 36px;
+      width: 44px;
       height: 2px;
-      background: #94a3b8;
+      background: var(--border);
       position: relative;
     }
     .fsm-arrow::after {
@@ -188,7 +209,7 @@
       position: absolute;
       right: -1px; top: -4px;
       width: 0; height: 0;
-      border-left: 8px solid #94a3b8;
+      border-left: 8px solid var(--border);
       border-top: 5px solid transparent;
       border-bottom: 5px solid transparent;
     }
@@ -196,61 +217,119 @@
     /* ---- FUNCTIONAL POINTS ---- */
     .fp-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
     }
     .fp-card {
-      background: #fff;
-      border-radius: 12px;
-      padding: 22px 24px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-      border-top: 3px solid #2563eb;
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid var(--border);
+      border-top: 4px solid var(--accent);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
     .fp-id {
       font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 1px;
-      color: #2563eb;
+      color: var(--accent);
       margin-bottom: 8px;
     }
-    .fp-desc { font-size: 14px; color: #334155; line-height: 1.5; }
+    .fp-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
 
-    /* ---- TEST RESULTS ---- */
+    /* ---- DYNAMIC TEST RESULTS GRID ---- */
     .results-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
     }
     .result-row {
-      background: #fff;
-      border-radius: 10px;
-      padding: 16px 20px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 20px 24px;
+      border: 1px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      transition: all 0.2s;
     }
-    .result-label { font-size: 13px; color: #475569; font-weight: 500; }
+    .result-row:hover { border-color: var(--accent); }
+    .result-label { font-size: 14px; color: var(--text); font-weight: 600; }
     .result-pass {
       font-size: 12px;
       font-weight: 700;
-      color: #15803d;
-      background: #dcfce7;
-      padding: 4px 12px;
-      border-radius: 20px;
+      color: var(--green);
+      background: rgba(16,185,129,0.1);
+      border: 1px solid rgba(16,185,129,0.2);
+      padding: 4px 14px;
+      border-radius: 30px;
+    }
+
+    /* ---- INTERACTIVE CODE EXPLORER ---- */
+    .explorer-container {
+      border: 1px solid var(--border);
+      border-radius: 20px; overflow: hidden;
+      display: grid; grid-template-columns: 240px 1fr;
+      min-height: 550px; background: var(--surface);
+    }
+    @media (max-width: 768px) {
+      .explorer-container { grid-template-columns: 1fr; }
+    }
+    .explorer-sidebar {
+      background: rgba(3, 7, 18, 0.4);
+      border-right: 1px solid var(--border);
+      padding: 20px; display: flex; flex-direction: column; gap: 6px;
+      overflow-y: auto;
+    }
+    .explorer-tab-btn {
+      text-align: left; background: none; border: 1px solid transparent;
+      padding: 10px 16px; border-radius: 8px; font-family: var(--font-mono);
+      font-size: 13px; color: var(--muted); cursor: pointer; transition: all 0.2s;
+      display: flex; justify-content: space-between; align-items: center;
+    }
+    .explorer-tab-btn:hover { background: rgba(255,255,255,0.02); color: var(--text); }
+    .explorer-tab-btn.active {
+      background: var(--accent-glow); color: var(--accent);
+      border-color: rgba(6,182,212,0.3); font-weight: 700;
+    }
+    .explorer-tab-btn::after {
+      content: '>'; font-size: 10px; opacity: 0.3; transition: transform 0.2s;
+    }
+    .explorer-tab-btn.active::after {
+      transform: translateX(3px); opacity: 1;
+    }
+    
+    .explorer-body {
+      background: #030712; display: flex; flex-direction: column; overflow: hidden;
+    }
+    .explorer-header {
+      background: var(--surface2); padding: 12px 24px;
+      border-bottom: 1px solid var(--border); display: flex;
+      justify-content: space-between; align-items: center;
+    }
+    .explorer-header-title { font-size: 14px; font-weight: 700; color: var(--accent); font-family: var(--font-mono); }
+    .explorer-header-lang { font-size: 11px; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+    
+    .tab-pane { display: none; padding: 24px; overflow: auto; flex-grow: 1; margin: 0; }
+    .tab-pane.active { display: block; }
+    .tab-pane pre { margin: 0; }
+    .tab-pane code {
+      font-family: var(--font-mono); font-size: 13px; color: #cbd5e1;
+      line-height: 1.5; white-space: pre;
     }
 
     /* ---- FOOTER ---- */
     .footer {
-      background: #0f172a;
-      color: #475569;
+      background: #02050b;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
       text-align: center;
-      padding: 28px;
-      font-size: 12px;
+      padding: 32px;
+      font-size: 13px;
       letter-spacing: 0.5px;
     }
-    .footer strong { color: #64748b; }
+    .footer strong { color: var(--text); }
   </style>
 </head>
 <body>
@@ -258,13 +337,13 @@
 <!-- HEADER -->
 <div class="header">
   <div class="header-badge">Verification Report</div>
-  <h1>VeriGenX <span>UART</span> Test Plan</h1>
-  <p>Autonomous UVM Verification Intelligence Platform — Structured analysis of the UART design specification including signals, FSM states, register map, and functional test points.</p>
+  <h1>VeriGenX <span>UART</span> Testbench</h1>
+  <p>Autonomous UVM Verification Intelligence Platform — Dynamic report of the UART design verification assets and dynamic code execution tests.</p>
   <div class="header-meta">
     <div class="meta-item"><span class="meta-label">Design</span><span class="meta-value">UART (Universal Asynchronous Receiver-Transmitter)</span></div>
     <div class="meta-item"><span class="meta-label">Version</span><span class="meta-value">1.0</span></div>
-    <div class="meta-item"><span class="meta-label">Generated</span><span class="meta-value">2026-07-10</span></div>
-    <div class="meta-item"><span class="meta-label">Protocol</span><span class="meta-value">8-N-1</span></div>
+    <div class="meta-item"><span class="meta-label">Generated</span><span class="meta-value">2026-07-13</span></div>
+    <div class="meta-item"><span class="meta-label">Target Simulator</span><span class="meta-value">Verilator Linter Checker</span></div>
   </div>
 </div>
 
@@ -392,17 +471,489 @@
     </div>
   </div>
 
+  <!-- INTERACTIVE CODE EXPLORER -->
+  <div class="section">
+    <div class="section-title">UVM Testbench Code Explorer</div>
+    <div class="explorer-container">
+      <!-- SIDEBAR TABS -->
+      <div class="explorer-sidebar">
+        <button id="btn-interface" class="explorer-tab-btn active" onclick="showTab('interface', 'uart_interface.sv')">Interface</button>
+        <button id="btn-seqitem" class="explorer-tab-btn" onclick="showTab('seqitem', 'uart_sequence_item.sv')">Sequence Item</button>
+        <button id="btn-sequence" class="explorer-tab-btn" onclick="showTab('sequence', 'uart_sequence.sv')">Sequence</button>
+        <button id="btn-driver" class="explorer-tab-btn" onclick="showTab('driver', 'uart_driver.sv')">Driver</button>
+        <button id="btn-monitor" class="explorer-tab-btn" onclick="showTab('monitor', 'uart_monitor.sv')">Monitor</button>
+        <button id="btn-agent" class="explorer-tab-btn" onclick="showTab('agent', 'uart_agent.sv')">Agent</button>
+        <button id="btn-scoreboard" class="explorer-tab-btn" onclick="showTab('scoreboard', 'uart_scoreboard.sv')">Scoreboard</button>
+        <button id="btn-coverage" class="explorer-tab-btn" onclick="showTab('coverage', 'uart_coverage.sv')">Coverage</button>
+        <button id="btn-env" class="explorer-tab-btn" onclick="showTab('env', 'uart_env.sv')">Env</button>
+        <button id="btn-base_test" class="explorer-tab-btn" onclick="showTab('base_test', 'uart_test_base.sv')">Base Test</button>
+        <button id="btn-directed_test" class="explorer-tab-btn" onclick="showTab('directed_test', 'uart_test_directed.sv')">Directed Test</button>
+        <button id="btn-top" class="explorer-tab-btn" onclick="showTab('top', 'uart_top.sv')">Top Wrapper</button>
+      </div>
+
+      <!-- BODY CONTENT -->
+      <div class="explorer-body">
+        <div class="explorer-header">
+          <div id="explorer-title" class="explorer-header-title">uart_interface.sv</div>
+          <div class="explorer-header-lang">SystemVerilog</div>
+        </div>
+
+        <div id="tab-interface" class="tab-pane active">
+          <pre><code><!-- UART_INTERFACE_CODE_START -->interface uart_if (
+    input logic clk,
+    input logic rst_n
+);
+
+    // Signals declaration
+    
+    
+    
+    
+    
+    
+    logic [7:0] tx_data;
+    
+    
+    
+    logic [7:0] rx_data;
+    
+    
+
+    // Clocking block for testbench synchronization
+    clocking cb @(posedge clk);
+        default input #1ns output #1ns;
+        
+        
+        
+        
+        
+        
+        output tx_data;
+        
+        
+        
+        input rx_data;
+        
+        
+    endclocking
+
+    // TB modport
+    modport tb (
+        clocking cb,
+        input clk,
+        input rst_n
+    );
+
+    // {% llm_fill "interface_assertions" %}
+    // TODO: Add SystemVerilog assertions for protocol compliance checking
+// {% endllm_fill %}
+
+endinterface<!-- UART_INTERFACE_CODE_END --></code></pre>
+        </div>
+        <div id="tab-seqitem" class="tab-pane">
+          <pre><code><!-- UART_SEQUENCE_ITEM_CODE_START -->class uart_seq_item extends uvm_sequence_item;
+
+    // {% llm_fill "transaction_fields" %}
+    rand bit [7:0] tx_data;
+    rand bit [7:0] rx_data;
+// {% endllm_fill %}
+
+    `uvm_object_utils_begin(uart_seq_item)
+        // {% llm_fill "field_macros" %}
+    `uvm_field_int(tx_data, UVM_ALL_ON)
+    `uvm_field_int(rx_data, UVM_ALL_ON)
+// {% endllm_fill %}
+    `uvm_object_utils_end
+
+    function new(string name = "uart_seq_item");
+        super.new(name);
+    endfunction
+
+    // {% llm_fill "constraints" %}
+    // Randomization constraints
+    constraint c_tx_data_range { tx_data &lt;= 255; }
+    constraint c_rx_data_range { rx_data &lt;= 255; }
+// {% endllm_fill %}
+
+endclass<!-- UART_SEQUENCE_ITEM_CODE_END --></code></pre>
+        </div>
+        <div id="tab-sequence" class="tab-pane">
+          <pre><code><!-- UART_SEQUENCE_CODE_START -->class uart_sequence extends uvm_sequence #(uart_seq_item);
+
+    `uvm_object_utils(uart_sequence)
+
+    function new(string name = "uart_sequence");
+        super.new(name);
+    endfunction
+
+    virtual task body();
+        // {% llm_fill "sequence_body" %}
+        req = uart_seq_item::type_id::create("req");
+        start_item(req);
+        if (!req.randomize()) begin
+            `uvm_fatal("SEQ", "Randomization failed")
+        end
+        finish_item(req);
+// {% endllm_fill %}
+    endtask
+
+endclass<!-- UART_SEQUENCE_CODE_END --></code></pre>
+        </div>
+        <div id="tab-driver" class="tab-pane">
+          <pre><code><!-- UART_DRIVER_CODE_START -->class uart_driver extends uvm_driver #(uart_seq_item);
+
+    virtual uart_if vif;
+
+    `uvm_component_utils(uart_driver)
+
+    function new(string name = "uart_driver", uvm_component parent = null);
+        super.new(name, parent);
+    endfunction
+
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        if (!uvm_config_db#(virtual uart_if)::get(this, "", "vif", vif)) begin
+            `uvm_fatal("DRV", "Failed to get virtual interface from config DB")
+        end
+    endfunction
+
+    virtual task run_phase(uvm_phase phase);
+        // {% llm_fill "driver_reset" %}
+        vif.rst_n &lt;= 0;
+        #100;
+        vif.rst_n &lt;= 1;
+// {% endllm_fill %}
+
+        forever begin
+            seq_item_port.get_next_item(req);
+            // {% llm_fill "driver_drive_item" %}
+        @(posedge vif.clk);
+            vif.cb.tx_data &lt;= req.tx_data;
+        #10;
+// {% endllm_fill %}
+            seq_item_port.item_done();
+        end
+    endtask
+
+endclass<!-- UART_DRIVER_CODE_END --></code></pre>
+        </div>
+        <div id="tab-monitor" class="tab-pane">
+          <pre><code><!-- UART_MONITOR_CODE_START -->class uart_monitor extends uvm_monitor;
+
+    virtual uart_if vif;
+    uvm_analysis_port #(uart_seq_item) ap;
+
+    `uvm_component_utils(uart_monitor)
+
+    function new(string name = "uart_monitor", uvm_component parent = null);
+        super.new(name, parent);
+    endfunction
+
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        ap = new("ap", this);
+        if (!uvm_config_db#(virtual uart_if)::get(this, "", "vif", vif)) begin
+            `uvm_fatal("MON", "Failed to get virtual interface from config DB")
+        end
+    endfunction
+
+    virtual task run_phase(uvm_phase phase);
+        // {% llm_fill "monitor_run" %}
+        uart_seq_item tx;
+        forever begin
+            @(posedge vif.clk);
+            tx = uart_seq_item::type_id::create("tx"); // uart_seq_item replaced dynamically in caller
+            tx.tx_data = vif.tx_data;
+            tx.rx_data = vif.rx_data;
+            ap.write(tx);
+        end
+// {% endllm_fill %}
+    endtask
+
+endclass<!-- UART_MONITOR_CODE_END --></code></pre>
+        </div>
+        <div id="tab-agent" class="tab-pane">
+          <pre><code><!-- UART_AGENT_CODE_START -->class uart_agent extends uvm_agent;
+
+    uvm_sequencer #(uart_seq_item) sequencer;
+    uart_driver driver;
+    uart_monitor monitor;
+
+    `uvm_component_utils(uart_agent)
+
+    function new(string name = "uart_agent", uvm_component parent = null);
+        super.new(name, parent);
+    endfunction
+
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        
+        monitor = uart_monitor::type_id::create("monitor", this);
+        
+        if (get_is_active() == UVM_ACTIVE) begin
+            sequencer = uvm_sequencer#(uart_seq_item)::type_id::create("sequencer", this);
+            driver = uart_driver::type_id::create("driver", this);
+        end
+    endfunction
+
+    virtual function void connect_phase(uvm_phase phase);
+        super.connect_phase(phase);
+        if (get_is_active() == UVM_ACTIVE) begin
+            driver.seq_item_port.connect(sequencer.seq_item_export);
+        end
+    endfunction
+
+endclass<!-- UART_AGENT_CODE_END --></code></pre>
+        </div>
+        <div id="tab-scoreboard" class="tab-pane">
+          <pre><code><!-- UART_SCOREBOARD_CODE_START -->// Reference model base class for injection
+class uart_ref_model extends uvm_object;
+    `uvm_object_utils(uart_ref_model)
+
+    function new(string name = "uart_ref_model");
+        super.new(name);
+    endfunction
+
+    // {% llm_fill "ref_model_predict" %}
+    virtual function void predict(uart_seq_item item, ref uart_seq_item expected);
+        expected = uart_seq_item::type_id::create("expected");
+        // Predict next expected outputs based on inputs.
+        // Heuristically copy input fields to output fields.
+        expected.copy(item);
+    endfunction
+// {% endllm_fill %}
+endclass
+
+
+class uart_scoreboard extends uvm_scoreboard;
+
+    uvm_analysis_imp #(uart_seq_item, uart_scoreboard) item_export;
+    uart_ref_model ref_model;
+
+    `uvm_component_utils(uart_scoreboard)
+
+    function new(string name = "uart_scoreboard", uvm_component parent = null);
+        super.new(name, parent);
+    endfunction
+
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        item_export = new("item_export", this);
+        
+        // Configuration DB retrieval of injectable reference model
+        if (!uvm_config_db#(uart_ref_model)::get(this, "", "ref_model", ref_model)) begin
+            `uvm_info("SB", "No reference model injected. Creating default reference model.", UVM_MEDIUM)
+            ref_model = uart_ref_model::type_id::create("ref_model");
+        end
+    endfunction
+
+    virtual function void write(uart_seq_item item);
+        // {% llm_fill "scoreboard_write" %}
+        uart_seq_item expected;
+        ref_model.predict(item, expected);
+        if (!item.compare(expected)) begin
+            `uvm_error("SB_MISMATCH", $sformatf("Transaction mismatch! Actual: %s, Expected: %s", item.convert2string(), expected.convert2string()))
+        end else begin
+            `uvm_info("SB_MATCH", $sformatf("Transaction match: %s", item.convert2string()), UVM_MEDIUM)
+        end
+// {% endllm_fill %}
+    endfunction
+
+endclass<!-- UART_SCOREBOARD_CODE_END --></code></pre>
+        </div>
+        <div id="tab-coverage" class="tab-pane">
+          <pre><code><!-- UART_COVERAGE_CODE_START -->class uart_coverage extends uvm_subscriber #(uart_seq_item);
+
+    `uvm_component_utils(uart_coverage)
+
+    uart_seq_item t;
+
+    // Auto-derived covergroups from functional points
+    covergroup uart_cg;
+        option.per_instance = 1;
+
+        
+        // FP_001: Data transmission functionality
+        // {% llm_fill "FP_001" %}
+        cp_FP_001: coverpoint t.rx_data;
+// {% endllm_fill %}
+        
+        
+        // FP_002: Baud rate configuration
+        // {% llm_fill "FP_002" %}
+        cp_FP_002: coverpoint t.tx_data;
+// {% endllm_fill %}
+        
+        
+        // FP_003: Reset and initialisation
+        // {% llm_fill "FP_003" %}
+        cp_FP_003: coverpoint t.rx_data;
+// {% endllm_fill %}
+        
+        
+    endgroup
+
+    function new(string name = "uart_coverage", uvm_component parent = null);
+        super.new(name, parent);
+        uart_cg = new();
+    endfunction
+
+    virtual function void write(uart_seq_item t);
+        this.t = t;
+        // {% llm_fill "coverage_sample" %}
+        uart_cg.sample();
+// {% endllm_fill %}
+    endfunction
+
+endclass<!-- UART_COVERAGE_CODE_END --></code></pre>
+        </div>
+        <div id="tab-env" class="tab-pane">
+          <pre><code><!-- UART_ENV_CODE_START -->class uart_env extends uvm_env;
+
+    uart_agent agent;
+    uart_scoreboard scoreboard;
+    uart_coverage coverage;
+
+    `uvm_component_utils(uart_env)
+
+    function new(string name = "uart_env", uvm_component parent = null);
+        super.new(name, parent);
+    endfunction
+
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        agent = uart_agent::type_id::create("agent", this);
+        scoreboard = uart_scoreboard::type_id::create("scoreboard", this);
+        coverage = uart_coverage::type_id::create("coverage", this);
+    endfunction
+
+    virtual function void connect_phase(uvm_phase phase);
+        super.connect_phase(phase);
+        agent.monitor.ap.connect(scoreboard.item_export);
+        agent.monitor.ap.connect(coverage.analysis_export);
+    endfunction
+
+endclass<!-- UART_ENV_CODE_END --></code></pre>
+        </div>
+        <div id="tab-base_test" class="tab-pane">
+          <pre><code><!-- UART_TEST_BASE_CODE_START -->class uart_test_base extends uvm_test;
+
+    uart_env env;
+
+    `uvm_component_utils(uart_test_base)
+
+    function new(string name = "uart_test_base", uvm_component parent = null);
+        super.new(name, parent);
+    endfunction
+
+    virtual function void build_phase(uvm_phase phase);
+        super.build_phase(phase);
+        env = uart_env::type_id::create("env", this);
+    endfunction
+
+    virtual task run_phase(uvm_phase phase);
+        // {% llm_fill "test_base_run" %}
+    // Heuristic fill fallback
+// {% endllm_fill %}
+    endtask
+
+endclass<!-- UART_TEST_BASE_CODE_END --></code></pre>
+        </div>
+        <div id="tab-directed_test" class="tab-pane">
+          <pre><code><!-- UART_TEST_DIRECTED_CODE_START -->class uart_test_directed extends uart_test_base;
+
+    `uvm_component_utils(uart_test_directed)
+
+    function new(string name = "uart_test_directed", uvm_component parent = null);
+        super.new(name, parent);
+    endfunction
+
+    virtual task run_phase(uvm_phase phase);
+        uart_sequence seq;
+        phase.raise_objection(this);
+        
+        seq = uart_sequence::type_id::create("seq");
+        
+        // {% llm_fill "test_directed_run" %}
+    // Heuristic fill fallback
+// {% endllm_fill %}
+        
+        phase.drop_objection(this);
+    endtask
+
+endclass<!-- UART_TEST_DIRECTED_CODE_END --></code></pre>
+        </div>
+        <div id="tab-top" class="tab-pane">
+          <pre><code><!-- UART_TOP_CODE_START -->module top;
+
+    // Clock and Reset Generation
+    logic clk;
+    logic rst_n;
+
+    // Clock generation
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+
+    // Reset generation
+    initial begin
+        rst_n = 0;
+        #20 rst_n = 1;
+    end
+
+    // Interface instantiation
+    uart_if iface (
+        .clk(clk),
+        .rst_n(rst_n)
+    );
+
+    // DUT instantiation
+    uart dut (
+        .clk(clk),
+        .rst_n(rst_n)
+        
+        
+        
+        
+        
+        
+        , .tx_data(iface.tx_data)
+        
+        
+        
+        , .rx_data(iface.rx_data)
+        
+        
+    );
+
+    // Test run and interface configuration
+    initial begin
+        uvm_config_db#(virtual uart_if)::set(null, "uvm_test_top*", "vif", iface);
+        run_test();
+    end
+
+    // {% llm_fill "top_extra" %}
+    // Heuristic fill fallback
+// {% endllm_fill %}
+
+endmodule<!-- UART_TOP_CODE_END --></code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- TEST RESULTS -->
   <div class="section">
     <div class="section-title">Verification Results</div>
     <div class="results-grid">
       <!-- CLIENT_RESULTS_START -->
       <div class="result-row">
-        <span class="result-label">Specification Parsing (TXT)</span>
+        <span class="result-label">Specification Ingestion (TXT)</span>
         <span class="result-pass">PASS</span>
       </div>
       <div class="result-row">
-        <span class="result-label">Test Plan Generation (JSON)</span>
+        <span class="result-label">Test Plan Extraction (JSON)</span>
         <span class="result-pass">PASS</span>
       </div>
       <div class="result-row">
@@ -677,8 +1228,31 @@
 
 <!-- FOOTER -->
 <div class="footer">
-  <strong>VeriGenX</strong> &mdash; Autonomous UVM Verification Intelligence Platform &mdash; Generated 2026-07-10 &mdash; Confidential
+  <strong>VeriGenX</strong> &mdash; Autonomous UVM Verification Platform &mdash; Generated 2026 &mdash; Confidential
 </div>
+
+<script>
+  function showTab(tabId, filename) {
+    // Hide all tab panes
+    document.querySelectorAll('.tab-pane').forEach(pane => {
+      pane.classList.remove('active');
+    });
+    // Reset buttons active state
+    document.querySelectorAll('.explorer-tab-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+
+    // Set active pane and button
+    const targetPane = document.getElementById('tab-' + tabId);
+    if (targetPane) targetPane.classList.add('active');
+    
+    const targetBtn = document.getElementById('btn-' + tabId);
+    if (targetBtn) targetBtn.classList.add('active');
+
+    // Update viewer header name
+    document.getElementById('explorer-title').innerText = filename;
+  }
+</script>
 
 </body>
 </html>

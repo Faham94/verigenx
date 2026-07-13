@@ -2,9 +2,21 @@ import os
 import json
 import re
 
+def escape_html(text):
+    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+def load_file_content(path):
+    if os.path.exists(path):
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                return escape_html(f.read())
+        except Exception as e:
+            return f"// Error loading file: {e}"
+    return "// File not generated yet on disk"
+
 def main():
     print("=" * 60)
-    print("Generating Static HTML Reports...")
+    print("Generating Static HTML Reports with UVM Code Explorer...")
     print("=" * 60)
 
     # 1. Load data
@@ -37,7 +49,6 @@ def main():
             print(f"Error loading compile report: {e}")
 
     # 2. Determine phase statuses
-    # Phase 1 is complete if there are test plan json files
     has_test_plans = False
     if os.path.exists("test_plans"):
         plans = [f for f in os.listdir("test_plans") if f.endswith(".json")]
@@ -65,11 +76,6 @@ def main():
     if os.path.exists(index_path):
         with open(index_path, "r", encoding="utf-8") as f:
             html = f.read()
-
-        # Insert comment note at top if missing
-        warning_comment = "<!-- NOTE: This file is dynamically updated by scripts/generate_static_reports.py. Do not hand-edit metrics or table rows directly. -->"
-        if warning_comment not in html:
-            html = html.replace("<!DOCTYPE html>", f"<!DOCTYPE html>\n{warning_comment}")
 
         # Replace tagged sections
         html = re.sub(
@@ -110,11 +116,6 @@ def main():
         with open(client_path, "r", encoding="utf-8") as f:
             html = f.read()
 
-        # Insert comment note at top if missing
-        warning_comment = "<!-- NOTE: This file is dynamically updated by scripts/generate_static_reports.py. Do not hand-edit metrics or table rows directly. -->"
-        if warning_comment not in html:
-            html = html.replace("<!DOCTYPE html>", f"<!DOCTYPE html>\n{warning_comment}")
-
         # Replace tagged statuses
         html = re.sub(
             r"<!-- P1_STATUS_START -->.*?<!-- P1_STATUS_END -->",
@@ -137,11 +138,73 @@ def main():
             html
         )
 
+        # Ingest dynamic SystemVerilog files for UART
+        html = re.sub(
+            r"<!-- UART_INTERFACE_CODE_START -->.*?<!-- UART_INTERFACE_CODE_END -->",
+            f"<!-- UART_INTERFACE_CODE_START -->{load_file_content('generated_uvm/uart_interface.sv')}<!-- UART_INTERFACE_CODE_END -->",
+            html, flags=re.DOTALL
+        )
+        html = re.sub(
+            r"<!-- UART_SEQUENCE_ITEM_CODE_START -->.*?<!-- UART_SEQUENCE_ITEM_CODE_END -->",
+            f"<!-- UART_SEQUENCE_ITEM_CODE_START -->{load_file_content('generated_uvm/uart_sequence_item.sv')}<!-- UART_SEQUENCE_ITEM_CODE_END -->",
+            html, flags=re.DOTALL
+        )
+        html = re.sub(
+            r"<!-- UART_SEQUENCE_CODE_START -->.*?<!-- UART_SEQUENCE_CODE_END -->",
+            f"<!-- UART_SEQUENCE_CODE_START -->{load_file_content('generated_uvm/uart_sequence.sv')}<!-- UART_SEQUENCE_CODE_END -->",
+            html, flags=re.DOTALL
+        )
+        html = re.sub(
+            r"<!-- UART_DRIVER_CODE_START -->.*?<!-- UART_DRIVER_CODE_END -->",
+            f"<!-- UART_DRIVER_CODE_START -->{load_file_content('generated_uvm/uart_driver.sv')}<!-- UART_DRIVER_CODE_END -->",
+            html, flags=re.DOTALL
+        )
+        html = re.sub(
+            r"<!-- UART_MONITOR_CODE_START -->.*?<!-- UART_MONITOR_CODE_END -->",
+            f"<!-- UART_MONITOR_CODE_START -->{load_file_content('generated_uvm/uart_monitor.sv')}<!-- UART_MONITOR_CODE_END -->",
+            html, flags=re.DOTALL
+        )
+        html = re.sub(
+            r"<!-- UART_AGENT_CODE_START -->.*?<!-- UART_AGENT_CODE_END -->",
+            f"<!-- UART_AGENT_CODE_START -->{load_file_content('generated_uvm/uart_agent.sv')}<!-- UART_AGENT_CODE_END -->",
+            html, flags=re.DOTALL
+        )
+        html = re.sub(
+            r"<!-- UART_SCOREBOARD_CODE_START -->.*?<!-- UART_SCOREBOARD_CODE_END -->",
+            f"<!-- UART_SCOREBOARD_CODE_START -->{load_file_content('generated_uvm/uart_scoreboard.sv')}<!-- UART_SCOREBOARD_CODE_END -->",
+            html, flags=re.DOTALL
+        )
+        html = re.sub(
+            r"<!-- UART_COVERAGE_CODE_START -->.*?<!-- UART_COVERAGE_CODE_END -->",
+            f"<!-- UART_COVERAGE_CODE_START -->{load_file_content('generated_uvm/uart_coverage.sv')}<!-- UART_COVERAGE_CODE_END -->",
+            html, flags=re.DOTALL
+        )
+        html = re.sub(
+            r"<!-- UART_ENV_CODE_START -->.*?<!-- UART_ENV_CODE_END -->",
+            f"<!-- UART_ENV_CODE_START -->{load_file_content('generated_uvm/uart_env.sv')}<!-- UART_ENV_CODE_END -->",
+            html, flags=re.DOTALL
+        )
+        html = re.sub(
+            r"<!-- UART_TEST_BASE_CODE_START -->.*?<!-- UART_TEST_BASE_CODE_END -->",
+            f"<!-- UART_TEST_BASE_CODE_START -->{load_file_content('generated_uvm/uart_test_base.sv')}<!-- UART_TEST_BASE_CODE_END -->",
+            html, flags=re.DOTALL
+        )
+        html = re.sub(
+            r"<!-- UART_TEST_DIRECTED_CODE_START -->.*?<!-- UART_TEST_DIRECTED_CODE_END -->",
+            f"<!-- UART_TEST_DIRECTED_CODE_START -->{load_file_content('generated_uvm/uart_test_directed.sv')}<!-- UART_TEST_DIRECTED_CODE_END -->",
+            html, flags=re.DOTALL
+        )
+        html = re.sub(
+            r"<!-- UART_TOP_CODE_START -->.*?<!-- UART_TOP_CODE_END -->",
+            f"<!-- UART_TOP_CODE_START -->{load_file_content('generated_uvm/uart_top.sv')}<!-- UART_TOP_CODE_END -->",
+            html, flags=re.DOTALL
+        )
+
         # Generate Verification Results
         results = []
         if has_test_plans:
-            results.append(("Specification Parsing (TXT)", "PASS"))
-            results.append(("Test Plan Generation (JSON)", "PASS"))
+            results.append(("Specification Ingestion (TXT)", "PASS"))
+            results.append(("Test Plan Extraction (JSON)", "PASS"))
             results.append(("Semantic Chunking", "PASS"))
         if os.path.exists("dag.dot"):
             results.append(("DAG Build (12 Components)", "PASS"))
