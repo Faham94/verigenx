@@ -36,3 +36,7 @@ Thumbs.db
 
 # Simulation outputs
 simulation/
+
+# Runtime outputs
+output/*/
+.cache/
