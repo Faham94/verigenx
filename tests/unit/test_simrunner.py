@@ -40,19 +40,18 @@ class TestSimLogParser:
 class TestSimCoverageParser:
     def test_parse_coverage_dat(self, tmp_path):
         cov_file = tmp_path / "coverage.dat"
-        cov_file.write_text("""C 'uart_driver.sv' 12 5 10 'uart_driver.run_phase'
-C 'uart_coverage.sv' 14 5 1 'cp_FP_001'
-C 'uart_coverage.sv' 20 5 0 'cp_FP_002'
-""")
+        cov_file.write_text("C '\x01f\x02uart_driver.sv\x01l\x0212\x01n\x025\x01t\x02line\x01page\x02v_line/uart_driver' 10\n"
+                            "C '\x01f\x02uart_coverage.sv\x01l\x0214\x01n\x025\x01t\x02branch\x01page\x02v_branch/uart_coverage' 1\n"
+                            "C '\x01f\x02uart_coverage.sv\x01l\x0220\x01n\x025\x01t\x02branch\x01page\x02v_branch/uart_coverage' 0\n"
+                            "C '\x01f\x02uart_coverage.sv\x01l\x0222\x01n\x025\x01t\x02toggle\x01page\x02v_toggle/uart_coverage' 1\n")
         parser = SimCoverageParser()
         res = parser.parse(str(cov_file), "")
 
-        assert res["total_points"] == 3
-        assert res["covered_points"] == 2
-        assert res["line_coverage"] == (2.0 / 3.0) * 100.0
-        assert res["functional_coverage"] == 50.0
-        assert res["functional_points_detail"]["FP_001"] == "covered"
-        assert res["functional_points_detail"]["FP_002"] == "uncovered"
+        assert res["total_points"] == 4
+        assert res["covered_points"] == 3
+        assert res["line_coverage"] == 100.0
+        assert res["branch_coverage"] == 50.0
+        assert res["toggle_coverage"] == 100.0
 
     def test_parse_stdout_coverage(self):
         parser = SimCoverageParser()

@@ -40,14 +40,31 @@ class SimCompiler:
 #include "verilated_vcd_c.h"
 #include <string>
 #include <iostream>
+#include <cstdlib>
 
 double g_main_time = 0.0;
 double sc_time_stamp() {
     return g_main_time;
 }
 
+#if VM_COVERAGE
+void save_coverage() {
+    Verilated::threadContextp()->coveragep()->write("coverage.dat");
+}
+#endif
+
+VerilatedVcdC* g_tfp = nullptr;
+void close_trace() {
+    if (g_tfp) {
+        g_tfp->close();
+    }
+}
+
 int main(int argc, char** argv) {
     Verilated::commandArgs(argc, argv);
+#if VM_COVERAGE
+    std::atexit(save_coverage);
+#endif
     Vtop* top = new Vtop;
 
     std::string vcd_file = "waveform.vcd";
@@ -60,6 +77,8 @@ int main(int argc, char** argv) {
 
     Verilated::traceEverOn(true);
     VerilatedVcdC* tfp = new VerilatedVcdC;
+    g_tfp = tfp;
+    std::atexit(close_trace);
     top->trace(tfp, 99);
     tfp->open(vcd_file.c_str());
 
@@ -74,10 +93,6 @@ int main(int argc, char** argv) {
 
     top->final();
     tfp->close();
-
-#if VM_COVERAGE
-    Verilated::threadContextp()->coveragep()->write("coverage.dat");
-#endif
 
     delete top;
     return 0;

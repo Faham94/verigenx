@@ -64,14 +64,23 @@ def main():
     p3_status = "Complete" if compile_report else "Pending"
     
     p4_status = "Pending"
-    if os.path.exists(val_path):
+    p4_line_cov = 0.0
+    p4_branch_cov = 0.0
+    p4_toggle_cov = 0.0
+    
+    sim_val_path = "output/sim_validation_report.json"
+    if os.path.exists(sim_val_path):
         try:
-            with open(val_path, "r", encoding="utf-8") as f:
-                val_data = json.load(f)
-                if val_data.get("status") == "passed":
+            with open(sim_val_path, "r", encoding="utf-8") as f:
+                sim_data = json.load(f)
+                if sim_data.get("status") == "passed":
                     p4_status = "Complete"
-        except Exception:
-            pass
+                    sim_cov = sim_data.get("coverage", {})
+                    p4_line_cov = sim_cov.get("line_coverage", 0.0)
+                    p4_branch_cov = sim_cov.get("branch_coverage", 0.0)
+                    p4_toggle_cov = sim_cov.get("toggle_coverage", 0.0)
+        except Exception as e:
+            print(f"Error loading simulation report in static reports: {e}")
 
     # 3. Determine component count
     comp_count = 12
@@ -108,9 +117,10 @@ def main():
             f"<!-- PHASE_3_VAL_START -->Complete — {overall_success_rate:.0f}%<!-- PHASE_3_VAL_END -->" if p3_status == "Complete" else "<!-- PHASE_3_VAL_START -->Pending<!-- PHASE_3_VAL_END -->",
             html
         )
+        p4_text = f"Complete — Line: {p4_line_cov:.1f}%, Branch: {p4_branch_cov:.1f}%, Toggle: {p4_toggle_cov:.1f}% (Func: Unmeasurable)" if p4_status == "Complete" else "Pending"
         html = re.sub(
             r"<!-- PHASE_4_VAL_START -->.*?<!-- PHASE_4_VAL_END -->",
-            f"<!-- PHASE_4_VAL_START -->Complete — 100%<!-- PHASE_4_VAL_END -->" if p4_status == "Complete" else "<!-- PHASE_4_VAL_START -->Pending<!-- PHASE_4_VAL_END -->",
+            f"<!-- PHASE_4_VAL_START -->{p4_text}<!-- PHASE_4_VAL_END -->",
             html
         )
         html = re.sub(

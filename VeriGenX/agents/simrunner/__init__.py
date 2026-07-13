@@ -109,6 +109,7 @@ class SimRunner:
         agg_cov = {
             "line_coverage": 0.0,
             "branch_coverage": 0.0,
+            "toggle_coverage": 0.0,
             "functional_coverage": 0.0
         }
         has_cov = False
@@ -118,11 +119,13 @@ class SimRunner:
                 if not has_cov:
                     agg_cov["line_coverage"] = test_cov.get("line_coverage", 0.0)
                     agg_cov["branch_coverage"] = test_cov.get("branch_coverage", 0.0)
+                    agg_cov["toggle_coverage"] = test_cov.get("toggle_coverage", 0.0)
                     agg_cov["functional_coverage"] = test_cov.get("functional_coverage", 0.0)
                     has_cov = True
                 else:
                     agg_cov["line_coverage"] = max(agg_cov["line_coverage"], test_cov.get("line_coverage", 0.0))
                     agg_cov["branch_coverage"] = max(agg_cov["branch_coverage"], test_cov.get("branch_coverage", 0.0))
+                    agg_cov["toggle_coverage"] = max(agg_cov["toggle_coverage"], test_cov.get("toggle_coverage", 0.0))
                     agg_cov["functional_coverage"] = max(agg_cov["functional_coverage"], test_cov.get("functional_coverage", 0.0))
         
         results["coverage"] = agg_cov

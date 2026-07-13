@@ -3,7 +3,7 @@
     "test_plan": {
         "design_name": "uart",
         "version": "1.0",
-        "generated_at": "2026-07-11T00:00:00",
+        "generated_at": "2026-07-14T00:50:07.712259",
         "extraction_method": "heuristic",
         "signals": [
             {
@@ -35,27 +35,47 @@
         ],
         "register_map": [
             {
-                "address": "0x00",
+                "address": "0X00",
                 "name": "baud_divisor",
-                "width": 16
+                "width": 16,
+                "access": "RW",
+                "reset_value": "0X0001"
             },
             {
-                "address": "0x04",
+                "address": "0X04",
                 "name": "control",
-                "width": 8
+                "width": 8,
+                "access": "RW",
+                "reset_value": "0X00"
             }
         ],
-        "timing_constraints": {},
+        "timing_constraints": {
+            "baud_rate": 9600
+        },
         "functional_points": [
             {
                 "id": "FP_001",
-                "description": "8-bit data transmission"
+                "description": "Data transmission functionality"
             },
             {
                 "id": "FP_002",
                 "description": "Baud rate configuration"
+            },
+            {
+                "id": "FP_003",
+                "description": "Reset and initialisation"
             }
-        ]
+        ],
+        "protocol_handshake_rules": [
+            "Start bit (low) initiates transmission",
+            "Stop bit (high) finalizes transmission"
+        ],
+        "firmware_programming_model": [
+            "Write the baud rate divisor to baud_divisor register",
+            "Configure character length, parity, and stop bits in control register"
+        ],
+        "source_file": "uart_spec.txt",
+        "embedded_chunks": 6
     },
     "dependency_graph": {
         "components": [
@@ -146,24 +166,32 @@
         ],
         "register_map": [
             {
-                "address": "0x00",
+                "address": "0X00",
                 "name": "baud_divisor",
-                "width": 16
+                "width": 16,
+                "access": "RW",
+                "reset_value": "0X0001"
             },
             {
-                "address": "0x04",
+                "address": "0X04",
                 "name": "control",
-                "width": 8
+                "width": 8,
+                "access": "RW",
+                "reset_value": "0X00"
             }
         ],
         "functional_points": [
             {
                 "id": "FP_001",
-                "description": "8-bit data transmission"
+                "description": "Data transmission functionality"
             },
             {
                 "id": "FP_002",
                 "description": "Baud rate configuration"
+            },
+            {
+                "id": "FP_003",
+                "description": "Reset and initialisation"
             }
         ],
         "component_filenames": {
@@ -182,21 +210,114 @@
         }
     },
     "generated_files": [
-        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-53\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_interface.sv",
-        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-53\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_sequence_item.sv",
-        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-53\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_monitor.sv",
-        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-53\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_sequence.sv",
-        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-53\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_driver.sv",
-        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-53\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_scoreboard.sv",
-        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-53\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_coverage.sv",
-        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-53\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_agent.sv",
-        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-53\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_env.sv",
-        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-53\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_test_base.sv",
-        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-53\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_test_directed.sv",
-        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-53\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_top.sv"
+        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_interface.sv",
+        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_sequence_item.sv",
+        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_monitor.sv",
+        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_sequence.sv",
+        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_driver.sv",
+        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_scoreboard.sv",
+        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_coverage.sv",
+        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_agent.sv",
+        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_env.sv",
+        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_test_base.sv",
+        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_test_directed.sv",
+        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_top.sv"
     ],
-    "simulation_results": null,
-    "coverage_data": null,
+    "simulation_results": {
+        "design_name": "uart",
+        "run_id": "20260714_005051",
+        "compiled": true,
+        "compile_log": "Compilation successful.",
+        "tests": {
+            "uart_test_base": {
+                "success": true,
+                "status": "passed",
+                "stdout": "[UVM_INFO] Starting test: uart_test_base\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:446: Verilog $finish\n",
+                "stderr": "",
+                "vcd_path": "",
+                "log_summary": {
+                    "fatals": [],
+                    "errors": [],
+                    "warnings": [],
+                    "info": [
+                        "[UVM_INFO] Starting test: uart_test_base",
+                        "[UVM_INFO] Entering Build Phase...",
+                        "[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.",
+                        "[UVM_INFO] Entering Connect Phase...",
+                        "[UVM_INFO] Entering Run Phase...",
+                        "[UVM_INFO] @ 5 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] Entering Report Phase...",
+                        "[UVM_INFO] Simulation finished (all objections dropped).",
+                        "[UVM_INFO] Simulation PASSED."
+                    ],
+                    "summary": {
+                        "total_errors": 0,
+                        "total_warnings": 0,
+                        "status": "passed"
+                    }
+                },
+                "coverage": {
+                    "line_coverage": 58.94736842105262,
+                    "branch_coverage": 47.368421052631575,
+                    "toggle_coverage": 33.92857142857143,
+                    "functional_coverage": 0.0,
+                    "total_points": 340,
+                    "covered_points": 168,
+                    "functional_points_detail": {}
+                }
+            },
+            "uart_test_directed": {
+                "success": true,
+                "status": "passed",
+                "stdout": "[UVM_INFO] Starting test: uart_test_directed\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:446: Verilog $finish\n",
+                "stderr": "",
+                "vcd_path": "",
+                "log_summary": {
+                    "fatals": [],
+                    "errors": [],
+                    "warnings": [],
+                    "info": [
+                        "[UVM_INFO] Starting test: uart_test_directed",
+                        "[UVM_INFO] Entering Build Phase...",
+                        "[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.",
+                        "[UVM_INFO] Entering Connect Phase...",
+                        "[UVM_INFO] Entering Run Phase...",
+                        "[UVM_INFO] @ 5 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] Entering Report Phase...",
+                        "[UVM_INFO] Simulation finished (all objections dropped).",
+                        "[UVM_INFO] Simulation PASSED."
+                    ],
+                    "summary": {
+                        "total_errors": 0,
+                        "total_warnings": 0,
+                        "status": "passed"
+                    }
+                },
+                "coverage": {
+                    "line_coverage": 62.63157894736842,
+                    "branch_coverage": 47.368421052631575,
+                    "toggle_coverage": 31.25,
+                    "functional_coverage": 0.0,
+                    "total_points": 340,
+                    "covered_points": 172,
+                    "functional_points_detail": {}
+                }
+            }
+        },
+        "coverage": {
+            "line_coverage": 62.63157894736842,
+            "branch_coverage": 47.368421052631575,
+            "toggle_coverage": 33.92857142857143,
+            "functional_coverage": 0.0
+        },
+        "status": "passed"
+    },
+    "coverage_data": {
+        "line_coverage": 62.63157894736842,
+        "branch_coverage": 47.368421052631575,
+        "toggle_coverage": 33.92857142857143,
+        "functional_coverage": 0.0
+    },
     "anomalies": [],
     "traceability_matrix": null,
     "errors": []

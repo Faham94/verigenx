@@ -13,6 +13,7 @@ class SimCoverageParser:
         metrics = {
             "line_coverage": 0.0,
             "branch_coverage": 0.0,
+            "toggle_coverage": 0.0,
             "functional_coverage": 0.0,
             "total_points": 0,
             "covered_points": 0,
@@ -21,55 +22,66 @@ class SimCoverageParser:
 
         # 1. Parse coverage.dat if it exists
         if os.path.exists(coverage_dat_path):
-            total_points = 0
-            covered_points = 0
-            func_total = 0
-            func_covered = 0
+            total_line = 0
+            covered_line = 0
+            total_branch = 0
+            covered_branch = 0
+            total_toggle = 0
+            covered_toggle = 0
             
             try:
                 with open(coverage_dat_path, "r", encoding="utf-8", errors="ignore") as f:
                     for line in f:
-                        # Verilator coverage line pattern:
-                        # C 'filename' line col hit_count name
-                        parts = line.strip().split(maxsplit=5)
-                        if len(parts) >= 5 and parts[0] == 'C':
-                            try:
-                                hit_count = int(parts[4])
-                                name = parts[5] if len(parts) > 5 else ""
+                        line_str = line.strip()
+                        if line_str.startswith("C '"):
+                            last_quote_idx = line_str.rfind("'")
+                            if last_quote_idx != -1:
+                                metadata = line_str[3:last_quote_idx]
+                                hit_count_str = line_str[last_quote_idx+1:].strip()
+                                try:
+                                    hit_count = int(hit_count_str)
+                                except ValueError:
+                                    continue
                                 
-                                total_points += 1
-                                if hit_count > 0:
-                                    covered_points += 1
-                                    
-                                # Check if it is a functional coverpoint (contains 'cp_FP_')
-                                if "cp_FP_" in name:
-                                    func_total += 1
-                                    is_hit = (hit_count > 0)
-                                    if is_hit:
-                                        func_covered += 1
-                                    
-                                    # Extract FP_xxx name
-                                    fp_match = re.search(r"cp_(FP_\d+)", name)
-                                    if fp_match:
-                                        fp_id = fp_match.group(1)
-                                        metrics["functional_points_detail"][fp_id] = "covered" if is_hit else "uncovered"
-                            except ValueError:
-                                pass
-                
-                if total_points > 0:
-                    metrics["total_points"] = total_points
-                    metrics["covered_points"] = covered_points
-                    cov_pct = (covered_points / total_points) * 100.0
-                    metrics["line_coverage"] = cov_pct
-                    metrics["branch_coverage"] = cov_pct # fallback to same
-                
-                if func_total > 0:
-                    metrics["functional_coverage"] = (func_covered / func_total) * 100.0
+                                # Search for the 't' field value using Verilator's structured delimiters (\x01 and \x02)
+                                cov_type = "unknown"
+                                t_marker = "\x01t\x02"
+                                match_idx = metadata.find(t_marker)
+                                if match_idx != -1:
+                                    start_val = match_idx + len(t_marker)
+                                    next_x01 = metadata.find("\x01", start_val)
+                                    if next_x01 != -1:
+                                        cov_type = metadata[start_val:next_x01]
+                                    else:
+                                        cov_type = metadata[start_val:]
+                                
+                                if cov_type == "line":
+                                    total_line += 1
+                                    if hit_count > 0:
+                                        covered_line += 1
+                                elif cov_type == "branch":
+                                    total_branch += 1
+                                    if hit_count > 0:
+                                        covered_branch += 1
+                                elif cov_type == "toggle":
+                                    total_toggle += 1
+                                    if hit_count > 0:
+                                        covered_toggle += 1
             except Exception as e:
                 print(f"Error parsing coverage.dat: {e}")
+                
+            # Compute distinct metrics
+            if total_line > 0:
+                metrics["line_coverage"] = (covered_line / total_line) * 100.0
+            if total_branch > 0:
+                metrics["branch_coverage"] = (covered_branch / total_branch) * 100.0
+            if total_toggle > 0:
+                metrics["toggle_coverage"] = (covered_toggle / total_toggle) * 100.0
+                
+            metrics["total_points"] = total_line + total_branch + total_toggle
+            metrics["covered_points"] = covered_line + covered_branch + covered_toggle
 
         # 2. Extract coverage from UVM report macros in stdout log
-        # Look for e.g. "Overall simulation coverage: 100.0%" or similar pattern
         log_match = re.search(r"Overall simulation coverage:\s*([\d\.]+)%", stdout_log)
         if log_match:
             try:
@@ -79,3 +91,4 @@ class SimCoverageParser:
                 pass
 
         return metrics
+

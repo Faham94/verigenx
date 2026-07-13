@@ -1,7 +1,7 @@
 {
   "design_name": "uart",
   "version": "1.0",
-  "generated_at": "2026-07-13T16:25:35.205899",
+  "generated_at": "2026-07-14T00:50:07.712259",
   "extraction_method": "heuristic",
   "signals": [
     {
