@@ -19,7 +19,10 @@ class SimExecutor:
                 "returncode": -1
             }
 
-        design_name = os.path.basename(binary_path).replace("V", "").replace("_sim.exe", "").replace("_sim", "")
+        binary_name = os.path.basename(binary_path)
+        if binary_name.startswith("V"):
+            binary_name = binary_name[1:]
+        design_name = binary_name.replace("_sim.exe", "").replace("_sim", "")
         vcd_filename = f"{design_name}_{test_name}.vcd"
         vcd_path = os.path.join(run_dir, vcd_filename)
         coverage_path = os.path.join(run_dir, "coverage.dat")

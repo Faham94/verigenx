@@ -11,9 +11,9 @@ class SimCoverageParser:
         Parses Verilator coverage.dat file and stdout logs to extract coverage metrics.
         """
         metrics = {
-            "line_coverage": 100.0,
-            "branch_coverage": 100.0,
-            "functional_coverage": 100.0,
+            "line_coverage": 0.0,
+            "branch_coverage": 0.0,
+            "functional_coverage": 0.0,
             "total_points": 0,
             "covered_points": 0,
             "functional_points_detail": {}

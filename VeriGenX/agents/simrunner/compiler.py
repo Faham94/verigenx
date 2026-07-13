@@ -117,14 +117,16 @@ endmodule
         Compiles the design and UVM files together.
         Returns (success, log_message, binary_path)
         """
-        # Prepend MinGW-w64 paths first, then MSYS2 paths so make and gcc from MinGW-w64 are found
-        path = os.environ.get("PATH", "")
-        mingw_bin = r"C:\msys64\mingw64\bin"
-        msys_bin = r"C:\msys64\usr\bin"
-        path_list = path.split(";")
-        path_list = [p for p in path_list if p not in (mingw_bin, msys_bin, mingw_bin.lower(), msys_bin.lower())]
-        os.environ["PATH"] = ";".join([mingw_bin, msys_bin] + path_list)
-        os.environ["MSYSTEM"] = "MINGW64"
+        # Prepend MinGW-w64 paths first, then MSYS2 paths so make and gcc from MinGW-w64 are found (Windows only)
+        if os.name == "nt":
+            path = os.environ.get("PATH", "")
+            mingw_bin = r"C:\msys64\mingw64\bin"
+            msys_bin = r"C:\msys64\usr\bin"
+            path_list = path.split(";")
+            path_list = [p for p in path_list if p not in (mingw_bin, msys_bin, mingw_bin.lower(), msys_bin.lower())]
+            os.environ["PATH"] = ";".join([mingw_bin, msys_bin] + path_list)
+            os.environ["MSYSTEM"] = "MINGW64"
+
 
         os.makedirs(run_dir, exist_ok=True)
         
@@ -190,7 +192,8 @@ endmodule
                 text=True,
                 cwd=run_dir
             )
-            binary_path = os.path.join(run_dir, "obj_dir", f"V{design_name}_sim.exe")
+            binary_ext = ".exe" if os.name == "nt" else ""
+            binary_path = os.path.join(run_dir, "obj_dir", f"V{design_name}_sim{binary_ext}")
             if result.returncode == 0 and os.path.exists(binary_path):
                 return True, "Compilation successful.", binary_path
             else:

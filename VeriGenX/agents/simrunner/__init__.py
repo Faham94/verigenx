@@ -45,9 +45,32 @@ class SimRunner:
             print(f"  [Error] Compilation failed:\n{compile_log}")
             return results
 
-        # 2. Run test classes
-        # List of tests to run (from plan / default template conventions)
-        tests_to_run = [f"{design_name}_test_base", f"{design_name}_test_directed"]
+        # 2. Discover UVM test classes dynamically from generated SV files
+        import re
+        tests_to_run = []
+        for filepath in uvm_files:
+            if not os.path.exists(filepath):
+                continue
+            try:
+                with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
+                    content = f.read()
+                # Strip single-line and multi-line comments
+                content_no_comments = re.sub(r"//.*|/\*.*?\*/", "", content, flags=re.DOTALL)
+                # Match class declarations extending any class
+                matches = re.findall(r"\bclass\s+(\w+)\s+extends\s+(\w+)", content_no_comments)
+                for cls_name, base_name in matches:
+                    if (base_name == "uvm_test" or 
+                        "test" in base_name.lower() or 
+                        "test" in cls_name.lower()):
+                        if cls_name not in tests_to_run:
+                            tests_to_run.append(cls_name)
+            except Exception as e:
+                print(f"Error parsing test classes from {filepath}: {e}")
+
+        # Fallback to guessed default test name convention if none discovered
+        if not tests_to_run:
+            tests_to_run = [f"{design_name}_test_base", f"{design_name}_test_directed"]
+
         passed_tests = 0
 
         # Create output directory for coverage
@@ -79,22 +102,28 @@ class SimRunner:
             }
 
         # 3. Aggregate overall results
-        all_passed = (passed_tests == len(tests_to_run))
-        results["status"] = "passed" if all_passed else "failed"
+        all_passed = (passed_tests == len(tests_to_run)) if tests_to_run else False
+        results["status"] = "passed" if (all_passed and tests_to_run) else "failed"
 
         # Aggregate coverage from the last run or take max/average
-        # (directed test typically runs more sequences and achieves more coverage)
         agg_cov = {
-            "line_coverage": 100.0,
-            "branch_coverage": 100.0,
-            "functional_coverage": 100.0
+            "line_coverage": 0.0,
+            "branch_coverage": 0.0,
+            "functional_coverage": 0.0
         }
+        has_cov = False
         for test_name in tests_to_run:
             if test_name in results["tests"]:
                 test_cov = results["tests"][test_name]["coverage"]
-                agg_cov["line_coverage"] = min(agg_cov["line_coverage"], test_cov.get("line_coverage", 100.0))
-                agg_cov["branch_coverage"] = min(agg_cov["branch_coverage"], test_cov.get("branch_coverage", 100.0))
-                agg_cov["functional_coverage"] = min(agg_cov["functional_coverage"], test_cov.get("functional_coverage", 100.0))
+                if not has_cov:
+                    agg_cov["line_coverage"] = test_cov.get("line_coverage", 0.0)
+                    agg_cov["branch_coverage"] = test_cov.get("branch_coverage", 0.0)
+                    agg_cov["functional_coverage"] = test_cov.get("functional_coverage", 0.0)
+                    has_cov = True
+                else:
+                    agg_cov["line_coverage"] = max(agg_cov["line_coverage"], test_cov.get("line_coverage", 0.0))
+                    agg_cov["branch_coverage"] = max(agg_cov["branch_coverage"], test_cov.get("branch_coverage", 0.0))
+                    agg_cov["functional_coverage"] = max(agg_cov["functional_coverage"], test_cov.get("functional_coverage", 0.0))
         
         results["coverage"] = agg_cov
 
@@ -104,8 +133,8 @@ class SimRunner:
             with open(run_report_path, "w", encoding="utf-8") as f:
                 json.dump(results, f, indent=4)
             
-            # Save global simulation report
-            with open("output/validation_report.json", "w", encoding="utf-8") as f:
+            # Save global simulation report to prevent overwriting Phase 3's validation_report.json
+            with open("output/sim_validation_report.json", "w", encoding="utf-8") as f:
                 json.dump(results, f, indent=4)
         except Exception as e:
             print(f"Error saving simulation report: {e}")

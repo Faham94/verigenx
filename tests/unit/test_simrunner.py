@@ -60,6 +60,13 @@ C 'uart_coverage.sv' 20 5 0 'cp_FP_002'
         res = parser.parse("non_existent_file.dat", stdout)
         assert res["functional_coverage"] == 92.5
 
+    def test_parse_missing_coverage_defaults_to_zero(self):
+        parser = SimCoverageParser()
+        res = parser.parse("non_existent_file.dat", "no coverage info in log")
+        assert res["line_coverage"] == 0.0
+        assert res["branch_coverage"] == 0.0
+        assert res["functional_coverage"] == 0.0
+
 class TestSimCompiler:
     def test_generate_sim_main(self, tmp_path):
         compiler = SimCompiler()

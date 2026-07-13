@@ -183,7 +183,7 @@ with st.sidebar:
         except Exception:
             pass
 
-    if os.path.exists("output/validation_report.json"):
+    if os.path.exists("output/sim_validation_report.json"):
         p4_status = True
     else:
         try:
@@ -791,7 +791,7 @@ elif page == "Validation Report":
 
 elif page == "Simulation Report":
     st.markdown('<div class="section-header">Phase 4: SimRunner Simulation Report</div>', unsafe_allow_html=True)
-    val_path = "output/validation_report.json"
+    val_path = "output/sim_validation_report.json"
     
     if not os.path.exists(val_path):
         st.info("No simulation validation report found. Run the simulation pipeline to generate results.")
