@@ -182,6 +182,24 @@ _PROMPTS: Dict[str, str] = {
         "If an invalid behavior is detected, use `uvm_report_error` or `uvm_error` to flag it.\n"
         "Return ONLY the prediction function body."
     ),
+    "coverhunter_test_generator": (
+        "You are an expert UVM verification engineer.\n"
+        "We are generating a targeted directed test for design '{dut_name}' to cover a specific gap.\n\n"
+        "Gap Type: {gap_type}\n"
+        "Gap Name/ID: {gap_name}\n"
+        "Design Details:\n"
+        "  Signals: {signals}\n"
+        "  Test Plan Context: {test_plan_context}\n\n"
+        "Please generate a complete new directed test file that targets this gap.\n"
+        "The file must define:\n"
+        "1. A custom sequence class inheriting from '{dut_name}_sequence'. In this sequence class, you should override 'body()' "
+        "and randomize the sequence item with inline constraints (randomize() with {{ ... }}) specifically targeting values that "
+        "exercise the uncovered gap.\n"
+        "2. A custom test class inheriting from '{dut_name}_test_base'. In this test class, run the custom sequence on the agent's sequencer.\n\n"
+        "Ensure the code is valid SystemVerilog, compiles with Verilator, and correctly references the parent classes.\n"
+        "Make sure to register the classes with UVM macros (`uvm_object_utils / `uvm_component_utils).\n"
+        "Return ONLY the complete raw SystemVerilog code for this new test file. Do not include markdown fences, do not include explanations."
+    ),
 }
 
 

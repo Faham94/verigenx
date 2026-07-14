@@ -3,7 +3,7 @@
     "test_plan": {
         "design_name": "uart",
         "version": "1.0",
-        "generated_at": "2026-07-14T17:07:19.414827",
+        "generated_at": "2026-07-14T20:47:18.804989",
         "extraction_method": "heuristic",
         "signals": [
             {
@@ -225,7 +225,7 @@
     ],
     "simulation_results": {
         "design_name": "uart",
-        "run_id": "20260714_170720",
+        "run_id": "20260714_205945",
         "compiled": true,
         "compile_log": "Compilation successful.",
         "tests": {
@@ -234,7 +234,7 @@
                 "status": "passed",
                 "stdout": "[UVM_INFO] Starting test: uart_test_base\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:446: Verilog $finish\n",
                 "stderr": "",
-                "vcd_path": "",
+                "vcd_path": "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-68\\test_uart_coverage_closure_e2e0\\sim_20260714_205945\\uart_uart_test_base.vcd",
                 "log_summary": {
                     "fatals": [],
                     "errors": [],
@@ -258,12 +258,12 @@
                     }
                 },
                 "coverage": {
-                    "line_coverage": 63.91752577319587,
-                    "branch_coverage": 53.70370370370371,
-                    "toggle_coverage": 58.03571428571429,
+                    "line_coverage": 60.824742268041234,
+                    "branch_coverage": 50.0,
+                    "toggle_coverage": 29.464285714285715,
                     "functional_coverage": 33.33,
                     "total_points": 360,
-                    "covered_points": 218,
+                    "covered_points": 178,
                     "functional_points_detail": {
                         "FP_001": {
                             "description": "Data transmission functionality",
@@ -291,7 +291,7 @@
                 "status": "passed",
                 "stdout": "[UVM_INFO] Starting test: uart_test_directed\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:446: Verilog $finish\n",
                 "stderr": "",
-                "vcd_path": "",
+                "vcd_path": "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-68\\test_uart_coverage_closure_e2e0\\sim_20260714_205945\\uart_uart_test_directed.vcd",
                 "log_summary": {
                     "fatals": [],
                     "errors": [],
@@ -315,12 +315,12 @@
                     }
                 },
                 "coverage": {
-                    "line_coverage": 69.58762886597938,
-                    "branch_coverage": 57.407407407407405,
-                    "toggle_coverage": 59.82142857142857,
+                    "line_coverage": 88.65979381443299,
+                    "branch_coverage": 74.07407407407408,
+                    "toggle_coverage": 58.92857142857143,
                     "functional_coverage": 33.33,
                     "total_points": 360,
-                    "covered_points": 233,
+                    "covered_points": 278,
                     "functional_points_detail": {
                         "FP_001": {
                             "description": "Data transmission functionality",
@@ -345,17 +345,17 @@
             }
         },
         "coverage": {
-            "line_coverage": 69.58762886597938,
-            "branch_coverage": 57.407407407407405,
-            "toggle_coverage": 59.82142857142857,
+            "line_coverage": 88.65979381443299,
+            "branch_coverage": 74.07407407407408,
+            "toggle_coverage": 58.92857142857143,
             "functional_coverage": 33.33
         },
         "status": "passed"
     },
     "coverage_data": {
-        "line_coverage": 69.58762886597938,
-        "branch_coverage": 57.407407407407405,
-        "toggle_coverage": 59.82142857142857,
+        "line_coverage": 88.65979381443299,
+        "branch_coverage": 74.07407407407408,
+        "toggle_coverage": 58.92857142857143,
         "functional_coverage": 33.33
     },
     "anomalies": [],

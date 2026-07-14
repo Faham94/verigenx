@@ -51,6 +51,9 @@ class Orchestrator:
             print("\n[Phase 4] SimRunner — Simulation Orchestration")
             self._run_simrunner()
 
+            print("\n[Phase 5] CoverHunter — Coverage Closure Feedback Loop")
+            self._run_coverhunter()
+
             elapsed = time.time() - self.start_time
             print("\n" + "=" * 60)
             print(f"PIPELINE COMPLETE in {elapsed:.2f}s")
@@ -193,6 +196,26 @@ class Orchestrator:
             coverage_data=results.get("coverage")
         )
         print(f"  SimRunner complete — Overall Status: {results['status'].upper()}")
+
+    # ------------------------------------------------------------------ #
+    #  Phase 5 — CoverHunter                                              #
+    # ------------------------------------------------------------------ #
+
+    def _run_coverhunter(self) -> None:
+        state_plan = self.state.get_state().test_plan
+        state_dag  = self.state.get_state().dependency_graph
+        state_files = self.state.get_state().generated_files
+
+        if not state_plan or not state_dag or not state_files:
+            print("  [Warning] Missing test plan, DAG, or generated files in state. Skipping CoverHunter.")
+            return
+
+        design = state_plan.get("design_name", "design")
+        from VeriGenX.agents.coverhunter.closure_loop import ClosureLoop
+        loop = ClosureLoop(max_iterations=5, convergence_threshold=0.1)
+        results = loop.run_closure_loop(design, state_plan, state_files)
+        
+        print(f"  CoverHunter complete — Overall Status: {results['status'].upper()}")
 
     # ------------------------------------------------------------------ #
     #  ArchWeaver-only entry (for testing / standalone use)               #

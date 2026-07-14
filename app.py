@@ -191,7 +191,7 @@ with st.sidebar:
     st.divider()
 
     # Dynamic Phase Statuses
-    p1_status, p2_status, p3_status, p4_status = False, False, False, False
+    p1_status, p2_status, p3_status, p4_status, p5_status = False, False, False, False, False
     if plan is not None:
         p1_status = True
     if os.path.exists("dag.dot"):
@@ -236,6 +236,15 @@ with st.sidebar:
         except Exception:
             pass
 
+    try:
+        if os.path.exists("output/pipeline_state.json"):
+            with open("output/pipeline_state.json", "r") as f:
+                state = json.load(f)
+                if state.get("coverage_data"):
+                    p5_status = True
+    except Exception:
+        pass
+
     st.markdown("**Phase Status**")
     if p1_status:
         st.markdown('<span class="status-complete">Phase 1 — SpecMind</span>',  unsafe_allow_html=True)
@@ -256,6 +265,11 @@ with st.sidebar:
         st.markdown('<span class="status-complete">Phase 4 — SimRunner</span>',  unsafe_allow_html=True)
     else:
         st.markdown('<span class="status-pending">Phase 4 — SimRunner</span>',  unsafe_allow_html=True)
+
+    if p5_status:
+        st.markdown('<span class="status-complete">Phase 5 — CoverHunter</span>',  unsafe_allow_html=True)
+    else:
+        st.markdown('<span class="status-pending">Phase 5 — CoverHunter</span>',  unsafe_allow_html=True)
     st.divider()
 
     if plan:
@@ -282,6 +296,8 @@ if plan:
         completed_phases.append("3")
     if p4_status:
         completed_phases.append("4")
+    if p5_status:
+        completed_phases.append("5")
     
     if completed_phases:
         if len(completed_phases) == 1:
@@ -378,6 +394,11 @@ if page == "Overview":
             st.success("**Phase 4 — SimRunner:** Complete\n\nMulti-test timing simulations run successfully, VCD traces generated, and distinct coverage metrics parsed.")
         else:
             st.warning("**Phase 4 — SimRunner:** Pending\n\nSimulations and coverage parsing pending.")
+
+        if p5_status:
+            st.success("**Phase 5 — CoverHunter:** Complete\n\nCoverage closure feedback loop executed, targeted tests generated, and functional coverage targets achieved.")
+        else:
+            st.warning("**Phase 5 — CoverHunter:** Pending\n\nCoverage closure loop and test generation pending.")
 
 
 elif page == "Signals":
