@@ -3,7 +3,7 @@
     "test_plan": {
         "design_name": "uart",
         "version": "1.0",
-        "generated_at": "2026-07-14T00:50:07.712259",
+        "generated_at": "2026-07-14T17:07:19.414827",
         "extraction_method": "heuristic",
         "signals": [
             {
@@ -225,14 +225,14 @@
     ],
     "simulation_results": {
         "design_name": "uart",
-        "run_id": "20260714_005051",
+        "run_id": "20260714_170720",
         "compiled": true,
         "compile_log": "Compilation successful.",
         "tests": {
             "uart_test_base": {
                 "success": true,
                 "status": "passed",
-                "stdout": "[UVM_INFO] Starting test: uart_test_base\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:446: Verilog $finish\n",
+                "stdout": "[UVM_INFO] Starting test: uart_test_base\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:446: Verilog $finish\n",
                 "stderr": "",
                 "vcd_path": "",
                 "log_summary": {
@@ -247,6 +247,7 @@
                         "[UVM_INFO] Entering Run Phase...",
                         "[UVM_INFO] @ 5 | SB_MATCH: Transaction match:",
                         "[UVM_INFO] Entering Report Phase...",
+                        "[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%",
                         "[UVM_INFO] Simulation finished (all objections dropped).",
                         "[UVM_INFO] Simulation PASSED."
                     ],
@@ -257,19 +258,38 @@
                     }
                 },
                 "coverage": {
-                    "line_coverage": 58.94736842105262,
-                    "branch_coverage": 47.368421052631575,
-                    "toggle_coverage": 33.92857142857143,
-                    "functional_coverage": 0.0,
-                    "total_points": 340,
-                    "covered_points": 168,
-                    "functional_points_detail": {}
+                    "line_coverage": 63.91752577319587,
+                    "branch_coverage": 53.70370370370371,
+                    "toggle_coverage": 58.03571428571429,
+                    "functional_coverage": 33.33,
+                    "total_points": 360,
+                    "covered_points": 218,
+                    "functional_points_detail": {
+                        "FP_001": {
+                            "description": "Data transmission functionality",
+                            "hit_count": 0,
+                            "total_bins": 1,
+                            "coverage_percentage": 0.0
+                        },
+                        "FP_002": {
+                            "description": "Baud rate configuration",
+                            "hit_count": 0,
+                            "total_bins": 1,
+                            "coverage_percentage": 0.0
+                        },
+                        "FP_003": {
+                            "description": "Reset and initialisation",
+                            "hit_count": 1,
+                            "total_bins": 1,
+                            "coverage_percentage": 100.0
+                        }
+                    }
                 }
             },
             "uart_test_directed": {
                 "success": true,
                 "status": "passed",
-                "stdout": "[UVM_INFO] Starting test: uart_test_directed\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:446: Verilog $finish\n",
+                "stdout": "[UVM_INFO] Starting test: uart_test_directed\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:446: Verilog $finish\n",
                 "stderr": "",
                 "vcd_path": "",
                 "log_summary": {
@@ -284,6 +304,7 @@
                         "[UVM_INFO] Entering Run Phase...",
                         "[UVM_INFO] @ 5 | SB_MATCH: Transaction match:",
                         "[UVM_INFO] Entering Report Phase...",
+                        "[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%",
                         "[UVM_INFO] Simulation finished (all objections dropped).",
                         "[UVM_INFO] Simulation PASSED."
                     ],
@@ -294,29 +315,48 @@
                     }
                 },
                 "coverage": {
-                    "line_coverage": 62.63157894736842,
-                    "branch_coverage": 47.368421052631575,
-                    "toggle_coverage": 31.25,
-                    "functional_coverage": 0.0,
-                    "total_points": 340,
-                    "covered_points": 172,
-                    "functional_points_detail": {}
+                    "line_coverage": 69.58762886597938,
+                    "branch_coverage": 57.407407407407405,
+                    "toggle_coverage": 59.82142857142857,
+                    "functional_coverage": 33.33,
+                    "total_points": 360,
+                    "covered_points": 233,
+                    "functional_points_detail": {
+                        "FP_001": {
+                            "description": "Data transmission functionality",
+                            "hit_count": 0,
+                            "total_bins": 1,
+                            "coverage_percentage": 0.0
+                        },
+                        "FP_002": {
+                            "description": "Baud rate configuration",
+                            "hit_count": 0,
+                            "total_bins": 1,
+                            "coverage_percentage": 0.0
+                        },
+                        "FP_003": {
+                            "description": "Reset and initialisation",
+                            "hit_count": 1,
+                            "total_bins": 1,
+                            "coverage_percentage": 100.0
+                        }
+                    }
                 }
             }
         },
         "coverage": {
-            "line_coverage": 62.63157894736842,
-            "branch_coverage": 47.368421052631575,
-            "toggle_coverage": 33.92857142857143,
-            "functional_coverage": 0.0
+            "line_coverage": 69.58762886597938,
+            "branch_coverage": 57.407407407407405,
+            "toggle_coverage": 59.82142857142857,
+            "functional_coverage": 33.33
         },
         "status": "passed"
     },
     "coverage_data": {
-        "line_coverage": 62.63157894736842,
-        "branch_coverage": 47.368421052631575,
-        "toggle_coverage": 33.92857142857143,
-        "functional_coverage": 0.0
+        "line_coverage": 69.58762886597938,
+        "branch_coverage": 57.407407407407405,
+        "toggle_coverage": 59.82142857142857,
+        "functional_coverage": 33.33
     },
     "anomalies": [],
     "traceability_matrix": null,

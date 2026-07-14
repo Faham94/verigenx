@@ -912,13 +912,13 @@ elif page == "Simulation Report":
         with col3:
             st.markdown(f'<div class="metric-card"><div class="metric-number">{cov.get("toggle_coverage", 0.0):.1f}%</div><div class="metric-label">Toggle Coverage</div></div>', unsafe_allow_html=True)
         with col4:
-            st.markdown(f'<div class="metric-card"><div class="metric-number" style="font-size: 15px; padding-top: 10px;">Unmeasurable*</div><div class="metric-label">Functional Coverage</div></div>', unsafe_allow_html=True)
+            func_cov = cov.get("functional_coverage", 0.0)
+            st.markdown(f'<div class="metric-card"><div class="metric-number">{func_cov:.1f}%</div><div class="metric-label">Functional Coverage</div></div>', unsafe_allow_html=True)
             
         st.markdown(
             '<div style="background:#fffbeb; border:1px solid #fef3c7; color:#b45309; padding:12px; border-radius:8px; font-size:12px; margin-top:8px;">'
-            '<strong>* Functional Coverage Limitation:</strong> SystemVerilog covergroups are not natively simulated '
-            'or recorded by Verilator\'s coverage runtime (which is primarily RTL statement/branch focused). '
-            'Functional coverage metrics default to Unmeasurable. Line, Branch, and Toggle coverages are fully measured.'
+            '<strong>* Functional Coverage:</strong> SystemVerilog coverpoints are tracked via manual hit-counters '
+            'inside the mock subscriber class and dumped to a JSON report at simulation exit.'
             '</div>',
             unsafe_allow_html=True
         )

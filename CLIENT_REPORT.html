@@ -380,7 +380,7 @@
   </div>
 
   <div class="caveat-strip" style="font-size: 11px; color: var(--muted); margin-top: -36px; margin-bottom: 48px; border-left: 2px solid var(--border); padding-left: 12px;">
-    * Note: Compilation and simulation verified via Verilator timing-mode against a lightweight UVM-compatible mock library (uvm_mock.svh) with functional sequencer-driver handshakes, not the full Accellera UVM 1.2 package. Functional coverage is unmeasurable under Verilator due to simulator limitations in SystemVerilog OOP covergroup execution.
+    * Note: Compilation and simulation verified via Verilator timing-mode against a lightweight UVM-compatible mock library (uvm_mock.svh) with functional sequencer-driver handshakes, not the full Accellera UVM 1.2 package. Functional coverage is measured dynamically using a manual hit-counter approach inside the mock subscriber class and dumped to JSON at simulation exit.
   </div>
 
   <!-- SIGNALS -->

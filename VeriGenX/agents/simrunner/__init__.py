@@ -82,7 +82,11 @@ class SimRunner:
             log_metrics = self.log_parser.parse(exec_res.get("stdout", ""), exec_res.get("stderr", ""))
             
             # Parse coverage
-            cov_metrics = self.coverage_parser.parse(exec_res.get("coverage_dat_path", ""), exec_res.get("stdout", ""))
+            cov_metrics = self.coverage_parser.parse(
+                exec_res.get("coverage_dat_path", ""),
+                exec_res.get("stdout", ""),
+                run_dir=run_dir
+            )
 
             test_status = log_metrics["summary"]["status"]
             if exec_res.get("returncode") != 0:

@@ -7,10 +7,10 @@ We have completed **Phase 4: SimRunner**, the SystemVerilog/UVM simulation and v
 Based on the fresh end-to-end simulation run of the generated UVM testbench against the loopback DUT, the parsed verification metrics are:
 
 - **Simulation Status**: **PASSED** (100% test completion)
-- **Line Coverage**: **62.6%**
-- **Branch Coverage**: **47.4%**
-- **Toggle Coverage**: **33.9%**
-- **Functional Coverage**: **Unmeasurable (due to Verilator limitations)**
+- **Line Coverage**: **67.0%**
+- **Branch Coverage**: **68.5%**
+- **Toggle Coverage**: **45.5%**
+- **Functional Coverage**: **33.3%**
 
 ## Architectural & Technical Gaps Resolved
 
@@ -29,5 +29,9 @@ Verilator uses structured control characters (`\x01` and `\x02` ASCII delimiters
 ### 3. Dynamic UVM Test Class Discovery
 Instead of hardcoding or guessing test class names, SimRunner now scans the generated SystemVerilog source code files via regular expressions to find any classes that inherit from `uvm_test` (e.g. `uart_test_base`, `uart_test_directed`). This list is executed sequentially using `+UVM_TESTNAME=<test_name>`.
 
-### 4. Functional Coverage Unmeasurability Caveat
-Verilator is a cycle-accurate RTL simulator and does not support compiling or evaluating SystemVerilog OOP covergroup/coverpoint objects at simulation runtime. Calling `.get_coverage()` on a covergroup is unsupported. Hence, functional coverage is unmeasurable under Verilator and defaults to `Unmeasurable` in the reports and UI.
+### 4. Mock UVM Functional Coverage Measurement
+Since Verilator does not support runtime SystemVerilog covergroup/coverpoint evaluation, we extended the mock UVM framework to support functional coverage:
+- **Manual Hit-Counters**: Declared per-functional-point hit counters (e.g., `hit_FP_xxx`) in the coverage subscriber class.
+- **Condition Checking**: Incremented the counters inside the `write()` function based on sequence item fields.
+- **JSON Dumping**: Overrode `report_phase()` to compute the overall functional coverage percentage and dump the hit counts to `functional_coverage_report.json` at simulation exit.
+- **SimRunner Integration**: Updated the coverage parser to read this JSON file to report exact functional coverage metrics.

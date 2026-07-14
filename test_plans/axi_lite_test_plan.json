@@ -1,7 +1,7 @@
 {
   "design_name": "axi_lite",
   "version": "1.0",
-  "generated_at": "2026-07-13T16:25:32.435918",
+  "generated_at": "2026-07-14T01:13:37.047280",
   "extraction_method": "heuristic",
   "signals": [
     {

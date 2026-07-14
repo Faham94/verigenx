@@ -6,7 +6,7 @@ class SimCoverageParser:
     def __init__(self):
         pass
 
-    def parse(self, coverage_dat_path: str, stdout_log: str) -> Dict[str, Any]:
+    def parse(self, coverage_dat_path: str, stdout_log: str, run_dir: str = None) -> Dict[str, Any]:
         """
         Parses Verilator coverage.dat file and stdout logs to extract coverage metrics.
         """
@@ -89,6 +89,23 @@ class SimCoverageParser:
                 metrics["functional_coverage"] = val
             except ValueError:
                 pass
+
+        # 3. Read functional coverage from JSON
+        import json
+        json_path = ""
+        if run_dir:
+            json_path = os.path.join(run_dir, "functional_coverage_report.json")
+        elif coverage_dat_path:
+            json_path = os.path.join(os.path.dirname(coverage_dat_path), "functional_coverage_report.json")
+
+        if json_path and os.path.exists(json_path):
+            try:
+                with open(json_path, "r", encoding="utf-8") as f:
+                    fc_data = json.load(f)
+                metrics["functional_coverage"] = fc_data.get("overall_functional_coverage", 0.0)
+                metrics["functional_points_detail"] = fc_data.get("points", {})
+            except Exception as e:
+                print(f"Error reading functional coverage JSON from {json_path}: {e}")
 
         return metrics
 
