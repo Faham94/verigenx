@@ -192,6 +192,7 @@ class uvm_sequence #(type REQ=uvm_sequence_item, type RSP=REQ) extends uvm_seque
 endclass
 
 class uvm_seq_item_export #(type REQ=uvm_sequence_item, type RSP=REQ) extends uvm_object;
+    uvm_object m_sequencer_obj;
     function new(string name=""); super.new(name); endfunction
 endclass
 
@@ -235,6 +236,7 @@ class uvm_sequencer #(type REQ=uvm_sequence_item, type RSP=REQ) extends uvm_comp
     function new(string name="", uvm_component parent=null);
         super.new(name, parent);
         seq_item_export = new("seq_item_export");
+        seq_item_export.m_sequencer_obj = this;
         req_mailbox = new("req_mailbox");
     endfunction
     
@@ -257,6 +259,7 @@ class uvm_seq_item_pull_port #(type REQ=uvm_sequence_item, type RSP=REQ) extends
     function new(string name=""); super.new(name); endfunction
     virtual function void connect(uvm_seq_item_export #(REQ, RSP) export_port);
         // Bind to sequencer via export port check
+        $cast(m_sequencer, export_port.m_sequencer_obj);
     endfunction
     virtual task get_next_item(ref REQ item);
         m_sequencer.get_next_item(item);
@@ -279,8 +282,8 @@ class uvm_driver #(type REQ=uvm_sequence_item, type RSP=REQ) extends uvm_compone
     
     virtual function void connect_phase(uvm_phase phase);
         super.connect_phase(phase);
-        // Connect pull port to sequencer automatically for mock
-        if (m_parent != null) begin
+        // Connect pull port to sequencer automatically for mock if not already connected
+        if (seq_item_port.m_sequencer == null && m_parent != null) begin
             // Locate sequencer in agent
             uvm_agent agent;
             if ($cast(agent, m_parent)) begin

@@ -172,6 +172,7 @@ class Orchestrator:
         from VeriGenX.agents.uvmforge.generator import UVMForgeGenerator
         generator = UVMForgeGenerator()
         generated_files = generator.generate_all(state_plan, state_dag)
+        self.state.update_state(generated_files=generated_files)
         print(f"  UVMForge complete — Generated {len(generated_files)} SystemVerilog files")
 
     # ------------------------------------------------------------------ #

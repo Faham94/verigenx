@@ -24,7 +24,7 @@ class uart_coverage extends uvm_subscriber #(uart_seq_item);
 // {% endllm_fill %}
         
         
-        // FP_002: Baud rate configuration
+        // FP_002: Parity error detection
         // {% llm_fill "FP_002" %}
         cp_FP_002: coverpoint t.tx_data;
 // {% endllm_fill %}
@@ -96,7 +96,7 @@ class uart_coverage extends uvm_subscriber #(uart_seq_item);
             $fwrite(fd, "    },\n");
             
             $fwrite(fd, "    \"FP_002\": {\n");
-            $fwrite(fd, "      \"description\": \"Baud rate configuration\",\n");
+            $fwrite(fd, "      \"description\": \"Parity error detection\",\n");
             $fwrite(fd, "      \"hit_count\": %0d,\n", hit_FP_002);
             $fwrite(fd, "      \"total_bins\": 1,\n");
             $fwrite(fd, "      \"coverage_percentage\": %0.2f\n", (hit_FP_002 > 0) ? 100.0 : 0.0);

@@ -1,0 +1,65 @@
+{
+  "design_name": "uart",
+  "baseline_coverage": {
+    "functional_coverage": 33.33,
+    "line_coverage": 93.26424870466322,
+    "branch_coverage": 77.77777777777779,
+    "toggle_coverage": 37.5,
+    "total_coverage": 60.468006620610254
+  },
+  "iterations": [
+    {
+      "iteration": 1,
+      "coverage": {
+        "functional_coverage": 33.33,
+        "line_coverage": 93.26424870466322,
+        "branch_coverage": 77.77777777777779,
+        "toggle_coverage": 37.5,
+        "total_coverage": 60.468006620610254
+      },
+      "targeted_gap": {
+        "name": "IDLE",
+        "type": "uncovered FSM state",
+        "description": ""
+      }
+    },
+    {
+      "iteration": 2,
+      "coverage": {
+        "functional_coverage": 66.67,
+        "line_coverage": 81.46341463414633,
+        "branch_coverage": 77.77777777777779,
+        "toggle_coverage": 53.57142857142857,
+        "total_coverage": 69.87065524583818
+      },
+      "targeted_gap": {
+        "name": "DATA",
+        "type": "uncovered FSM state",
+        "description": ""
+      }
+    },
+    {
+      "iteration": 3,
+      "coverage": {
+        "functional_coverage": 66.67,
+        "line_coverage": 93.08755760368663,
+        "branch_coverage": 88.88888888888889,
+        "toggle_coverage": 67.85714285714286,
+        "total_coverage": 79.12589733742959
+      },
+      "targeted_gap": null
+    }
+  ],
+  "rollback_info": {
+    "occurred": false,
+    "reason": null,
+    "iteration": null
+  },
+  "final_coverage": {
+    "functional_coverage": 66.67,
+    "line_coverage": 93.08755760368663,
+    "branch_coverage": 88.88888888888889,
+    "toggle_coverage": 67.85714285714286,
+    "total_coverage": 79.12589733742959
+  }
+}

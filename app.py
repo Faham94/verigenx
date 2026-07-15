@@ -236,14 +236,8 @@ with st.sidebar:
         except Exception:
             pass
 
-    try:
-        if os.path.exists("output/pipeline_state.json"):
-            with open("output/pipeline_state.json", "r") as f:
-                state = json.load(f)
-                if state.get("coverage_data"):
-                    p5_status = True
-    except Exception:
-        pass
+    if os.path.exists("output/coverhunter_report.json"):
+        p5_status = True
 
     st.markdown("**Phase Status**")
     if p1_status:

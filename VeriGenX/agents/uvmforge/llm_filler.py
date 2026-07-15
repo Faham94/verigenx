@@ -113,7 +113,7 @@ class LLMFiller:
             name_lower = s["name"].lower()
             is_clk_rst = any(k in name_lower for k in ["clk", "clock", "rst", "reset"])
             if s["direction"] == "input" and not is_clk_rst:
-                drive_stmts.append(f"            vif.cb.{s['name']} <= req.{s['name']};")
+                drive_stmts.append(f"            vif.{s['name']} <= req.{s['name']};")
         drive_code = "\n".join(drive_stmts)
         
         # Find clock name
@@ -371,7 +371,7 @@ class LLMFiller:
                 name_lower = s["name"].lower()
                 is_clk_rst = any(k in name_lower for k in ["clk", "clock", "rst", "reset"])
                 if s["direction"] == "input" and not is_clk_rst:
-                    drive_stmts.append(f"            vif.cb.{s['name']} <= req.{s['name']};")
+                    drive_stmts.append(f"            vif.{s['name']} <= req.{s['name']};")
             drive_code = "\n".join(drive_stmts)
             clk_name = "clk"
             for s in signals:

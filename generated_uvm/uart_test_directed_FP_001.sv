@@ -1,0 +1,1 @@
+class new_test extends uvm_test; endclass

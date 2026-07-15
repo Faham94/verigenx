@@ -55,7 +55,8 @@ class SimRunner:
                 with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
                     content = f.read()
                 # Strip single-line and multi-line comments
-                content_no_comments = re.sub(r"//.*|/\*.*?\*/", "", content, flags=re.DOTALL)
+                content_no_comments = re.sub(r"/\*.*?\*/", "", content, flags=re.DOTALL)
+                content_no_comments = re.sub(r"//.*", "", content_no_comments)
                 # Match class declarations extending any class
                 matches = re.findall(r"\bclass\s+(\w+)\s+extends\s+(\w+)", content_no_comments)
                 for cls_name, base_name in matches:

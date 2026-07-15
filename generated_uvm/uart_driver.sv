@@ -26,7 +26,7 @@ class uart_driver extends uvm_driver #(uart_seq_item);
             seq_item_port.get_next_item(req);
             // {% llm_fill "driver_drive_item" %}
         @(posedge vif.clk);
-            vif.cb.tx_data <= req.tx_data;
+            vif.tx_data <= req.tx_data;
         #10;
 // {% endllm_fill %}
             seq_item_port.item_done();

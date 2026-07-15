@@ -161,3 +161,17 @@ class TestClosureLoop:
 
             assert results["coverage"]["functional_coverage"] == 90.0
             assert mock_runner.run_simulations.call_count == 2
+
+            # Check report was written and has correct values
+            report_path = base_dir / "coverhunter_report.json"
+            assert report_path.exists()
+            with open(report_path, "r", encoding="utf-8") as f:
+                report_data = json.load(f)
+            assert report_data["design_name"] == "uart"
+            assert "baseline_coverage" in report_data
+            assert len(report_data["iterations"]) == 2
+            assert report_data["iterations"][0]["iteration"] == 1
+            assert report_data["iterations"][0]["targeted_gap"]["name"] == "FP_001"
+            assert report_data["iterations"][1]["targeted_gap"] is None
+            assert report_data["rollback_info"]["occurred"] is False
+            assert report_data["final_coverage"]["functional_coverage"] == 90.0

@@ -1,6 +1,7 @@
 import os
 import re
 import shutil
+import json
 from typing import List, Dict, Any
 
 from VeriGenX.agents.simrunner import SimRunner
@@ -33,6 +34,11 @@ class ClosureLoop:
         # Keep track of previous functional coverage and total coverage for comparison
         prev_functional_coverage = None
         prev_total_coverage = None
+
+        # Track rollback events
+        rollback_occurred = False
+        rollback_reason = None
+        rollback_iteration = None
         
         print("\n============================================================")
         print("  COVERHUNTER: STARTING COVERAGE CLOSURE LOOP")
@@ -67,9 +73,12 @@ class ClosureLoop:
 
             # 2. Rollback Check (vs. previous iteration's metrics)
             if iteration > 1:
-                # If coverage decreased or compilation failed, we roll back!
-                if current_total_coverage < prev_total_coverage:
-                    print(f"  [WARNING] Coverage decreased from {prev_total_coverage:.2f}% to {current_total_coverage:.2f}% (or compilation failed). Triggering ROLLBACK!")
+                # If compilation failed, simulation status is failed, or functional coverage decreased, we roll back!
+                if not results.get("compiled", False) or results.get("status") != "passed" or current_functional_coverage < prev_functional_coverage:
+                    rollback_reason = f"Compilation failed, simulation failed, or functional coverage decreased from {prev_functional_coverage:.2f}% to {current_functional_coverage:.2f}%"
+                    print(f"  [WARNING] {rollback_reason}. Triggering ROLLBACK!")
+                    rollback_occurred = True
+                    rollback_iteration = iteration
                     
                     # Revert file list to the last known-good files list
                     last_good_suite = history[-1]["uvm_files"]
@@ -106,11 +115,18 @@ class ClosureLoop:
                     break
 
             # Save iteration snapshot to history
+            coverage_snapshot = {
+                "functional_coverage": current_functional_coverage,
+                "line_coverage": results.get("coverage", {}).get("line_coverage", 0.0) if results.get("compiled", False) else 0.0,
+                "branch_coverage": results.get("coverage", {}).get("branch_coverage", 0.0) if results.get("compiled", False) else 0.0,
+                "toggle_coverage": results.get("coverage", {}).get("toggle_coverage", 0.0) if results.get("compiled", False) else 0.0,
+                "total_coverage": current_total_coverage
+            }
             history.append({
                 "iteration": iteration,
                 "uvm_files": list(active_uvm_files),
-                "functional_coverage": current_functional_coverage,
-                "total_coverage": current_total_coverage,
+                "coverage": coverage_snapshot,
+                "targeted_gap": None,
                 "results": results
             })
 
@@ -150,6 +166,13 @@ class ClosureLoop:
             new_test_filename = f"{design_name}_test_directed_{clean_gap_name}.sv"
             new_test_path = os.path.abspath(os.path.join("generated_uvm", new_test_filename)).replace(chr(92), "/")
 
+            # Update history with targeted gap details for this iteration
+            history[-1]["targeted_gap"] = {
+                "name": selected_gap.get("name"),
+                "type": selected_gap.get("type"),
+                "description": selected_gap.get("description", "")
+            }
+
             test_code = self.test_generator.generate_targeted_test(
                 design_name, test_plan, selected_gap, active_uvm_files, run_dir
             )
@@ -170,5 +193,50 @@ class ClosureLoop:
         print("\n============================================================")
         print("  COVERHUNTER: CLOSURE LOOP COMPLETE")
         print("============================================================")
+
+        # Build baseline coverage dict
+        baseline_coverage = {}
+        if len(history) > 0:
+            baseline_coverage = history[0]["coverage"]
+
+        # Build final coverage dict
+        final_coverage = {
+            "functional_coverage": current_functional_coverage,
+            "line_coverage": results.get("coverage", {}).get("line_coverage", 0.0) if results.get("compiled", False) else 0.0,
+            "branch_coverage": results.get("coverage", {}).get("branch_coverage", 0.0) if results.get("compiled", False) else 0.0,
+            "toggle_coverage": results.get("coverage", {}).get("toggle_coverage", 0.0) if results.get("compiled", False) else 0.0,
+            "total_coverage": current_total_coverage
+        }
+
+        # Build iterations summary
+        iterations_data = []
+        for h in history:
+            iterations_data.append({
+                "iteration": h["iteration"],
+                "coverage": h["coverage"],
+                "targeted_gap": h["targeted_gap"]
+            })
+
+        report_data = {
+            "design_name": design_name,
+            "baseline_coverage": baseline_coverage,
+            "iterations": iterations_data,
+            "rollback_info": {
+                "occurred": rollback_occurred,
+                "reason": rollback_reason,
+                "iteration": rollback_iteration
+            },
+            "final_coverage": final_coverage
+        }
+
+        # Dump report to output/coverhunter_report.json
+        os.makedirs(base_run_dir, exist_ok=True)
+        report_path = os.path.join(base_run_dir, "coverhunter_report.json")
+        try:
+            with open(report_path, "w", encoding="utf-8") as f:
+                json.dump(report_data, f, indent=2)
+            print(f"  [ClosureLoop] Successfully wrote CoverHunter report to {report_path}")
+        except Exception as e:
+            print(f"  [ClosureLoop] Error writing CoverHunter report to {report_path}: {e}")
         
         return history[-1]["results"]

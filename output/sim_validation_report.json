@@ -1,15 +1,15 @@
 {
     "design_name": "uart",
-    "run_id": "20260714_210241",
+    "run_id": "20260716_001303",
     "compiled": true,
     "compile_log": "Compilation successful.",
     "tests": {
         "uart_test_base": {
             "success": true,
             "status": "passed",
-            "stdout": "[UVM_INFO] Starting test: uart_test_base\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:446: Verilog $finish\n",
+            "stdout": "[UVM_INFO] Starting test: uart_test_base\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:449: Verilog $finish\n",
             "stderr": "",
-            "vcd_path": "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-68\\test_uart_coverage_closure_e2e0\\sim_20260714_210241\\uart_uart_test_base.vcd",
+            "vcd_path": "",
             "log_summary": {
                 "fatals": [],
                 "errors": [],
@@ -33,12 +33,12 @@
                 }
             },
             "coverage": {
-                "line_coverage": 75.72815533980582,
-                "branch_coverage": 67.85714285714286,
-                "toggle_coverage": 44.642857142857146,
+                "line_coverage": 85.71428571428571,
+                "branch_coverage": 87.03703703703704,
+                "toggle_coverage": 66.07142857142857,
                 "functional_coverage": 33.33,
-                "total_points": 374,
-                "covered_points": 244,
+                "total_points": 383,
+                "covered_points": 307,
                 "functional_points_detail": {
                     "FP_001": {
                         "description": "Data transmission functionality",
@@ -47,7 +47,7 @@
                         "coverage_percentage": 0.0
                     },
                     "FP_002": {
-                        "description": "Baud rate configuration",
+                        "description": "Parity error detection",
                         "hit_count": 0,
                         "total_bins": 1,
                         "coverage_percentage": 0.0
@@ -64,9 +64,9 @@
         "uart_test_directed": {
             "success": true,
             "status": "passed",
-            "stdout": "[UVM_INFO] Starting test: uart_test_directed\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:446: Verilog $finish\n",
+            "stdout": "[UVM_INFO] Starting test: uart_test_directed\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:449: Verilog $finish\n",
             "stderr": "",
-            "vcd_path": "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-68\\test_uart_coverage_closure_e2e0\\sim_20260714_210241\\uart_uart_test_directed.vcd",
+            "vcd_path": "",
             "log_summary": {
                 "fatals": [],
                 "errors": [],
@@ -90,12 +90,12 @@
                 }
             },
             "coverage": {
-                "line_coverage": 72.81553398058253,
-                "branch_coverage": 66.07142857142857,
-                "toggle_coverage": 27.67857142857143,
+                "line_coverage": 86.17511520737328,
+                "branch_coverage": 88.88888888888889,
+                "toggle_coverage": 65.17857142857143,
                 "functional_coverage": 33.33,
-                "total_points": 374,
-                "covered_points": 218,
+                "total_points": 383,
+                "covered_points": 308,
                 "functional_points_detail": {
                     "FP_001": {
                         "description": "Data transmission functionality",
@@ -104,7 +104,7 @@
                         "coverage_percentage": 0.0
                     },
                     "FP_002": {
-                        "description": "Baud rate configuration",
+                        "description": "Parity error detection",
                         "hit_count": 0,
                         "total_bins": 1,
                         "coverage_percentage": 0.0
@@ -119,39 +119,53 @@
             }
         },
         "uart_test_directed_IDLE": {
-            "success": false,
-            "status": "failed",
-            "stdout": "[UVM_INFO] Starting test: uart_test_directed_IDLE\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n%Warning: Unable to communicate with SAT solver, please check its installation or specify a different one in VERILATOR_SOLVER environment variable.\n ... Tried: $ z3 --in\n\n[UVM_FATAL] @ 0 | SEQ: Randomization failed\n- C:/Users/Dell/Desktop/PROJECT/generated_uvm\\uart_test_directed_IDLE.sv:10: Verilog $finish\n",
-            "stderr": "write: Bad file descriptor\nread: Bad file descriptor\n",
-            "vcd_path": "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-68\\test_uart_coverage_closure_e2e0\\sim_20260714_210241\\uart_uart_test_directed_IDLE.vcd",
+            "success": true,
+            "status": "passed",
+            "stdout": "[UVM_INFO] Starting test: uart_test_directed_IDLE\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 0 | SEQ: Starting directed sequence for IDLE\n[UVM_INFO] IDLE state hit\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 15 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 25 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 35 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 45 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 55 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 65 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 75 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 85 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 95 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 105 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 115 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 66.67%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:449: Verilog $finish\n",
+            "stderr": "",
+            "vcd_path": "",
             "log_summary": {
-                "fatals": [
-                    "[UVM_FATAL] @ 0 | SEQ: Randomization failed"
-                ],
+                "fatals": [],
                 "errors": [],
-                "warnings": [
-                    "%Warning: Unable to communicate with SAT solver, please check its installation or specify a different one in VERILATOR_SOLVER environment variable."
-                ],
+                "warnings": [],
                 "info": [
                     "[UVM_INFO] Starting test: uart_test_directed_IDLE",
                     "[UVM_INFO] Entering Build Phase...",
                     "[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.",
                     "[UVM_INFO] Entering Connect Phase...",
-                    "[UVM_INFO] Entering Run Phase..."
+                    "[UVM_INFO] Entering Run Phase...",
+                    "[UVM_INFO] @ 0 | SEQ: Starting directed sequence for IDLE",
+                    "[UVM_INFO] IDLE state hit",
+                    "[UVM_INFO] @ 5 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 15 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 25 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 35 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 45 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 55 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 65 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 75 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 85 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 95 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 105 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 115 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] Entering Report Phase...",
+                    "[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 66.67%",
+                    "[UVM_INFO] Simulation finished (all objections dropped).",
+                    "[UVM_INFO] Simulation PASSED."
                 ],
                 "summary": {
-                    "total_errors": 1,
-                    "total_warnings": 1,
-                    "status": "failed"
+                    "total_errors": 0,
+                    "total_warnings": 0,
+                    "status": "passed"
                 }
             },
             "coverage": {
-                "line_coverage": 71.84466019417476,
-                "branch_coverage": 64.28571428571429,
-                "toggle_coverage": 20.535714285714285,
-                "functional_coverage": 33.33,
-                "total_points": 374,
-                "covered_points": 207,
+                "line_coverage": 93.08755760368663,
+                "branch_coverage": 87.03703703703704,
+                "toggle_coverage": 52.67857142857143,
+                "functional_coverage": 66.67,
+                "total_points": 383,
+                "covered_points": 308,
                 "functional_points_detail": {
                     "FP_001": {
                         "description": "Data transmission functionality",
@@ -160,14 +174,84 @@
                         "coverage_percentage": 0.0
                     },
                     "FP_002": {
-                        "description": "Baud rate configuration",
+                        "description": "Parity error detection",
+                        "hit_count": 1,
+                        "total_bins": 1,
+                        "coverage_percentage": 100.0
+                    },
+                    "FP_003": {
+                        "description": "Reset and initialisation",
+                        "hit_count": 12,
+                        "total_bins": 1,
+                        "coverage_percentage": 100.0
+                    }
+                }
+            }
+        },
+        "uart_test_directed_DATA": {
+            "success": true,
+            "status": "passed",
+            "stdout": "[UVM_INFO] Starting test: uart_test_directed_DATA\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 0 | SEQ: Starting directed sequence for DATA\n[UVM_INFO] DATA state hit\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 15 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 25 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 35 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 45 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 55 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 65 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 75 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 85 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 95 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 105 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 115 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 66.67%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:449: Verilog $finish\n",
+            "stderr": "",
+            "vcd_path": "",
+            "log_summary": {
+                "fatals": [],
+                "errors": [],
+                "warnings": [],
+                "info": [
+                    "[UVM_INFO] Starting test: uart_test_directed_DATA",
+                    "[UVM_INFO] Entering Build Phase...",
+                    "[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.",
+                    "[UVM_INFO] Entering Connect Phase...",
+                    "[UVM_INFO] Entering Run Phase...",
+                    "[UVM_INFO] @ 0 | SEQ: Starting directed sequence for DATA",
+                    "[UVM_INFO] DATA state hit",
+                    "[UVM_INFO] @ 5 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 15 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 25 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 35 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 45 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 55 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 65 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 75 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 85 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 95 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 105 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] @ 115 | SB_MATCH: Transaction match:",
+                    "[UVM_INFO] Entering Report Phase...",
+                    "[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 66.67%",
+                    "[UVM_INFO] Simulation finished (all objections dropped).",
+                    "[UVM_INFO] Simulation PASSED."
+                ],
+                "summary": {
+                    "total_errors": 0,
+                    "total_warnings": 0,
+                    "status": "passed"
+                }
+            },
+            "coverage": {
+                "line_coverage": 78.80184331797236,
+                "branch_coverage": 68.51851851851852,
+                "toggle_coverage": 67.85714285714286,
+                "functional_coverage": 66.67,
+                "total_points": 383,
+                "covered_points": 284,
+                "functional_points_detail": {
+                    "FP_001": {
+                        "description": "Data transmission functionality",
                         "hit_count": 0,
                         "total_bins": 1,
                         "coverage_percentage": 0.0
                     },
+                    "FP_002": {
+                        "description": "Parity error detection",
+                        "hit_count": 1,
+                        "total_bins": 1,
+                        "coverage_percentage": 100.0
+                    },
                     "FP_003": {
                         "description": "Reset and initialisation",
-                        "hit_count": 1,
+                        "hit_count": 12,
                         "total_bins": 1,
                         "coverage_percentage": 100.0
                     }
@@ -176,10 +260,10 @@
         }
     },
     "coverage": {
-        "line_coverage": 75.72815533980582,
-        "branch_coverage": 67.85714285714286,
-        "toggle_coverage": 44.642857142857146,
-        "functional_coverage": 33.33
+        "line_coverage": 93.08755760368663,
+        "branch_coverage": 88.88888888888889,
+        "toggle_coverage": 67.85714285714286,
+        "functional_coverage": 66.67
     },
-    "status": "failed"
+    "status": "passed"
 }
