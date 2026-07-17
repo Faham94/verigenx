@@ -1,7 +1,7 @@
 {
   "design_name": "uart",
   "version": "1.0",
-  "generated_at": "2026-07-16T00:01:09.133176",
+  "generated_at": "2026-07-18T01:15:40.929766",
   "extraction_method": "heuristic",
   "signals": [
     {
@@ -37,17 +37,19 @@
       "name": "baud_divisor",
       "width": 16,
       "access": "RW",
-      "reset_value": "0x00"
+      "reset_value": "0X0001"
     },
     {
       "address": "0X04",
       "name": "control",
       "width": 8,
       "access": "RW",
-      "reset_value": "0x00"
+      "reset_value": "0X00"
     }
   ],
-  "timing_constraints": {},
+  "timing_constraints": {
+    "baud_rate": 9600
+  },
   "functional_points": [
     {
       "id": "FP_001",
@@ -55,7 +57,7 @@
     },
     {
       "id": "FP_002",
-      "description": "Parity error detection"
+      "description": "Baud rate configuration"
     },
     {
       "id": "FP_003",

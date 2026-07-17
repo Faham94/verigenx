@@ -26,7 +26,8 @@ class i2c_driver extends uvm_driver #(i2c_seq_item);
             seq_item_port.get_next_item(req);
             // {% llm_fill "driver_drive_item" %}
         @(posedge vif.clk);
-
+            vif.scl <= req.scl;
+            vif.sda <= req.sda;
         #10;
 // {% endllm_fill %}
             seq_item_port.item_done();

@@ -229,13 +229,18 @@ class ClosureLoop:
             "final_coverage": final_coverage
         }
 
-        # Dump report to output/coverhunter_report.json
+        # Dump report to design-specific json and default json
         os.makedirs(base_run_dir, exist_ok=True)
-        report_path = os.path.join(base_run_dir, "coverhunter_report.json")
+        report_path = os.path.join(base_run_dir, f"coverhunter_report_{design_name}.json")
+        legacy_report_path = os.path.join(base_run_dir, "coverhunter_report.json")
         try:
             with open(report_path, "w", encoding="utf-8") as f:
                 json.dump(report_data, f, indent=2)
             print(f"  [ClosureLoop] Successfully wrote CoverHunter report to {report_path}")
+            
+            with open(legacy_report_path, "w", encoding="utf-8") as f:
+                json.dump(report_data, f, indent=2)
+            print(f"  [ClosureLoop] Successfully wrote CoverHunter legacy report to {legacy_report_path}")
         except Exception as e:
             print(f"  [ClosureLoop] Error writing CoverHunter report to {report_path}: {e}")
         

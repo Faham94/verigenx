@@ -1,0 +1,50 @@
+{
+  "design_name": "i2c",
+  "baseline_coverage": {
+    "functional_coverage": 0.0,
+    "line_coverage": 90.0523560209424,
+    "branch_coverage": 77.08333333333334,
+    "toggle_coverage": 50.0,
+    "total_coverage": 54.283922338568935
+  },
+  "iterations": [
+    {
+      "iteration": 1,
+      "coverage": {
+        "functional_coverage": 0.0,
+        "line_coverage": 90.0523560209424,
+        "branch_coverage": 77.08333333333334,
+        "toggle_coverage": 50.0,
+        "total_coverage": 54.283922338568935
+      },
+      "targeted_gap": {
+        "name": "IDLE",
+        "type": "uncovered FSM state",
+        "description": ""
+      }
+    },
+    {
+      "iteration": 2,
+      "coverage": {
+        "functional_coverage": 100.0,
+        "line_coverage": 70.93596059113301,
+        "branch_coverage": 64.58333333333334,
+        "toggle_coverage": 64.28571428571429,
+        "total_coverage": 74.95125205254516
+      },
+      "targeted_gap": null
+    }
+  ],
+  "rollback_info": {
+    "occurred": false,
+    "reason": null,
+    "iteration": null
+  },
+  "final_coverage": {
+    "functional_coverage": 100.0,
+    "line_coverage": 70.93596059113301,
+    "branch_coverage": 64.58333333333334,
+    "toggle_coverage": 64.28571428571429,
+    "total_coverage": 74.95125205254516
+  }
+}

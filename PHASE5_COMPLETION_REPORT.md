@@ -13,22 +13,27 @@ The feedback loop successfully achieved coverage closure targets. The final metr
 ### UART (Universal Asynchronous Receiver-Transmitter)
 - **Baseline Functional Coverage**: **33.33%** (Only `FP_003` - reset covered by baseline test suite)
 - **Target Functional Coverage**: **85.0%+**
-- **Final Achieved Functional Coverage**: **100.0%**
+- **Final Achieved Functional Coverage**: **100.00%** (PASSED)
 - **Iterations Needed**: **2**
-- **Baseline RTL Line / Branch / Toggle**: 67.0% / 68.5% / 45.5%
-- **Final RTL Line / Branch / Toggle**: 67.0% / 68.5% / 45.5%
+- **Baseline RTL Line / Branch / Toggle / Total**: 63.21% / 48.15% / 53.57% / 49.57%
+- **Final RTL Line / Branch / Toggle / Total**: 84.39% / 83.33% / 71.43% / 84.79%
 
 ### SPI (Serial Peripheral Interface)
 - **Baseline Functional Coverage**: **50.00%** (Only `FP_002` covered)
 - **Target Functional Coverage**: **85.0%+**
-- **Final Achieved Functional Coverage**: **100.0%**
+- **Final Achieved Functional Coverage**: **100.00%** (PASSED)
 - **Iterations Needed**: **2**
+- **Baseline RTL Line / Branch / Toggle / Total**: 89.58% / 76.00% / 60.00% / 68.90%
+- **Final RTL Line / Branch / Toggle / Total**: 81.86% / 70.00% / 82.50% / 83.59%
 
 ### I2C (Inter-Integrated Circuit)
-- **Baseline Functional Coverage**: **50.00%** (Only `FP_002` covered)
+- **Baseline Functional Coverage**: **0.00%** (No conditions met in baseline)
 - **Target Functional Coverage**: **85.0%+**
-- **Final Achieved Functional Coverage**: **100.0%**
+- **Final Achieved Functional Coverage**: **100.00%** (PASSED)
 - **Iterations Needed**: **2**
+- **Baseline RTL Line / Branch / Toggle / Total**: 90.05% / 77.08% / 50.00% / 54.28%
+- **Final RTL Line / Branch / Toggle / Total**: 70.94% / 64.58% / 64.29% / 74.95%
+
 
 ---
 
@@ -65,6 +70,7 @@ class uart_sequence_IDLE extends uvm_sequence #(uart_seq_item);
         req.tx_data = 8'hAA;
         req.rx_data = 8'hAA;
         finish_item(req);
+        #100; // Delay to allow DUT propagation and monitor sampling
     endtask
 endclass
 

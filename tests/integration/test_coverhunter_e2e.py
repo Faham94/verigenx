@@ -30,7 +30,7 @@ class TestCoverHunterE2E:
         mock_client = MagicMock()
         def mock_generate(prompt, model, temperature, max_tokens):
             # Extract gap name from prompt to generate matching class name
-            match = re.search(r"Gap Name/ID:\s*(\w+)", prompt)
+            match = re.search(r"(?:Target )?Gap Name/ID:\s*(\w+)", prompt)
             gap_name = match.group(1) if match else "FP_001"
             
             # Since the simulation reports hit counts on write(), we can even simulate hitting the point!
@@ -51,6 +51,7 @@ class uart_sequence_{gap_name} extends uvm_sequence #(uart_seq_item);
         req.tx_data = 8'hAA;
         req.rx_data = 8'hAA;
         finish_item(req);
+        #100;
     endtask
 endclass
 

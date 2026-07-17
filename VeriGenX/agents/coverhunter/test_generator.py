@@ -75,6 +75,23 @@ class TestGenerator:
     def generate_heuristic_test(self, design_name: str, gap: Dict[str, Any]) -> str:
         gap_name = gap.get("name", "FP_001")
         clean_gap_name = re.sub(r"[^\w]", "_", gap_name)
+        
+        # Select assignments based on design
+        assignments = ""
+        if design_name == "uart":
+            assignments = """req.tx_data = 8'hAA;
+        req.rx_data = 8'hAA;"""
+        elif design_name == "spi":
+            assignments = """req.mosi = 1'b1;
+        req.miso = 1'b1;
+        req.sclk = 1'b1;
+        req.cs_n = 1'b0;"""
+        elif design_name == "i2c":
+            assignments = """req.scl = 1'b1;
+        req.sda = 1'b1;"""
+        else:
+            assignments = ""
+
         return f"""```systemverilog
 class {design_name}_sequence_{clean_gap_name} extends uvm_sequence #({design_name}_seq_item);
     `uvm_object_utils({design_name}_sequence_{clean_gap_name})
@@ -87,9 +104,9 @@ class {design_name}_sequence_{clean_gap_name} extends uvm_sequence #({design_nam
         req = {design_name}_seq_item::type_id::create("req");
         start_item(req);
         // Note: Do not call req.randomize() to avoid Z3 SAT solver dependency in Verilator on Windows
-        req.tx_data = 8'hAA;
-        req.rx_data = 8'hAA;
+        {assignments}
         finish_item(req);
+        #100; // Delay to allow DUT propagation and monitor sampling
     endtask
 endclass
 

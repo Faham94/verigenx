@@ -26,7 +26,7 @@ class spi_driver extends uvm_driver #(spi_seq_item);
             seq_item_port.get_next_item(req);
             // {% llm_fill "driver_drive_item" %}
         @(posedge vif.clk);
-            vif.cb.mosi <= req.mosi;
+            vif.mosi <= req.mosi;
         #10;
 // {% endllm_fill %}
             seq_item_port.item_done();

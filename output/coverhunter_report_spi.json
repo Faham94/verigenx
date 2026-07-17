@@ -1,0 +1,50 @@
+{
+  "design_name": "spi",
+  "baseline_coverage": {
+    "functional_coverage": 50.0,
+    "line_coverage": 89.58333333333334,
+    "branch_coverage": 76.0,
+    "toggle_coverage": 60.0,
+    "total_coverage": 68.89583333333334
+  },
+  "iterations": [
+    {
+      "iteration": 1,
+      "coverage": {
+        "functional_coverage": 50.0,
+        "line_coverage": 89.58333333333334,
+        "branch_coverage": 76.0,
+        "toggle_coverage": 60.0,
+        "total_coverage": 68.89583333333334
+      },
+      "targeted_gap": {
+        "name": "IDLE",
+        "type": "uncovered FSM state",
+        "description": ""
+      }
+    },
+    {
+      "iteration": 2,
+      "coverage": {
+        "functional_coverage": 100.0,
+        "line_coverage": 81.86274509803921,
+        "branch_coverage": 70.0,
+        "toggle_coverage": 82.5,
+        "total_coverage": 83.5906862745098
+      },
+      "targeted_gap": null
+    }
+  ],
+  "rollback_info": {
+    "occurred": false,
+    "reason": null,
+    "iteration": null
+  },
+  "final_coverage": {
+    "functional_coverage": 100.0,
+    "line_coverage": 81.86274509803921,
+    "branch_coverage": 70.0,
+    "toggle_coverage": 82.5,
+    "total_coverage": 83.5906862745098
+  }
+}
