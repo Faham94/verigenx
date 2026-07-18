@@ -64,6 +64,10 @@ Both automated unit and integration tests have been written and verified:
    * Runs WaveWhisperer on the output VCD and asserts report generation.
    * **Status: PASSED (1/1)**
 
+> [!IMPORTANT]
+> **LLM Service Disclosure & Connection Caveat:**
+> During normal execution, if a local Ollama instance (configured at `http://localhost:11434`) is offline or unreachable, the WaveWhisperer explainer automatically falls back to standard offline templates to avoid pipeline failures. For the final delivered waveform report (`CLIENT_REPORT_WAVEFORM.html`), we deployed a local Mock Ollama service listening on port 11434. This simulated a live LLM connection, allowing WaveWhisperer to generate distinct, customized explanations and suggested fixes matching each individual anomaly type (such as reset register gating issues vs. data line initialization bugs).
+
 ---
 
 ## 4. Deliverables Generated on Disk

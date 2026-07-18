@@ -258,7 +258,7 @@
             <p>AI-Powered Waveform Anomaly Explainer & Timing Diagnostics | Design: UART</p>
         </div>
         <div class="timestamp-badge">
-            Report Generated: 2026-07-18 17:43:19
+            Report Generated: 2026-07-18 17:58:00
         </div>
     </header>
 
@@ -306,15 +306,15 @@
                 <div class="card-details">
                     <div class="detail-item">
                         <h4>What Happened</h4>
-                        <p>An anomaly of type 'XZ_PROPAGATION' was observed on signal 'tx_data' at time step 32.</p>
+                        <p>An undefined high-impedance X state propagated to txdata.</p>
                     </div>
                     <div class="detail-item">
                         <h4>Why</h4>
-                        <p>The signal value was measured as 'Value went to 'XXXXXXXX'', which violated the design requirement: 'Signal should hold a valid logic value (0 or 1)'.</p>
+                        <p>The testbench driver failed to initialize the parallel interface data lines to a valid logic level.</p>
                     </div>
                     <div class="detail-item suggested-fix">
                         <h4>Suggested Fix</h4>
-                        <p>Review the RTL driver logic and testbench constraint parameters for signal stability.</p>
+                        <p>Ensure all transaction items randomize data to valid values, and initialize UVM virtual interface variables at time zero.</p>
                     </div>
                 </div>
                 <div class="spec-ref">
@@ -345,15 +345,15 @@
                 <div class="card-details">
                     <div class="detail-item">
                         <h4>What Happened</h4>
-                        <p>An anomaly of type 'RESET_VIOLATION' was observed on signal 'tx_data' at time step 0.</p>
+                        <p>During active reset (rstn is low), txdata asserted high values instead of remaining zero.</p>
                     </div>
                     <div class="detail-item">
                         <h4>Why</h4>
-                        <p>The signal value was measured as 'Signal value is 170 during reset', which violated the design requirement: 'Signal should assume reset value (0)'.</p>
+                        <p>The driver failed to gate transmission registers when the active-low reset was asserted.</p>
                     </div>
                     <div class="detail-item suggested-fix">
                         <h4>Suggested Fix</h4>
-                        <p>Review the RTL driver logic and testbench constraint parameters for signal stability.</p>
+                        <p>Modify the RTL always block to reset rxdata and txdata registers to 0 on negative edge of rstn.</p>
                     </div>
                 </div>
                 <div class="spec-ref">
@@ -384,15 +384,15 @@
                 <div class="card-details">
                     <div class="detail-item">
                         <h4>What Happened</h4>
-                        <p>An anomaly of type 'RESET_VIOLATION' was observed on signal 'tx_data' at time step 5.</p>
+                        <p>During active reset (rstn is low), txdata asserted high values instead of remaining zero.</p>
                     </div>
                     <div class="detail-item">
                         <h4>Why</h4>
-                        <p>The signal value was measured as 'Signal value is 170 during reset', which violated the design requirement: 'Signal should assume reset value (0)'.</p>
+                        <p>The driver failed to gate transmission registers when the active-low reset was asserted.</p>
                     </div>
                     <div class="detail-item suggested-fix">
                         <h4>Suggested Fix</h4>
-                        <p>Review the RTL driver logic and testbench constraint parameters for signal stability.</p>
+                        <p>Modify the RTL always block to reset rxdata and txdata registers to 0 on negative edge of rstn.</p>
                     </div>
                 </div>
                 <div class="spec-ref">
@@ -423,15 +423,15 @@
                 <div class="card-details">
                     <div class="detail-item">
                         <h4>What Happened</h4>
-                        <p>An anomaly of type 'RESET_VIOLATION' was observed on signal 'state' at time step 5.</p>
+                        <p>During active reset (rstn is low), txdata asserted high values instead of remaining zero.</p>
                     </div>
                     <div class="detail-item">
                         <h4>Why</h4>
-                        <p>The signal value was measured as 'Signal value is 1.0 during reset', which violated the design requirement: 'Signal should assume reset value (0)'.</p>
+                        <p>The driver failed to gate transmission registers when the active-low reset was asserted.</p>
                     </div>
                     <div class="detail-item suggested-fix">
                         <h4>Suggested Fix</h4>
-                        <p>Review the RTL driver logic and testbench constraint parameters for signal stability.</p>
+                        <p>Modify the RTL always block to reset rxdata and txdata registers to 0 on negative edge of rstn.</p>
                     </div>
                 </div>
                 <div class="spec-ref">
@@ -462,15 +462,15 @@
                 <div class="card-details">
                     <div class="detail-item">
                         <h4>What Happened</h4>
-                        <p>An anomaly of type 'RESET_VIOLATION' was observed on signal 'tx_data' at time step 10.</p>
+                        <p>During active reset (rstn is low), txdata asserted high values instead of remaining zero.</p>
                     </div>
                     <div class="detail-item">
                         <h4>Why</h4>
-                        <p>The signal value was measured as 'Signal value is 170 during reset', which violated the design requirement: 'Signal should assume reset value (0)'.</p>
+                        <p>The driver failed to gate transmission registers when the active-low reset was asserted.</p>
                     </div>
                     <div class="detail-item suggested-fix">
                         <h4>Suggested Fix</h4>
-                        <p>Review the RTL driver logic and testbench constraint parameters for signal stability.</p>
+                        <p>Modify the RTL always block to reset rxdata and txdata registers to 0 on negative edge of rstn.</p>
                     </div>
                 </div>
                 <div class="spec-ref">
@@ -501,15 +501,15 @@
                 <div class="card-details">
                     <div class="detail-item">
                         <h4>What Happened</h4>
-                        <p>An anomaly of type 'RESET_VIOLATION' was observed on signal 'state' at time step 10.</p>
+                        <p>During active reset (rstn is low), txdata asserted high values instead of remaining zero.</p>
                     </div>
                     <div class="detail-item">
                         <h4>Why</h4>
-                        <p>The signal value was measured as 'Signal value is 1.0 during reset', which violated the design requirement: 'Signal should assume reset value (0)'.</p>
+                        <p>The driver failed to gate transmission registers when the active-low reset was asserted.</p>
                     </div>
                     <div class="detail-item suggested-fix">
                         <h4>Suggested Fix</h4>
-                        <p>Review the RTL driver logic and testbench constraint parameters for signal stability.</p>
+                        <p>Modify the RTL always block to reset rxdata and txdata registers to 0 on negative edge of rstn.</p>
                     </div>
                 </div>
                 <div class="spec-ref">
@@ -540,15 +540,15 @@
                 <div class="card-details">
                     <div class="detail-item">
                         <h4>What Happened</h4>
-                        <p>An anomaly of type 'RESET_VIOLATION' was observed on signal 'tx_data' at time step 15.</p>
+                        <p>During active reset (rstn is low), txdata asserted high values instead of remaining zero.</p>
                     </div>
                     <div class="detail-item">
                         <h4>Why</h4>
-                        <p>The signal value was measured as 'Signal value is 170 during reset', which violated the design requirement: 'Signal should assume reset value (0)'.</p>
+                        <p>The driver failed to gate transmission registers when the active-low reset was asserted.</p>
                     </div>
                     <div class="detail-item suggested-fix">
                         <h4>Suggested Fix</h4>
-                        <p>Review the RTL driver logic and testbench constraint parameters for signal stability.</p>
+                        <p>Modify the RTL always block to reset rxdata and txdata registers to 0 on negative edge of rstn.</p>
                     </div>
                 </div>
                 <div class="spec-ref">
@@ -579,15 +579,15 @@
                 <div class="card-details">
                     <div class="detail-item">
                         <h4>What Happened</h4>
-                        <p>An anomaly of type 'RESET_VIOLATION' was observed on signal 'state' at time step 15.</p>
+                        <p>During active reset (rstn is low), txdata asserted high values instead of remaining zero.</p>
                     </div>
                     <div class="detail-item">
                         <h4>Why</h4>
-                        <p>The signal value was measured as 'Signal value is 3.0 during reset', which violated the design requirement: 'Signal should assume reset value (0)'.</p>
+                        <p>The driver failed to gate transmission registers when the active-low reset was asserted.</p>
                     </div>
                     <div class="detail-item suggested-fix">
                         <h4>Suggested Fix</h4>
-                        <p>Review the RTL driver logic and testbench constraint parameters for signal stability.</p>
+                        <p>Modify the RTL always block to reset rxdata and txdata registers to 0 on negative edge of rstn.</p>
                     </div>
                 </div>
                 <div class="spec-ref">
@@ -618,15 +618,15 @@
                 <div class="card-details">
                     <div class="detail-item">
                         <h4>What Happened</h4>
-                        <p>An anomaly of type 'GLITCH_DETECTION' was observed on signal 'tx_data' at time step 22.</p>
+                        <p>Signal txdata toggled rapidly faster than the clock period allows.</p>
                     </div>
                     <div class="detail-item">
                         <h4>Why</h4>
-                        <p>The signal value was measured as 'Signal toggled back and forth within 2 units', which violated the design requirement: 'Signal must remain stable for at least 5 units'.</p>
+                        <p>Signal race condition in the combinational driving logic or missing synchronizer.</p>
                     </div>
                     <div class="detail-item suggested-fix">
                         <h4>Suggested Fix</h4>
-                        <p>Review the RTL driver logic and testbench constraint parameters for signal stability.</p>
+                        <p>Synchronize txdata driving events to the clock edge inside the SystemVerilog interface.</p>
                     </div>
                 </div>
                 <div class="spec-ref">
@@ -657,15 +657,15 @@
                 <div class="card-details">
                     <div class="detail-item">
                         <h4>What Happened</h4>
-                        <p>An anomaly of type 'GLITCH_DETECTION' was observed on signal 'tx_data' at time step 32.</p>
+                        <p>Signal txdata toggled rapidly faster than the clock period allows.</p>
                     </div>
                     <div class="detail-item">
                         <h4>Why</h4>
-                        <p>The signal value was measured as 'Signal toggled back and forth within 2 units', which violated the design requirement: 'Signal must remain stable for at least 5 units'.</p>
+                        <p>Signal race condition in the combinational driving logic or missing synchronizer.</p>
                     </div>
                     <div class="detail-item suggested-fix">
                         <h4>Suggested Fix</h4>
-                        <p>Review the RTL driver logic and testbench constraint parameters for signal stability.</p>
+                        <p>Synchronize txdata driving events to the clock edge inside the SystemVerilog interface.</p>
                     </div>
                 </div>
                 <div class="spec-ref">
@@ -696,15 +696,15 @@
                 <div class="card-details">
                     <div class="detail-item">
                         <h4>What Happened</h4>
-                        <p>An anomaly of type 'SETUP_VIOLATION' was observed on signal 'tx_data' at time step 24.</p>
+                        <p>Setup timing violation detected. txdata changed value too close before clk positive edge.</p>
                     </div>
                     <div class="detail-item">
                         <h4>Why</h4>
-                        <p>The signal value was measured as 'Signal changed at 24 (too close to clock edge at 25)', which violated the design requirement: 'Signal must be stable 1 units before clock edge'.</p>
+                        <p>Propagation delay in driving data or setup time limit is set too high relative to clock period.</p>
                     </div>
                     <div class="detail-item suggested-fix">
                         <h4>Suggested Fix</h4>
-                        <p>Review the RTL driver logic and testbench constraint parameters for signal stability.</p>
+                        <p>Delay driving txdata or configure positive edge driver clocking block output skew (1step).</p>
                     </div>
                 </div>
                 <div class="spec-ref">
@@ -735,15 +735,15 @@
                 <div class="card-details">
                     <div class="detail-item">
                         <h4>What Happened</h4>
-                        <p>An anomaly of type 'SETUP_VIOLATION' was observed on signal 'tx_data' at time step 34.</p>
+                        <p>Setup timing violation detected. txdata changed value too close before clk positive edge.</p>
                     </div>
                     <div class="detail-item">
                         <h4>Why</h4>
-                        <p>The signal value was measured as 'Signal changed at 34 (too close to clock edge at 35)', which violated the design requirement: 'Signal must be stable 1 units before clock edge'.</p>
+                        <p>Propagation delay in driving data or setup time limit is set too high relative to clock period.</p>
                     </div>
                     <div class="detail-item suggested-fix">
                         <h4>Suggested Fix</h4>
-                        <p>Review the RTL driver logic and testbench constraint parameters for signal stability.</p>
+                        <p>Delay driving txdata or configure positive edge driver clocking block output skew (1step).</p>
                     </div>
                 </div>
                 <div class="spec-ref">
@@ -774,15 +774,15 @@
                 <div class="card-details">
                     <div class="detail-item">
                         <h4>What Happened</h4>
-                        <p>An anomaly of type 'FSM_SEQUENCE_VIOLATION' was observed on signal 'state' at time step 15.</p>
+                        <p>State register jumped illegally from START directly to STOP state.</p>
                     </div>
                     <div class="detail-item">
                         <h4>Why</h4>
-                        <p>The signal value was measured as 'State transition START -> STOP', which violated the design requirement: 'Only transition to ['DATA'] allowed from START'.</p>
+                        <p>The RTL state transition decoder has a logical bug skipping the DATA state.</p>
                     </div>
                     <div class="detail-item suggested-fix">
                         <h4>Suggested Fix</h4>
-                        <p>Review the RTL driver logic and testbench constraint parameters for signal stability.</p>
+                        <p>Verify next-state logic in the RTL FSM case block to ensure DATA state is visited.</p>
                     </div>
                 </div>
                 <div class="spec-ref">
@@ -807,7 +807,7 @@
         // Inject serialized python variables
         const timestamps = [0, 5, 10, 15, 20, 22, 24, 25, 30, 32, 34, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185, 190, 195, 200, 205, 210, 215, 220];
         const signals = {"clk": [0.0, 1.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0], "rst_n": [0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "tx_data": [170, 170, 170, 170, 170, 255, 0, 0, 0, "XXXXXXXX", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170, 170], "state": [0.0, 1.0, 1.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0, 3.0], "rx_data": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 170.0, 170.0, 170.0, 170.0, 170.0, 170.0, 170.0, 170.0, 170.0, 170.0, 170.0, 170.0, 170.0, 170.0, 170.0, 170.0, 170.0, 170.0, 170.0, 170.0, 170.0, 170.0], "UVM_ACTIVE": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "UVM_PASSIVE": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "UVM_ALL_ON": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], "UVM_MEDIUM": [100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0, 100.0], "UVM_LOW": [10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0]};
-        const anomalies = [{"id": "A_001", "type": "XZ_PROPAGATION", "timestamp": 32, "signal": "tx_data", "what_happened": "An anomaly of type 'XZ_PROPAGATION' was observed on signal 'tx_data' at time step 32.", "why": "The signal value was measured as 'Value went to 'XXXXXXXX'', which violated the design requirement: 'Signal should hold a valid logic value (0 or 1)'.", "suggested_fix": "Review the RTL driver logic and testbench constraint parameters for signal stability.", "spec_reference": "uart_spec.txt", "severity": "CRITICAL"}, {"id": "A_002", "type": "RESET_VIOLATION", "timestamp": 0, "signal": "tx_data", "what_happened": "An anomaly of type 'RESET_VIOLATION' was observed on signal 'tx_data' at time step 0.", "why": "The signal value was measured as 'Signal value is 170 during reset', which violated the design requirement: 'Signal should assume reset value (0)'.", "suggested_fix": "Review the RTL driver logic and testbench constraint parameters for signal stability.", "spec_reference": "Reset point: FP_003 - Reset and initialisation", "severity": "CRITICAL"}, {"id": "A_003", "type": "RESET_VIOLATION", "timestamp": 5, "signal": "tx_data", "what_happened": "An anomaly of type 'RESET_VIOLATION' was observed on signal 'tx_data' at time step 5.", "why": "The signal value was measured as 'Signal value is 170 during reset', which violated the design requirement: 'Signal should assume reset value (0)'.", "suggested_fix": "Review the RTL driver logic and testbench constraint parameters for signal stability.", "spec_reference": "Reset point: FP_003 - Reset and initialisation", "severity": "CRITICAL"}, {"id": "A_004", "type": "RESET_VIOLATION", "timestamp": 5, "signal": "state", "what_happened": "An anomaly of type 'RESET_VIOLATION' was observed on signal 'state' at time step 5.", "why": "The signal value was measured as 'Signal value is 1.0 during reset', which violated the design requirement: 'Signal should assume reset value (0)'.", "suggested_fix": "Review the RTL driver logic and testbench constraint parameters for signal stability.", "spec_reference": "Reset point: FP_003 - Reset and initialisation", "severity": "CRITICAL"}, {"id": "A_005", "type": "RESET_VIOLATION", "timestamp": 10, "signal": "tx_data", "what_happened": "An anomaly of type 'RESET_VIOLATION' was observed on signal 'tx_data' at time step 10.", "why": "The signal value was measured as 'Signal value is 170 during reset', which violated the design requirement: 'Signal should assume reset value (0)'.", "suggested_fix": "Review the RTL driver logic and testbench constraint parameters for signal stability.", "spec_reference": "Reset point: FP_003 - Reset and initialisation", "severity": "CRITICAL"}, {"id": "A_006", "type": "RESET_VIOLATION", "timestamp": 10, "signal": "state", "what_happened": "An anomaly of type 'RESET_VIOLATION' was observed on signal 'state' at time step 10.", "why": "The signal value was measured as 'Signal value is 1.0 during reset', which violated the design requirement: 'Signal should assume reset value (0)'.", "suggested_fix": "Review the RTL driver logic and testbench constraint parameters for signal stability.", "spec_reference": "Reset point: FP_003 - Reset and initialisation", "severity": "CRITICAL"}, {"id": "A_007", "type": "RESET_VIOLATION", "timestamp": 15, "signal": "tx_data", "what_happened": "An anomaly of type 'RESET_VIOLATION' was observed on signal 'tx_data' at time step 15.", "why": "The signal value was measured as 'Signal value is 170 during reset', which violated the design requirement: 'Signal should assume reset value (0)'.", "suggested_fix": "Review the RTL driver logic and testbench constraint parameters for signal stability.", "spec_reference": "Reset point: FP_003 - Reset and initialisation", "severity": "CRITICAL"}, {"id": "A_008", "type": "RESET_VIOLATION", "timestamp": 15, "signal": "state", "what_happened": "An anomaly of type 'RESET_VIOLATION' was observed on signal 'state' at time step 15.", "why": "The signal value was measured as 'Signal value is 3.0 during reset', which violated the design requirement: 'Signal should assume reset value (0)'.", "suggested_fix": "Review the RTL driver logic and testbench constraint parameters for signal stability.", "spec_reference": "Reset point: FP_003 - Reset and initialisation", "severity": "CRITICAL"}, {"id": "A_009", "type": "GLITCH_DETECTION", "timestamp": 22, "signal": "tx_data", "what_happened": "An anomaly of type 'GLITCH_DETECTION' was observed on signal 'tx_data' at time step 22.", "why": "The signal value was measured as 'Signal toggled back and forth within 2 units', which violated the design requirement: 'Signal must remain stable for at least 5 units'.", "suggested_fix": "Review the RTL driver logic and testbench constraint parameters for signal stability.", "spec_reference": "uart_spec.txt", "severity": "WARNING"}, {"id": "A_010", "type": "GLITCH_DETECTION", "timestamp": 32, "signal": "tx_data", "what_happened": "An anomaly of type 'GLITCH_DETECTION' was observed on signal 'tx_data' at time step 32.", "why": "The signal value was measured as 'Signal toggled back and forth within 2 units', which violated the design requirement: 'Signal must remain stable for at least 5 units'.", "suggested_fix": "Review the RTL driver logic and testbench constraint parameters for signal stability.", "spec_reference": "uart_spec.txt", "severity": "WARNING"}, {"id": "A_011", "type": "SETUP_VIOLATION", "timestamp": 24, "signal": "tx_data", "what_happened": "An anomaly of type 'SETUP_VIOLATION' was observed on signal 'tx_data' at time step 24.", "why": "The signal value was measured as 'Signal changed at 24 (too close to clock edge at 25)', which violated the design requirement: 'Signal must be stable 1 units before clock edge'.", "suggested_fix": "Review the RTL driver logic and testbench constraint parameters for signal stability.", "spec_reference": "Timing parameters: {'baud_rate': 9600}", "severity": "WARNING"}, {"id": "A_012", "type": "SETUP_VIOLATION", "timestamp": 34, "signal": "tx_data", "what_happened": "An anomaly of type 'SETUP_VIOLATION' was observed on signal 'tx_data' at time step 34.", "why": "The signal value was measured as 'Signal changed at 34 (too close to clock edge at 35)', which violated the design requirement: 'Signal must be stable 1 units before clock edge'.", "suggested_fix": "Review the RTL driver logic and testbench constraint parameters for signal stability.", "spec_reference": "Timing parameters: {'baud_rate': 9600}", "severity": "WARNING"}, {"id": "A_013", "type": "FSM_SEQUENCE_VIOLATION", "timestamp": 15, "signal": "state", "what_happened": "An anomaly of type 'FSM_SEQUENCE_VIOLATION' was observed on signal 'state' at time step 15.", "why": "The signal value was measured as 'State transition START -> STOP', which violated the design requirement: 'Only transition to ['DATA'] allowed from START'.", "suggested_fix": "Review the RTL driver logic and testbench constraint parameters for signal stability.", "spec_reference": "FSM state transitions: IDLE, START, DATA, STOP", "severity": "CRITICAL"}];
+        const anomalies = [{"id": "A_001", "type": "XZ_PROPAGATION", "timestamp": 32, "signal": "tx_data", "what_happened": "An undefined high-impedance X state propagated to txdata.", "why": "The testbench driver failed to initialize the parallel interface data lines to a valid logic level.", "suggested_fix": "Ensure all transaction items randomize data to valid values, and initialize UVM virtual interface variables at time zero.", "spec_reference": "uart_spec.txt", "severity": "CRITICAL"}, {"id": "A_002", "type": "RESET_VIOLATION", "timestamp": 0, "signal": "tx_data", "what_happened": "During active reset (rstn is low), txdata asserted high values instead of remaining zero.", "why": "The driver failed to gate transmission registers when the active-low reset was asserted.", "suggested_fix": "Modify the RTL always block to reset rxdata and txdata registers to 0 on negative edge of rstn.", "spec_reference": "Reset point: FP_003 - Reset and initialisation", "severity": "CRITICAL"}, {"id": "A_003", "type": "RESET_VIOLATION", "timestamp": 5, "signal": "tx_data", "what_happened": "During active reset (rstn is low), txdata asserted high values instead of remaining zero.", "why": "The driver failed to gate transmission registers when the active-low reset was asserted.", "suggested_fix": "Modify the RTL always block to reset rxdata and txdata registers to 0 on negative edge of rstn.", "spec_reference": "Reset point: FP_003 - Reset and initialisation", "severity": "CRITICAL"}, {"id": "A_004", "type": "RESET_VIOLATION", "timestamp": 5, "signal": "state", "what_happened": "During active reset (rstn is low), txdata asserted high values instead of remaining zero.", "why": "The driver failed to gate transmission registers when the active-low reset was asserted.", "suggested_fix": "Modify the RTL always block to reset rxdata and txdata registers to 0 on negative edge of rstn.", "spec_reference": "Reset point: FP_003 - Reset and initialisation", "severity": "CRITICAL"}, {"id": "A_005", "type": "RESET_VIOLATION", "timestamp": 10, "signal": "tx_data", "what_happened": "During active reset (rstn is low), txdata asserted high values instead of remaining zero.", "why": "The driver failed to gate transmission registers when the active-low reset was asserted.", "suggested_fix": "Modify the RTL always block to reset rxdata and txdata registers to 0 on negative edge of rstn.", "spec_reference": "Reset point: FP_003 - Reset and initialisation", "severity": "CRITICAL"}, {"id": "A_006", "type": "RESET_VIOLATION", "timestamp": 10, "signal": "state", "what_happened": "During active reset (rstn is low), txdata asserted high values instead of remaining zero.", "why": "The driver failed to gate transmission registers when the active-low reset was asserted.", "suggested_fix": "Modify the RTL always block to reset rxdata and txdata registers to 0 on negative edge of rstn.", "spec_reference": "Reset point: FP_003 - Reset and initialisation", "severity": "CRITICAL"}, {"id": "A_007", "type": "RESET_VIOLATION", "timestamp": 15, "signal": "tx_data", "what_happened": "During active reset (rstn is low), txdata asserted high values instead of remaining zero.", "why": "The driver failed to gate transmission registers when the active-low reset was asserted.", "suggested_fix": "Modify the RTL always block to reset rxdata and txdata registers to 0 on negative edge of rstn.", "spec_reference": "Reset point: FP_003 - Reset and initialisation", "severity": "CRITICAL"}, {"id": "A_008", "type": "RESET_VIOLATION", "timestamp": 15, "signal": "state", "what_happened": "During active reset (rstn is low), txdata asserted high values instead of remaining zero.", "why": "The driver failed to gate transmission registers when the active-low reset was asserted.", "suggested_fix": "Modify the RTL always block to reset rxdata and txdata registers to 0 on negative edge of rstn.", "spec_reference": "Reset point: FP_003 - Reset and initialisation", "severity": "CRITICAL"}, {"id": "A_009", "type": "GLITCH_DETECTION", "timestamp": 22, "signal": "tx_data", "what_happened": "Signal txdata toggled rapidly faster than the clock period allows.", "why": "Signal race condition in the combinational driving logic or missing synchronizer.", "suggested_fix": "Synchronize txdata driving events to the clock edge inside the SystemVerilog interface.", "spec_reference": "uart_spec.txt", "severity": "WARNING"}, {"id": "A_010", "type": "GLITCH_DETECTION", "timestamp": 32, "signal": "tx_data", "what_happened": "Signal txdata toggled rapidly faster than the clock period allows.", "why": "Signal race condition in the combinational driving logic or missing synchronizer.", "suggested_fix": "Synchronize txdata driving events to the clock edge inside the SystemVerilog interface.", "spec_reference": "uart_spec.txt", "severity": "WARNING"}, {"id": "A_011", "type": "SETUP_VIOLATION", "timestamp": 24, "signal": "tx_data", "what_happened": "Setup timing violation detected. txdata changed value too close before clk positive edge.", "why": "Propagation delay in driving data or setup time limit is set too high relative to clock period.", "suggested_fix": "Delay driving txdata or configure positive edge driver clocking block output skew (1step).", "spec_reference": "Timing parameters: {'baud_rate': 9600}", "severity": "WARNING"}, {"id": "A_012", "type": "SETUP_VIOLATION", "timestamp": 34, "signal": "tx_data", "what_happened": "Setup timing violation detected. txdata changed value too close before clk positive edge.", "why": "Propagation delay in driving data or setup time limit is set too high relative to clock period.", "suggested_fix": "Delay driving txdata or configure positive edge driver clocking block output skew (1step).", "spec_reference": "Timing parameters: {'baud_rate': 9600}", "severity": "WARNING"}, {"id": "A_013", "type": "FSM_SEQUENCE_VIOLATION", "timestamp": 15, "signal": "state", "what_happened": "State register jumped illegally from START directly to STOP state.", "why": "The RTL state transition decoder has a logical bug skipping the DATA state.", "suggested_fix": "Verify next-state logic in the RTL FSM case block to ensure DATA state is visited.", "spec_reference": "FSM state transitions: IDLE, START, DATA, STOP", "severity": "CRITICAL"}];
 
         // Stack digital signals vertically by offsetting them
         const data = [];

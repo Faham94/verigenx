@@ -185,13 +185,13 @@ with st.sidebar:
         ["Overview", "Signals", "FSM States", "Register Map",
          "Timing Constraints", "Functional Points", "Confidence Report",
          "Test Results", "Generated Testbench", "Repair Log", "Phase 3 Metrics",
-         "Validation Report", "Simulation Report", "Run Pipeline"],
+         "Validation Report", "Simulation Report", "Waveform Diagnostics", "Run Pipeline"],
         label_visibility="collapsed"
     )
     st.divider()
 
     # Dynamic Phase Statuses
-    p1_status, p2_status, p3_status, p4_status, p5_status = False, False, False, False, False
+    p1_status, p2_status, p3_status, p4_status, p5_status, p6_status = False, False, False, False, False, False
     if plan is not None:
         p1_status = True
     if os.path.exists("dag.dot"):
@@ -236,8 +236,11 @@ with st.sidebar:
         except Exception:
             pass
 
-    if os.path.exists("output/coverhunter_report.json"):
+    if os.path.exists("output/coverhunter_report.json") or os.path.exists("output/coverhunter_report_uart.json") or os.path.exists("output/coverhunter_report_spi.json") or os.path.exists("output/coverhunter_report_i2c.json"):
         p5_status = True
+
+    if os.path.exists("CLIENT_REPORT_WAVEFORM.html") and os.path.getsize("CLIENT_REPORT_WAVEFORM.html") > 0:
+        p6_status = True
 
     st.markdown("**Phase Status**")
     if p1_status:
@@ -264,6 +267,11 @@ with st.sidebar:
         st.markdown('<span class="status-complete">Phase 5 — CoverHunter</span>',  unsafe_allow_html=True)
     else:
         st.markdown('<span class="status-pending">Phase 5 — CoverHunter</span>',  unsafe_allow_html=True)
+
+    if p6_status:
+        st.markdown('<span class="status-complete">Phase 6 — WaveWhisperer</span>',  unsafe_allow_html=True)
+    else:
+        st.markdown('<span class="status-pending">Phase 6 — WaveWhisperer</span>',  unsafe_allow_html=True)
     st.divider()
 
     if plan:
@@ -292,6 +300,8 @@ if plan:
         completed_phases.append("4")
     if p5_status:
         completed_phases.append("5")
+    if p6_status:
+        completed_phases.append("6")
     
     if completed_phases:
         if len(completed_phases) == 1:
@@ -393,6 +403,11 @@ if page == "Overview":
             st.success("**Phase 5 — CoverHunter:** Complete\n\nCoverage closure feedback loop executed, targeted tests generated, and functional coverage targets achieved.")
         else:
             st.warning("**Phase 5 — CoverHunter:** Pending\n\nCoverage closure loop and test generation pending.")
+
+        if p6_status:
+            st.success("**Phase 6 — WaveWhisperer:** Complete\n\nWaveform anomaly explanation engine ran, timing/reset rules checked, and interactive diagnostics report generated.")
+        else:
+            st.warning("**Phase 6 — WaveWhisperer:** Pending\n\nWaveform diagnostics pending.")
 
 
 elif page == "Signals":
@@ -967,6 +982,25 @@ elif page == "Simulation Report":
                 # Show stdout output
                 st.markdown("**Simulation Log Output:**")
                 st.code(tres.get("stdout", ""), language="text")
+
+
+elif page == "Waveform Diagnostics":
+    st.markdown('<div class="section-header">Phase 6: WaveWhisperer Waveform Anomaly Diagnostics</div>', unsafe_allow_html=True)
+    report_path = "CLIENT_REPORT_WAVEFORM.html"
+    
+    if not os.path.exists(report_path):
+        st.info("No Waveform Diagnostics report found. Run the timing checks and explanation engine first.")
+    else:
+        try:
+            with open(report_path, "r", encoding="utf-8") as f:
+                html_content = f.read()
+            
+            import streamlit.components.v1 as components
+            components.html(html_content, height=850, scrolling=True)
+            
+            st.success("Loaded Waveform Diagnostics report successfully.")
+        except Exception as e:
+            st.error(f"Failed to load report: {e}")
 
 
 elif page == "Run Pipeline":
