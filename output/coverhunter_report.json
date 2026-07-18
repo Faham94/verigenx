@@ -2,20 +2,20 @@
   "design_name": "uart",
   "baseline_coverage": {
     "functional_coverage": 33.33,
-    "line_coverage": 70.46632124352331,
-    "branch_coverage": 74.07407407407408,
-    "toggle_coverage": 53.57142857142857,
-    "total_coverage": 57.86045597225649
+    "line_coverage": 62.69430051813472,
+    "branch_coverage": 46.2962962962963,
+    "toggle_coverage": 50.89285714285714,
+    "total_coverage": 48.30336348932204
   },
   "iterations": [
     {
       "iteration": 1,
       "coverage": {
         "functional_coverage": 33.33,
-        "line_coverage": 70.46632124352331,
-        "branch_coverage": 74.07407407407408,
-        "toggle_coverage": 53.57142857142857,
-        "total_coverage": 57.86045597225649
+        "line_coverage": 62.69430051813472,
+        "branch_coverage": 46.2962962962963,
+        "toggle_coverage": 50.89285714285714,
+        "total_coverage": 48.30336348932204
       },
       "targeted_gap": {
         "name": "IDLE",
@@ -27,10 +27,10 @@
       "iteration": 2,
       "coverage": {
         "functional_coverage": 100.0,
-        "line_coverage": 71.70731707317073,
-        "branch_coverage": 57.407407407407405,
-        "toggle_coverage": 55.35714285714286,
-        "total_coverage": 71.11796683443025
+        "line_coverage": 81.46341463414633,
+        "branch_coverage": 74.07407407407408,
+        "toggle_coverage": 64.28571428571429,
+        "total_coverage": 79.95580074848367
       },
       "targeted_gap": null
     }
@@ -42,9 +42,9 @@
   },
   "final_coverage": {
     "functional_coverage": 100.0,
-    "line_coverage": 71.70731707317073,
-    "branch_coverage": 57.407407407407405,
-    "toggle_coverage": 55.35714285714286,
-    "total_coverage": 71.11796683443025
+    "line_coverage": 81.46341463414633,
+    "branch_coverage": 74.07407407407408,
+    "toggle_coverage": 64.28571428571429,
+    "total_coverage": 79.95580074848367
   }
 }

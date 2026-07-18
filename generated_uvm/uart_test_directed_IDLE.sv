@@ -4,15 +4,12 @@ class uart_sequence_IDLE extends uvm_sequence #(uart_seq_item);
         super.new(name);
     endfunction
     virtual task body();
-        `uvm_info("SEQ", "Starting directed sequence for IDLE", UVM_LOW)
-        $display("[UVM_INFO] IDLE state hit");
         req = uart_seq_item::type_id::create("req");
         start_item(req);
-        // Note: Do not call req.randomize() to avoid Z3 SAT solver dependency in Verilator on Windows
         req.tx_data = 8'hAA;
         req.rx_data = 8'hAA;
         finish_item(req);
-        #100; // Delay to allow DUT propagation and monitor sampling
+        #100;
     endtask
 endclass
 

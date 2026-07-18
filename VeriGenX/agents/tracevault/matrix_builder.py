@@ -166,6 +166,17 @@ class MatrixBuilder:
         return {}
 
     def _load_sim_report(self, design_name: str) -> Dict[str, Any]:
+        # Try design-specific validation report first
+        path_spec = f"output/sim_validation_report_{design_name}.json"
+        if os.path.exists(path_spec):
+            try:
+                with open(path_spec, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    if data.get("design_name") == design_name:
+                        return data
+            except Exception as e:
+                print(f"  [Warning] Failed to read design-specific sim report: {e}")
+
         path = "output/sim_validation_report.json"
         if os.path.exists(path):
             try:

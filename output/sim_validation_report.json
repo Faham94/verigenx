@@ -1,28 +1,28 @@
 {
-    "design_name": "uart",
-    "run_id": "20260718_230223",
+    "design_name": "i2c",
+    "run_id": "20260719_022840",
     "compiled": true,
     "compile_log": "Compilation successful.",
     "tests": {
-        "uart_test_base": {
+        "i2c_test_base": {
             "success": true,
             "status": "passed",
-            "stdout": "[UVM_INFO] Starting test: uart_test_base\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:449: Verilog $finish\n",
+            "stdout": "[UVM_INFO] Starting test: i2c_test_base\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 0.00%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:449: Verilog $finish\n",
             "stderr": "",
-            "vcd_path": "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_full_pipeline_e2e_for_des0\\sim_20260718_230223\\uart_uart_test_base.vcd",
+            "vcd_path": "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_simrunner_e2e_i2c_0\\sim_run\\sim_20260719_022840\\i2c_i2c_test_base.vcd",
             "log_summary": {
                 "fatals": [],
                 "errors": [],
                 "warnings": [],
                 "info": [
-                    "[UVM_INFO] Starting test: uart_test_base",
+                    "[UVM_INFO] Starting test: i2c_test_base",
                     "[UVM_INFO] Entering Build Phase...",
                     "[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.",
                     "[UVM_INFO] Entering Connect Phase...",
                     "[UVM_INFO] Entering Run Phase...",
                     "[UVM_INFO] @ 5 | SB_MATCH: Transaction match:",
                     "[UVM_INFO] Entering Report Phase...",
-                    "[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%",
+                    "[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 0.00%",
                     "[UVM_INFO] Simulation finished (all objections dropped).",
                     "[UVM_INFO] Simulation PASSED."
                 ],
@@ -33,53 +33,47 @@
                 }
             },
             "coverage": {
-                "line_coverage": 91.70984455958549,
-                "branch_coverage": 75.92592592592592,
-                "toggle_coverage": 37.5,
-                "functional_coverage": 33.33,
-                "total_points": 359,
-                "covered_points": 260,
+                "line_coverage": 90.0523560209424,
+                "branch_coverage": 79.16666666666666,
+                "toggle_coverage": 50.0,
+                "functional_coverage": 0.0,
+                "total_points": 267,
+                "covered_points": 224,
                 "functional_points_detail": {
                     "FP_001": {
-                        "description": "Data transmission functionality",
+                        "description": "Reset and initialisation",
                         "hit_count": 0,
                         "total_bins": 1,
                         "coverage_percentage": 0.0
                     },
                     "FP_002": {
-                        "description": "Baud rate configuration",
+                        "description": "Acknowledge/no-acknowledge handling",
                         "hit_count": 0,
                         "total_bins": 1,
                         "coverage_percentage": 0.0
-                    },
-                    "FP_003": {
-                        "description": "Reset and initialisation",
-                        "hit_count": 1,
-                        "total_bins": 1,
-                        "coverage_percentage": 100.0
                     }
                 }
             }
         },
-        "uart_test_directed": {
+        "i2c_test_directed": {
             "success": true,
             "status": "passed",
-            "stdout": "[UVM_INFO] Starting test: uart_test_directed\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:449: Verilog $finish\n",
+            "stdout": "[UVM_INFO] Starting test: i2c_test_directed\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 0.00%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:449: Verilog $finish\n",
             "stderr": "",
-            "vcd_path": "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_full_pipeline_e2e_for_des0\\sim_20260718_230223\\uart_uart_test_directed.vcd",
+            "vcd_path": "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_simrunner_e2e_i2c_0\\sim_run\\sim_20260719_022840\\i2c_i2c_test_directed.vcd",
             "log_summary": {
                 "fatals": [],
                 "errors": [],
                 "warnings": [],
                 "info": [
-                    "[UVM_INFO] Starting test: uart_test_directed",
+                    "[UVM_INFO] Starting test: i2c_test_directed",
                     "[UVM_INFO] Entering Build Phase...",
                     "[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.",
                     "[UVM_INFO] Entering Connect Phase...",
                     "[UVM_INFO] Entering Run Phase...",
                     "[UVM_INFO] @ 5 | SB_MATCH: Transaction match:",
                     "[UVM_INFO] Entering Report Phase...",
-                    "[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%",
+                    "[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 0.00%",
                     "[UVM_INFO] Simulation finished (all objections dropped).",
                     "[UVM_INFO] Simulation PASSED."
                 ],
@@ -90,40 +84,34 @@
                 }
             },
             "coverage": {
-                "line_coverage": 95.85492227979275,
-                "branch_coverage": 96.29629629629629,
-                "toggle_coverage": 38.392857142857146,
-                "functional_coverage": 33.33,
-                "total_points": 359,
-                "covered_points": 280,
+                "line_coverage": 85.86387434554975,
+                "branch_coverage": 70.83333333333334,
+                "toggle_coverage": 50.0,
+                "functional_coverage": 0.0,
+                "total_points": 267,
+                "covered_points": 212,
                 "functional_points_detail": {
                     "FP_001": {
-                        "description": "Data transmission functionality",
+                        "description": "Reset and initialisation",
                         "hit_count": 0,
                         "total_bins": 1,
                         "coverage_percentage": 0.0
                     },
                     "FP_002": {
-                        "description": "Baud rate configuration",
+                        "description": "Acknowledge/no-acknowledge handling",
                         "hit_count": 0,
                         "total_bins": 1,
                         "coverage_percentage": 0.0
-                    },
-                    "FP_003": {
-                        "description": "Reset and initialisation",
-                        "hit_count": 1,
-                        "total_bins": 1,
-                        "coverage_percentage": 100.0
                     }
                 }
             }
         }
     },
     "coverage": {
-        "line_coverage": 95.85492227979275,
-        "branch_coverage": 96.29629629629629,
-        "toggle_coverage": 38.392857142857146,
-        "functional_coverage": 33.33
+        "line_coverage": 90.0523560209424,
+        "branch_coverage": 79.16666666666666,
+        "toggle_coverage": 50.0,
+        "functional_coverage": 0.0
     },
     "status": "passed"
 }

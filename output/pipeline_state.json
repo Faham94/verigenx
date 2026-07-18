@@ -1,9 +1,9 @@
 {
     "current_phase": "",
     "test_plan": {
-        "design_name": "uart",
+        "design_name": "fifo",
         "version": "1.0",
-        "generated_at": "2026-07-18T22:59:49.324468",
+        "generated_at": "2026-07-19T01:34:04.422149",
         "extraction_method": "heuristic",
         "signals": [
             {
@@ -17,64 +17,68 @@
                 "direction": "input"
             },
             {
-                "name": "tx_data",
+                "name": "wr_en",
+                "width": 1,
+                "direction": "input"
+            },
+            {
+                "name": "rd_en",
+                "width": 1,
+                "direction": "input"
+            },
+            {
+                "name": "wr_data",
                 "width": 8,
                 "direction": "input"
             },
             {
-                "name": "rx_data",
+                "name": "rd_data",
                 "width": 8,
+                "direction": "output"
+            },
+            {
+                "name": "full",
+                "width": 1,
+                "direction": "output"
+            },
+            {
+                "name": "empty",
+                "width": 1,
                 "direction": "output"
             }
         ],
         "fsm_states": [
-            "IDLE",
-            "START",
-            "DATA",
-            "STOP"
+            "FIFO",
+            "FSM",
+            "EMPTY",
+            "PARTIAL",
+            "FULL"
         ],
-        "register_map": [
-            {
-                "address": "0X00",
-                "name": "baud_divisor",
-                "width": 16,
-                "access": "RW",
-                "reset_value": "0X0001"
-            },
-            {
-                "address": "0X04",
-                "name": "control",
-                "width": 8,
-                "access": "RW",
-                "reset_value": "0X00"
-            }
-        ],
-        "timing_constraints": {
-            "baud_rate": 9600
-        },
+        "register_map": [],
+        "timing_constraints": {},
         "functional_points": [
             {
                 "id": "FP_001",
-                "description": "Data transmission functionality"
+                "description": "Reset and initialisation"
             },
             {
                 "id": "FP_002",
-                "description": "Baud rate configuration"
+                "description": "Full-condition boundary behavior"
             },
             {
                 "id": "FP_003",
-                "description": "Reset and initialisation"
+                "description": "Empty-condition boundary behavior"
             }
         ],
         "protocol_handshake_rules": [
-            "Start bit (low) initiates transmission",
-            "Stop bit (high) finalizes transmission"
+            "Full assertion prevents write acknowledgment",
+            "Empty assertion prevents read data propagation"
         ],
         "firmware_programming_model": [
-            "Write the baud rate divisor to baud_divisor register",
-            "Configure character length, parity, and stop bits in control register"
+            "Assert rst_n to clear internal buffers",
+            "Check empty flag before reading rd_data"
         ],
-        "source_file": "uart_spec.txt",
+        "source_file": "fifo_spec.txt",
         "embedded_chunks": 6
     },
     "dependency_graph": {
@@ -135,7 +139,7 @@
                 "test_directed"
             ]
         },
-        "design_name": "uart",
+        "design_name": "fifo",
         "signals": [
             {
                 "name": "clk",
@@ -148,104 +152,247 @@
                 "direction": "input"
             },
             {
-                "name": "tx_data",
+                "name": "wr_en",
+                "width": 1,
+                "direction": "input"
+            },
+            {
+                "name": "rd_en",
+                "width": 1,
+                "direction": "input"
+            },
+            {
+                "name": "wr_data",
                 "width": 8,
                 "direction": "input"
             },
             {
-                "name": "rx_data",
+                "name": "rd_data",
                 "width": 8,
+                "direction": "output"
+            },
+            {
+                "name": "full",
+                "width": 1,
+                "direction": "output"
+            },
+            {
+                "name": "empty",
+                "width": 1,
                 "direction": "output"
             }
         ],
         "fsm_states": [
-            "IDLE",
-            "START",
-            "DATA",
-            "STOP"
+            "FIFO",
+            "FSM",
+            "EMPTY",
+            "PARTIAL",
+            "FULL"
         ],
-        "register_map": [
-            {
-                "address": "0X00",
-                "name": "baud_divisor",
-                "width": 16,
-                "access": "RW",
-                "reset_value": "0X0001"
-            },
-            {
-                "address": "0X04",
-                "name": "control",
-                "width": 8,
-                "access": "RW",
-                "reset_value": "0X00"
-            }
-        ],
+        "register_map": [],
         "functional_points": [
             {
                 "id": "FP_001",
-                "description": "Data transmission functionality"
+                "description": "Reset and initialisation"
             },
             {
                 "id": "FP_002",
-                "description": "Baud rate configuration"
+                "description": "Full-condition boundary behavior"
             },
             {
                 "id": "FP_003",
-                "description": "Reset and initialisation"
+                "description": "Empty-condition boundary behavior"
             }
         ],
         "component_filenames": {
-            "interface": "uart_interface.sv",
-            "sequence_item": "uart_sequence_item.sv",
-            "sequence": "uart_sequence.sv",
-            "driver": "uart_driver.sv",
-            "monitor": "uart_monitor.sv",
-            "agent": "uart_agent.sv",
-            "scoreboard": "uart_scoreboard.sv",
-            "coverage": "uart_coverage.sv",
-            "env": "uart_env.sv",
-            "test_base": "uart_test_base.sv",
-            "test_directed": "uart_test_directed.sv",
-            "top": "uart_top.sv"
+            "interface": "fifo_interface.sv",
+            "sequence_item": "fifo_sequence_item.sv",
+            "sequence": "fifo_sequence.sv",
+            "driver": "fifo_driver.sv",
+            "monitor": "fifo_monitor.sv",
+            "agent": "fifo_agent.sv",
+            "scoreboard": "fifo_scoreboard.sv",
+            "coverage": "fifo_coverage.sv",
+            "env": "fifo_env.sv",
+            "test_base": "fifo_test_base.sv",
+            "test_directed": "fifo_test_directed.sv",
+            "top": "fifo_top.sv"
         }
     },
     "generated_files": [
-        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_interface.sv",
-        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_sequence_item.sv",
-        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_monitor.sv",
-        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_sequence.sv",
-        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_driver.sv",
-        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_scoreboard.sv",
-        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_coverage.sv",
-        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_agent.sv",
-        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_env.sv",
-        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_test_base.sv",
-        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_test_directed.sv",
-        "C:\\Users\\Dell\\Desktop\\PROJECT\\generated_uvm\\uart_top.sv"
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_interface.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_sequence_item.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_monitor.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_sequence.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_driver.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_scoreboard.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_coverage.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_agent.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_env.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_test_base.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_test_directed.sv",
+        "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_simrunner_e2e_fifo_0\\generated_uvm\\fifo_top.sv"
     ],
     "simulation_results": {
-        "design_name": "uart",
-        "run_id": "20260718_230223",
+        "design_name": "fifo",
+        "run_id": "20260719_021816",
         "compiled": true,
         "compile_log": "Compilation successful.",
         "tests": {
-            "uart_test_base": {
+            "fifo_test_base": {
                 "success": true,
                 "status": "passed",
-                "stdout": "[UVM_INFO] Starting test: uart_test_base\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:449: Verilog $finish\n",
+                "stdout": "[UVM_INFO] Starting test: fifo_test_base\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 0.00%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:449: Verilog $finish\n",
                 "stderr": "",
-                "vcd_path": "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_full_pipeline_e2e_for_des0\\sim_20260718_230223\\uart_uart_test_base.vcd",
+                "vcd_path": "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_full_pipeline_e2e_for_des4\\sim_20260719_021816\\fifo_fifo_test_base.vcd",
                 "log_summary": {
                     "fatals": [],
                     "errors": [],
                     "warnings": [],
                     "info": [
-                        "[UVM_INFO] Starting test: uart_test_base",
+                        "[UVM_INFO] Starting test: fifo_test_base",
                         "[UVM_INFO] Entering Build Phase...",
                         "[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.",
                         "[UVM_INFO] Entering Connect Phase...",
                         "[UVM_INFO] Entering Run Phase...",
                         "[UVM_INFO] @ 5 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] Entering Report Phase...",
+                        "[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 0.00%",
+                        "[UVM_INFO] Simulation finished (all objections dropped).",
+                        "[UVM_INFO] Simulation PASSED."
+                    ],
+                    "summary": {
+                        "total_errors": 0,
+                        "total_warnings": 0,
+                        "status": "passed"
+                    }
+                },
+                "coverage": {
+                    "line_coverage": 66.3594470046083,
+                    "branch_coverage": 55.35714285714286,
+                    "toggle_coverage": 52.20588235294118,
+                    "functional_coverage": 0.0,
+                    "total_points": 409,
+                    "covered_points": 246,
+                    "functional_points_detail": {
+                        "FP_001": {
+                            "description": "Reset and initialisation",
+                            "hit_count": 0,
+                            "total_bins": 1,
+                            "coverage_percentage": 0.0
+                        },
+                        "FP_002": {
+                            "description": "Full-condition boundary behavior",
+                            "hit_count": 0,
+                            "total_bins": 1,
+                            "coverage_percentage": 0.0
+                        },
+                        "FP_003": {
+                            "description": "Empty-condition boundary behavior",
+                            "hit_count": 0,
+                            "total_bins": 1,
+                            "coverage_percentage": 0.0
+                        }
+                    }
+                }
+            },
+            "fifo_test_directed": {
+                "success": true,
+                "status": "passed",
+                "stdout": "[UVM_INFO] Starting test: fifo_test_directed\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 0.00%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:449: Verilog $finish\n",
+                "stderr": "",
+                "vcd_path": "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_full_pipeline_e2e_for_des4\\sim_20260719_021816\\fifo_fifo_test_directed.vcd",
+                "log_summary": {
+                    "fatals": [],
+                    "errors": [],
+                    "warnings": [],
+                    "info": [
+                        "[UVM_INFO] Starting test: fifo_test_directed",
+                        "[UVM_INFO] Entering Build Phase...",
+                        "[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.",
+                        "[UVM_INFO] Entering Connect Phase...",
+                        "[UVM_INFO] Entering Run Phase...",
+                        "[UVM_INFO] @ 5 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] Entering Report Phase...",
+                        "[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 0.00%",
+                        "[UVM_INFO] Simulation finished (all objections dropped).",
+                        "[UVM_INFO] Simulation PASSED."
+                    ],
+                    "summary": {
+                        "total_errors": 0,
+                        "total_warnings": 0,
+                        "status": "passed"
+                    }
+                },
+                "coverage": {
+                    "line_coverage": 62.21198156682027,
+                    "branch_coverage": 55.35714285714286,
+                    "toggle_coverage": 42.64705882352941,
+                    "functional_coverage": 0.0,
+                    "total_points": 409,
+                    "covered_points": 224,
+                    "functional_points_detail": {
+                        "FP_001": {
+                            "description": "Reset and initialisation",
+                            "hit_count": 0,
+                            "total_bins": 1,
+                            "coverage_percentage": 0.0
+                        },
+                        "FP_002": {
+                            "description": "Full-condition boundary behavior",
+                            "hit_count": 0,
+                            "total_bins": 1,
+                            "coverage_percentage": 0.0
+                        },
+                        "FP_003": {
+                            "description": "Empty-condition boundary behavior",
+                            "hit_count": 0,
+                            "total_bins": 1,
+                            "coverage_percentage": 0.0
+                        }
+                    }
+                }
+            },
+            "fifo_test_directed_FSM": {
+                "success": true,
+                "status": "passed",
+                "stdout": "[UVM_INFO] Starting test: fifo_test_directed_FSM\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 0 | SEQ: Starting directed sequence for FSM\n[UVM_INFO] FSM state hit\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 15 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 25 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 35 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 45 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 55 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 65 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 75 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 85 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 95 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 105 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 115 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 125 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 135 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 145 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 155 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 165 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 175 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 185 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 195 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 205 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 215 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:449: Verilog $finish\n",
+                "stderr": "",
+                "vcd_path": "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_full_pipeline_e2e_for_des4\\sim_20260719_021816\\fifo_fifo_test_directed_FSM.vcd",
+                "log_summary": {
+                    "fatals": [],
+                    "errors": [],
+                    "warnings": [],
+                    "info": [
+                        "[UVM_INFO] Starting test: fifo_test_directed_FSM",
+                        "[UVM_INFO] Entering Build Phase...",
+                        "[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.",
+                        "[UVM_INFO] Entering Connect Phase...",
+                        "[UVM_INFO] Entering Run Phase...",
+                        "[UVM_INFO] @ 0 | SEQ: Starting directed sequence for FSM",
+                        "[UVM_INFO] FSM state hit",
+                        "[UVM_INFO] @ 5 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 15 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 25 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 35 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 45 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 55 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 65 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 75 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 85 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 95 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 105 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 115 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 125 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 135 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 145 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 155 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 165 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 175 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 185 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 195 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 205 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 215 | SB_MATCH: Transaction match:",
                         "[UVM_INFO] Entering Report Phase...",
                         "[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%",
                         "[UVM_INFO] Simulation finished (all objections dropped).",
@@ -258,51 +405,74 @@
                     }
                 },
                 "coverage": {
-                    "line_coverage": 91.70984455958549,
-                    "branch_coverage": 75.92592592592592,
-                    "toggle_coverage": 37.5,
+                    "line_coverage": 74.19354838709677,
+                    "branch_coverage": 64.28571428571429,
+                    "toggle_coverage": 53.67647058823529,
                     "functional_coverage": 33.33,
-                    "total_points": 359,
-                    "covered_points": 260,
+                    "total_points": 409,
+                    "covered_points": 270,
                     "functional_points_detail": {
                         "FP_001": {
-                            "description": "Data transmission functionality",
+                            "description": "Reset and initialisation",
                             "hit_count": 0,
                             "total_bins": 1,
                             "coverage_percentage": 0.0
                         },
                         "FP_002": {
-                            "description": "Baud rate configuration",
+                            "description": "Full-condition boundary behavior",
                             "hit_count": 0,
                             "total_bins": 1,
                             "coverage_percentage": 0.0
                         },
                         "FP_003": {
-                            "description": "Reset and initialisation",
-                            "hit_count": 1,
+                            "description": "Empty-condition boundary behavior",
+                            "hit_count": 21,
                             "total_bins": 1,
                             "coverage_percentage": 100.0
                         }
                     }
                 }
             },
-            "uart_test_directed": {
+            "fifo_test_directed_EMPTY": {
                 "success": true,
                 "status": "passed",
-                "stdout": "[UVM_INFO] Starting test: uart_test_directed\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:449: Verilog $finish\n",
+                "stdout": "[UVM_INFO] Starting test: fifo_test_directed_EMPTY\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 0 | SEQ: Starting directed sequence for EMPTY\n[UVM_INFO] EMPTY state hit\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 15 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 25 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 35 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 45 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 55 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 65 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 75 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 85 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 95 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 105 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 115 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 125 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 135 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 145 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 155 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 165 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 175 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 185 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 195 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 205 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 215 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:449: Verilog $finish\n",
                 "stderr": "",
-                "vcd_path": "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_full_pipeline_e2e_for_des0\\sim_20260718_230223\\uart_uart_test_directed.vcd",
+                "vcd_path": "C:\\Users\\Dell\\AppData\\Local\\Temp\\pytest-of-Dell\\pytest-90\\test_full_pipeline_e2e_for_des4\\sim_20260719_021816\\fifo_fifo_test_directed_EMPTY.vcd",
                 "log_summary": {
                     "fatals": [],
                     "errors": [],
                     "warnings": [],
                     "info": [
-                        "[UVM_INFO] Starting test: uart_test_directed",
+                        "[UVM_INFO] Starting test: fifo_test_directed_EMPTY",
                         "[UVM_INFO] Entering Build Phase...",
                         "[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.",
                         "[UVM_INFO] Entering Connect Phase...",
                         "[UVM_INFO] Entering Run Phase...",
+                        "[UVM_INFO] @ 0 | SEQ: Starting directed sequence for EMPTY",
+                        "[UVM_INFO] EMPTY state hit",
                         "[UVM_INFO] @ 5 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 15 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 25 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 35 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 45 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 55 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 65 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 75 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 85 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 95 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 105 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 115 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 125 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 135 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 145 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 155 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 165 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 175 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 185 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 195 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 205 | SB_MATCH: Transaction match:",
+                        "[UVM_INFO] @ 215 | SB_MATCH: Transaction match:",
                         "[UVM_INFO] Entering Report Phase...",
                         "[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%",
                         "[UVM_INFO] Simulation finished (all objections dropped).",
@@ -315,28 +485,28 @@
                     }
                 },
                 "coverage": {
-                    "line_coverage": 95.85492227979275,
-                    "branch_coverage": 96.29629629629629,
-                    "toggle_coverage": 38.392857142857146,
+                    "line_coverage": 71.42857142857143,
+                    "branch_coverage": 53.57142857142857,
+                    "toggle_coverage": 30.14705882352941,
                     "functional_coverage": 33.33,
-                    "total_points": 359,
-                    "covered_points": 280,
+                    "total_points": 409,
+                    "covered_points": 226,
                     "functional_points_detail": {
                         "FP_001": {
-                            "description": "Data transmission functionality",
+                            "description": "Reset and initialisation",
                             "hit_count": 0,
                             "total_bins": 1,
                             "coverage_percentage": 0.0
                         },
                         "FP_002": {
-                            "description": "Baud rate configuration",
+                            "description": "Full-condition boundary behavior",
                             "hit_count": 0,
                             "total_bins": 1,
                             "coverage_percentage": 0.0
                         },
                         "FP_003": {
-                            "description": "Reset and initialisation",
-                            "hit_count": 1,
+                            "description": "Empty-condition boundary behavior",
+                            "hit_count": 21,
                             "total_bins": 1,
                             "coverage_percentage": 100.0
                         }
@@ -345,20 +515,292 @@
             }
         },
         "coverage": {
-            "line_coverage": 95.85492227979275,
-            "branch_coverage": 96.29629629629629,
-            "toggle_coverage": 38.392857142857146,
+            "line_coverage": 74.19354838709677,
+            "branch_coverage": 64.28571428571429,
+            "toggle_coverage": 53.67647058823529,
             "functional_coverage": 33.33
         },
         "status": "passed"
     },
     "coverage_data": {
-        "line_coverage": 95.85492227979275,
-        "branch_coverage": 96.29629629629629,
-        "toggle_coverage": 38.392857142857146,
+        "line_coverage": 74.19354838709677,
+        "branch_coverage": 64.28571428571429,
+        "toggle_coverage": 53.67647058823529,
         "functional_coverage": 33.33
     },
     "anomalies": [],
-    "traceability_matrix": null,
+    "traceability_matrix": {
+        "sections": [
+            {
+                "id": 90,
+                "design_name": "fifo",
+                "section_name": "1. Signals",
+                "content": "Content for section: 1. Signals"
+            },
+            {
+                "id": 91,
+                "design_name": "fifo",
+                "section_name": "2. Protocol",
+                "content": "Content for section: 2. Protocol"
+            },
+            {
+                "id": 92,
+                "design_name": "fifo",
+                "section_name": "3. FSM States",
+                "content": "Content for section: 3. FSM States"
+            },
+            {
+                "id": 93,
+                "design_name": "fifo",
+                "section_name": "4. Registers",
+                "content": "Content for section: 4. Registers"
+            }
+        ],
+        "functional_points": [
+            {
+                "id": 46,
+                "design_name": "fifo",
+                "fp_id": "FP_001",
+                "description": "Reset and initialisation",
+                "section_id": 90
+            },
+            {
+                "id": 47,
+                "design_name": "fifo",
+                "fp_id": "FP_002",
+                "description": "Full-condition boundary behavior",
+                "section_id": 90
+            },
+            {
+                "id": 48,
+                "design_name": "fifo",
+                "fp_id": "FP_003",
+                "description": "Empty-condition boundary behavior",
+                "section_id": 90
+            }
+        ],
+        "test_cases": [
+            {
+                "id": 58,
+                "design_name": "fifo",
+                "test_name": "fifo_test_base",
+                "file_path": "generated_uvm\\fifo_test_base.sv"
+            },
+            {
+                "id": 59,
+                "design_name": "fifo",
+                "test_name": "fifo_test_directed",
+                "file_path": "generated_uvm\\fifo_test_directed.sv"
+            },
+            {
+                "id": 60,
+                "design_name": "fifo",
+                "test_name": "fifo_test_directed_EMPTY",
+                "file_path": "generated_uvm\\fifo_test_directed_EMPTY.sv"
+            },
+            {
+                "id": 61,
+                "design_name": "fifo",
+                "test_name": "fifo_test_directed_FSM",
+                "file_path": "generated_uvm\\fifo_test_directed_FSM.sv"
+            }
+        ],
+        "coverage_bins": [
+            {
+                "id": 203,
+                "design_name": "fifo",
+                "bin_name": "EMPTY",
+                "target_coverage": 100.0,
+                "achieved_coverage": 100.0
+            },
+            {
+                "id": 189,
+                "design_name": "fifo",
+                "bin_name": "FIFO",
+                "target_coverage": 100.0,
+                "achieved_coverage": 0.0
+            },
+            {
+                "id": 204,
+                "design_name": "fifo",
+                "bin_name": "FP_001",
+                "target_coverage": 100.0,
+                "achieved_coverage": 0.0
+            },
+            {
+                "id": 205,
+                "design_name": "fifo",
+                "bin_name": "FP_002",
+                "target_coverage": 100.0,
+                "achieved_coverage": 0.0
+            },
+            {
+                "id": 206,
+                "design_name": "fifo",
+                "bin_name": "FP_003",
+                "target_coverage": 100.0,
+                "achieved_coverage": 100.0
+            },
+            {
+                "id": 207,
+                "design_name": "fifo",
+                "bin_name": "FSM",
+                "target_coverage": 100.0,
+                "achieved_coverage": 100.0
+            },
+            {
+                "id": 193,
+                "design_name": "fifo",
+                "bin_name": "FULL",
+                "target_coverage": 100.0,
+                "achieved_coverage": 0.0
+            },
+            {
+                "id": 192,
+                "design_name": "fifo",
+                "bin_name": "PARTIAL",
+                "target_coverage": 100.0,
+                "achieved_coverage": 0.0
+            }
+        ],
+        "simulation_results": {
+            "fifo_test_base": {
+                "id": 58,
+                "design_name": "fifo",
+                "test_name": "fifo_test_base",
+                "status": "passed",
+                "log_summary": "[UVM_INFO] Starting test: fifo_test_base\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 0.00%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:449: Verilog $finish\n"
+            },
+            "fifo_test_directed": {
+                "id": 59,
+                "design_name": "fifo",
+                "test_name": "fifo_test_directed",
+                "status": "passed",
+                "log_summary": "[UVM_INFO] Starting test: fifo_test_directed\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 0.00%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:449: Verilog $finish\n"
+            },
+            "fifo_test_directed_EMPTY": {
+                "id": 60,
+                "design_name": "fifo",
+                "test_name": "fifo_test_directed_EMPTY",
+                "status": "passed",
+                "log_summary": "[UVM_INFO] Starting test: fifo_test_directed_EMPTY\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 0 | SEQ: Starting directed sequence for EMPTY\n[UVM_INFO] EMPTY state hit\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 15 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 25 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 35 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 45 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 55 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 65 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 75 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 85 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 95 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 105 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 115 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 125 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 135 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 145 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 155 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 165 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 175 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 185 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 195 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 205 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 215 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:449: Verilog $finish\n"
+            },
+            "fifo_test_directed_FSM": {
+                "id": 61,
+                "design_name": "fifo",
+                "test_name": "fifo_test_directed_FSM",
+                "status": "passed",
+                "log_summary": "[UVM_INFO] Starting test: fifo_test_directed_FSM\n[UVM_INFO] Entering Build Phase...\n[UVM_INFO] @ 0 | SB: No reference model injected. Creating default reference model.\n[UVM_INFO] Entering Connect Phase...\n[UVM_INFO] Entering Run Phase...\n[UVM_INFO] @ 0 | SEQ: Starting directed sequence for FSM\n[UVM_INFO] FSM state hit\n[UVM_INFO] @ 5 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 15 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 25 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 35 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 45 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 55 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 65 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 75 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 85 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 95 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 105 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 115 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 125 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 135 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 145 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 155 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 165 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 175 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 185 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 195 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 205 | SB_MATCH: Transaction match: \n[UVM_INFO] @ 215 | SB_MATCH: Transaction match: \n[UVM_INFO] Entering Report Phase...\n[UVM_INFO] Dumped functional coverage report to functional_coverage_report.json. Overall coverage: 33.33%\n[UVM_INFO] Simulation finished (all objections dropped).\n[UVM_INFO] Simulation PASSED.\n- uvm_mock.svh:449: Verilog $finish\n"
+            }
+        },
+        "fp_test_links": [
+            {
+                "fp_id": 46,
+                "test_id": 58
+            },
+            {
+                "fp_id": 46,
+                "test_id": 59
+            },
+            {
+                "fp_id": 46,
+                "test_id": 60
+            },
+            {
+                "fp_id": 46,
+                "test_id": 61
+            },
+            {
+                "fp_id": 47,
+                "test_id": 58
+            },
+            {
+                "fp_id": 47,
+                "test_id": 59
+            },
+            {
+                "fp_id": 47,
+                "test_id": 60
+            },
+            {
+                "fp_id": 47,
+                "test_id": 61
+            },
+            {
+                "fp_id": 48,
+                "test_id": 58
+            },
+            {
+                "fp_id": 48,
+                "test_id": 59
+            },
+            {
+                "fp_id": 48,
+                "test_id": 60
+            },
+            {
+                "fp_id": 48,
+                "test_id": 61
+            }
+        ],
+        "test_bin_links": [
+            {
+                "test_id": 58,
+                "bin_id": 186
+            },
+            {
+                "test_id": 58,
+                "bin_id": 187
+            },
+            {
+                "test_id": 58,
+                "bin_id": 188
+            },
+            {
+                "test_id": 59,
+                "bin_id": 186
+            },
+            {
+                "test_id": 59,
+                "bin_id": 187
+            },
+            {
+                "test_id": 59,
+                "bin_id": 188
+            },
+            {
+                "test_id": 60,
+                "bin_id": 186
+            },
+            {
+                "test_id": 60,
+                "bin_id": 187
+            },
+            {
+                "test_id": 60,
+                "bin_id": 188
+            },
+            {
+                "test_id": 60,
+                "bin_id": 191
+            },
+            {
+                "test_id": 61,
+                "bin_id": 186
+            },
+            {
+                "test_id": 61,
+                "bin_id": 187
+            },
+            {
+                "test_id": 61,
+                "bin_id": 188
+            },
+            {
+                "test_id": 61,
+                "bin_id": 190
+            }
+        ]
+    },
     "errors": []
 }
