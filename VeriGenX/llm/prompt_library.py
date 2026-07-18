@@ -200,6 +200,22 @@ _PROMPTS: Dict[str, str] = {
         "Make sure to register the classes with UVM macros (`uvm_object_utils / `uvm_component_utils).\n"
         "Return ONLY the complete raw SystemVerilog code for this new test file. Do not include markdown fences, do not include explanations."
     ),
+    "wavewhisperer_explanation": (
+        "You are an expert RTL design and verification engineer.\n"
+        "We have detected a waveform anomaly in the simulation of design '{design_name}'.\n"
+        "Anomaly Details:\n"
+        "  Type: {anomaly_type}\n"
+        "  Timestamp: {timestamp}\n"
+        "  Signals Involved: {signals_involved}\n"
+        "  Actual Values/Event: {actual_values}\n"
+        "  Expected/Constraint: {expected_values}\n"
+        "  Spec Section Reference: {spec_reference}\n\n"
+        "Please provide a structured, natural-language explanation containing:\n"
+        "1. What happened: Explain the exact physical and protocol meaning of the anomaly.\n"
+        "2. Why: Diagnose the potential root cause in the RTL or testbench.\n"
+        "3. Suggested fix: Provide concrete steps or code changes to fix it.\n\n"
+        "Keep the explanation technical, clear, and action-oriented. Do not include markdown code block fences."
+    ),
 }
 
 

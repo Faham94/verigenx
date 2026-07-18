@@ -1,0 +1,466 @@
+import os
+import json
+import pandas as pd
+from typing import List, Dict, Any
+
+class WaveReportGenerator:
+    def __init__(self, design_name: str):
+        self.design_name = design_name.upper()
+
+    def generate_html_report(self, df: pd.DataFrame, anomalies: List[Dict[str, Any]], filepath: str):
+        """
+        Generates a standalone, premium HTML report with Plotly waveform viewer and anomaly cards.
+        """
+        # Serialize signals data
+        timestamps = list(df.index) if not df.empty else []
+        signals_data = {}
+        if not df.empty:
+            for col in df.columns:
+                # Convert numeric or keep string values
+                signals_data[col] = list(df[col])
+
+        # Serialize anomalies
+        anomalies_json = json.dumps(anomalies)
+        signals_json = json.dumps(signals_data)
+        timestamps_json = json.dumps(timestamps)
+
+        # Count severities
+        critical_count = sum(1 for a in anomalies if a.get("severity") == "CRITICAL")
+        warning_count = sum(1 for a in anomalies if a.get("severity") == "WARNING")
+        info_count = sum(1 for a in anomalies if a.get("severity") == "INFO")
+
+        # HTML template
+        html_content = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VeriGenX WaveWhisperer - {self.design_name} Waveform Analysis</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Plotly.js CDN -->
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    <style>
+        :root {{
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --primary: #3b82f6;
+            --critical: #ef4444;
+            --warning: #f59e0b;
+            --info: #10b981;
+        }}
+
+        body {{
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+        }}
+
+        header {{
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }}
+
+        .title-area h1 {{
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+        }}
+
+        .title-area p {{
+            margin: 5px 0 0 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }}
+
+        .dashboard {{
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 30px 40px;
+        }}
+
+        .stat-card {{
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }}
+
+        .stat-card::before {{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 4px;
+        }}
+
+        .stat-card.total::before {{ background-color: var(--primary); }}
+        .stat-card.critical::before {{ background-color: var(--critical); }}
+        .stat-card.warning::before {{ background-color: var(--warning); }}
+        .stat-card.info::before {{ background-color: var(--info); }}
+
+        .stat-card h3 {{
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+        }}
+
+        .stat-card .value {{
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+        }}
+
+        .section {{
+            padding: 0 40px 40px 40px;
+        }}
+
+        .section-title {{
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #ffffff;
+            border-left: 4px solid var(--primary);
+            padding-left: 10px;
+        }}
+
+        #waveform-container {{
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 40px;
+        }}
+
+        #chart-div {{
+            width: 100%;
+            height: 480px;
+        }}
+
+        .anomaly-list {{
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }}
+
+        .anomaly-card {{
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            transition: transform 0.2s, border-color 0.2s;
+        }}
+
+        .anomaly-card:hover {{
+            transform: translateY(-2px);
+            border-color: #475569;
+        }}
+
+        .card-header {{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }}
+
+        .card-header-left {{
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }}
+
+        .anomaly-id {{
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--border-color);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+        }}
+
+        .severity-badge {{
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }}
+
+        .severity-badge.critical {{ background-color: rgba(239, 68, 68, 0.2); color: var(--critical); }}
+        .severity-badge.warning {{ background-color: rgba(245, 158, 11, 0.2); color: var(--warning); }}
+        .severity-badge.info {{ background-color: rgba(16, 185, 129, 0.2); color: var(--info); }}
+
+        .timestamp-badge {{
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-muted);
+            font-size: 14px;
+        }}
+
+        .card-body {{
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }}
+
+        .card-details {{
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }}
+
+        .detail-item h4 {{
+            margin: 0 0 4px 0;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.5px;
+        }}
+
+        .detail-item p {{
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }}
+
+        .suggested-fix {{
+            background-color: rgba(59, 130, 246, 0.08);
+            border: 1px dashed rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 12px 16px;
+        }}
+
+        .suggested-fix h4 {{
+            color: var(--primary);
+        }}
+
+        .spec-ref {{
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 13px;
+        }}
+
+        .spec-ref h4 {{
+            margin: 0 0 6px 0;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }}
+
+        .empty-state {{
+            background-color: var(--card-bg);
+            border: 1px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 60px;
+            text-align: center;
+            color: var(--text-muted);
+        }}
+
+        .empty-state h3 {{
+            color: var(--info);
+            margin: 0 0 10px 0;
+        }}
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="title-area">
+            <h1>VeriGenX WaveWhisperer</h1>
+            <p>AI-Powered Waveform Anomaly Explainer & Timing Diagnostics | Design: {self.design_name}</p>
+        </div>
+        <div class="timestamp-badge">
+            Report Generated: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}
+        </div>
+    </header>
+
+    <div class="dashboard">
+        <div class="stat-card total">
+            <h3>Total Anomalies</h3>
+            <div class="value">{len(anomalies)}</div>
+        </div>
+        <div class="stat-card critical">
+            <h3>Critical Bugs</h3>
+            <div class="value">{critical_count}</div>
+        </div>
+        <div class="stat-card warning">
+            <h3>Warnings</h3>
+            <div class="value">{warning_count}</div>
+        </div>
+        <div class="stat-card info">
+            <h3>Observations</h3>
+            <div class="value">{info_count}</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Interactive Waveform Viewer</div>
+        <div id="waveform-container">
+            <div id="chart-div"></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Anomaly Explanations & Suggested Fixes</div>
+        
+        {f"""<div class="anomaly-list">
+            {"".join(self._render_anomaly_card(a) for a in anomalies)}
+        </div>""" if anomalies else """
+        <div class="empty-state">
+            <h3>No Waveform Anomalies Detected</h3>
+            <p>The design simulation waveforms successfully satisfy all timing constraints, reset behaviors, and protocol state rules.</p>
+        </div>
+        """}
+    </div>
+
+    <script>
+        // Inject serialized python variables
+        const timestamps = {timestamps_json};
+        const signals = {signals_json};
+        const anomalies = {anomalies_json};
+
+        // Stack digital signals vertically by offsetting them
+        const data = [];
+        const sigNames = Object.keys(signals);
+        
+        // Reverse so clk appears at the top
+        sigNames.reverse();
+
+        sigNames.forEach((sig, index) => {{
+            const yValues = signals[sig].map(v => {{
+                // Handle non-numeric states (X/Z) by placing them as 0.5 in waveform view
+                if (typeof v === 'string') return index * 2 + 0.5;
+                return index * 2 + (v ? 1.0 : 0.0);
+            }});
+
+            data.push({{
+                x: timestamps,
+                y: yValues,
+                name: sig,
+                type: 'scatter',
+                line: {{ shape: 'vh', width: 2 }},
+                mode: 'lines',
+                hoverinfo: 'name+x+y'
+            }});
+        }});
+
+        // Add anomaly markers
+        anomalies.forEach(anomaly => {{
+            const sigIdx = sigNames.indexOf(anomaly.signal);
+            if (sigIdx !== -1) {{
+                const yPos = sigIdx * 2 + 0.5;
+                const color = anomaly.severity === 'CRITICAL' ? '#ef4444' : (anomaly.severity === 'WARNING' ? '#f59e0b' : '#10b981');
+                
+                data.push({{
+                    x: [anomaly.timestamp],
+                    y: [yPos],
+                    mode: 'markers',
+                    type: 'scatter',
+                    name: anomaly.id + ' (' + anomaly.type + ')',
+                    marker: {{
+                        symbol: 'triangle-up',
+                        size: 14,
+                        color: color,
+                        line: {{ width: 1, color: '#ffffff' }}
+                    }},
+                    hovertext: anomaly.type + ': ' + anomaly.actual,
+                    hoverinfo: 'text+x'
+                }});
+            }}
+        }});
+
+        const tickvals = sigNames.map((_, i) => i * 2 + 0.5);
+        const ticktext = sigNames;
+
+        const layout = {{
+            paper_bgcolor: '#1e293b',
+            plot_bgcolor: '#0f172a',
+            margin: {{ t: 20, b: 40, l: 120, r: 40 }},
+            showlegend: false,
+            xaxis: {{
+                title: {{ text: 'Simulation Time ({df.columns[0] if not df.empty else "units"})', font: {{ color: '#f1f5f9' }} }},
+                gridcolor: '#334155',
+                tickcolor: '#334155',
+                tickfont: {{ color: '#94a3b8' }},
+                zeroline: false
+            }},
+            yaxis: {{
+                tickvals: tickvals,
+                ticktext: ticktext,
+                tickfont: {{ color: '#f1f5f9', size: 12, family: 'JetBrains Mono' }},
+                gridcolor: '#334155',
+                zeroline: false,
+                range: [-1, sigNames.length * 2 + 1]
+            }}
+        }};
+
+        Plotly.newPlot('chart-div', data, layout, {{ responsive: true }});
+    </script>
+</body>
+</html>
+"""
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write(html_content)
+
+    def _render_anomaly_card(self, anomaly: Dict[str, Any]) -> str:
+        sev = anomaly.get("severity", "INFO").lower()
+        return f"""
+        <div class="anomaly-card">
+            <div class="card-header">
+                <div class="card-header-left">
+                    <span class="anomaly-id">{anomaly.get("id")}</span>
+                    <span class="severity-badge {sev}">{sev}</span>
+                    <strong style="font-size: 15px; color: #ffffff;">{anomaly.get("type")}</strong>
+                </div>
+                <div class="timestamp-badge">Timestamp: {anomaly.get("timestamp")}</div>
+            </div>
+            <div class="card-body">
+                <div class="card-details">
+                    <div class="detail-item">
+                        <h4>What Happened</h4>
+                        <p>{anomaly.get("what_happened")}</p>
+                    </div>
+                    <div class="detail-item">
+                        <h4>Why</h4>
+                        <p>{anomaly.get("why")}</p>
+                    </div>
+                    <div class="detail-item suggested-fix">
+                        <h4>Suggested Fix</h4>
+                        <p>{anomaly.get("suggested_fix")}</p>
+                    </div>
+                </div>
+                <div class="spec-ref">
+                    <h4>Specification Reference</h4>
+                    <p style="margin: 0; font-size: 13px; line-height: 1.4; color: var(--text-muted);">{anomaly.get("spec_reference")}</p>
+                    <div style="margin-top: 15px;">
+                        <h4 style="font-size: 10px;">Signal Inspected</h4>
+                        <code style="font-family: 'JetBrains Mono', monospace; color: var(--primary); font-size: 12px;">{anomaly.get("signal")}</code>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <h4 style="font-size: 10px;">Measured Value</h4>
+                        <code style="font-family: 'JetBrains Mono', monospace; color: var(--critical); font-size: 12px;">{anomaly.get("actual")}</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+        """
