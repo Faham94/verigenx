@@ -91,6 +91,10 @@ def main():
     if os.path.exists("CLIENT_REPORT_WAVEFORM.html"):
         p6_status = "Complete"
 
+    p7_status = "Pending"
+    if os.path.exists("CLIENT_REPORT_TRACEABILITY.html") and os.path.getsize("CLIENT_REPORT_TRACEABILITY.html") > 0:
+        p7_status = "Complete"
+
     # 3. Determine component count
     comp_count = 12
     if compile_report:
@@ -143,6 +147,11 @@ def main():
             html
         )
         html = re.sub(
+            r"<!-- PHASE_7_VAL_START -->.*?<!-- PHASE_7_VAL_END -->",
+            f"<!-- PHASE_7_VAL_START -->Complete — Traceability Matrix generated<!-- PHASE_7_VAL_END -->" if p7_status == "Complete" else "<!-- PHASE_7_VAL_START -->Pending<!-- PHASE_7_VAL_END -->",
+            html
+        )
+        html = re.sub(
             r"<!-- LINT_SUCCESS_START -->.*?<!-- LINT_SUCCESS_END -->",
             f"<!-- LINT_SUCCESS_START -->({first_pass_rate:.1f}% success rate)<!-- LINT_SUCCESS_END -->" if p3_status == "Complete" else "<!-- LINT_SUCCESS_START -->(pending success rate)<!-- LINT_SUCCESS_END -->",
             html
@@ -189,6 +198,11 @@ def main():
         html = re.sub(
             r"<!-- P6_STATUS_START -->.*?<!-- P6_STATUS_END -->",
             f"<!-- P6_STATUS_START -->{p6_status}<!-- P6_STATUS_END -->",
+            html
+        )
+        html = re.sub(
+            r"<!-- P7_STATUS_START -->.*?<!-- P7_STATUS_END -->",
+            f"<!-- P7_STATUS_START -->{p7_status}<!-- P7_STATUS_END -->",
             html
         )
         html = re.sub(

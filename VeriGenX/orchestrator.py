@@ -55,6 +55,9 @@ class Orchestrator:
             print("\n[Phase 5] CoverHunter — Coverage Closure Feedback Loop")
             self._run_coverhunter()
 
+            print("\n[Phase 7] TraceVault — Traceability Matrix Engine")
+            self._run_tracevault()
+
             elapsed = time.time() - self.start_time
             print("\n" + "=" * 60)
             print(f"PIPELINE COMPLETE in {elapsed:.2f}s")
@@ -218,6 +221,33 @@ class Orchestrator:
         results = loop.run_closure_loop(design, state_plan, state_files, base_run_dir=self.output_dir)
         
         print(f"  CoverHunter complete — Overall Status: {results['status'].upper()}")
+
+    # ------------------------------------------------------------------ #
+    #  Phase 7 — TraceVault                                              #
+    # ------------------------------------------------------------------ #
+
+    def _run_tracevault(self) -> None:
+        state_plan = self.state.get_state().test_plan
+        if not state_plan:
+            print("  [Warning] Missing test plan in state. Skipping TraceVault.")
+            return
+
+        design = state_plan.get("design_name", "design")
+        print(f"  Building traceability matrix for {design.upper()}...")
+        from VeriGenX.agents.tracevault.matrix_builder import MatrixBuilder
+        from VeriGenX.agents.tracevault.report_exporter import ReportExporter
+        
+        builder = MatrixBuilder()
+        matrix_data = builder.build_matrix(design)
+        
+        # Update pipeline state
+        self.state.update_state(traceability_matrix=matrix_data)
+        
+        # Export report
+        exporter = ReportExporter()
+        report_path = "CLIENT_REPORT_TRACEABILITY.html"
+        exporter.export_html(design, report_path)
+        print(f"  TraceVault complete — Traceability Matrix report saved to {report_path}")
 
     # ------------------------------------------------------------------ #
     #  ArchWeaver-only entry (for testing / standalone use)               #
