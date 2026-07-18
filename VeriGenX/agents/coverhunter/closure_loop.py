@@ -75,7 +75,14 @@ class ClosureLoop:
             if iteration > 1:
                 # If compilation failed, simulation status is failed, or functional coverage decreased, we roll back!
                 if not results.get("compiled", False) or results.get("status") != "passed" or current_functional_coverage < prev_functional_coverage:
-                    rollback_reason = f"Compilation failed, simulation failed, or functional coverage decreased from {prev_functional_coverage:.2f}% to {current_functional_coverage:.2f}%"
+                    if not results.get("compiled", False):
+                        rollback_reason = "New test failed to compile"
+                    elif results.get("status") != "passed":
+                        rollback_reason = "New test failed during simulation"
+                    elif current_functional_coverage < prev_functional_coverage:
+                        rollback_reason = f"Functional coverage decreased from {prev_functional_coverage:.2f}% to {current_functional_coverage:.2f}%"
+                    else:
+                        rollback_reason = "No coverage improvement"
                     print(f"  [WARNING] {rollback_reason}. Triggering ROLLBACK!")
                     rollback_occurred = True
                     rollback_iteration = iteration

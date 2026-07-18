@@ -34,6 +34,7 @@ class Orchestrator:
 
     def run_pipeline(self, spec_path: str, output_dir: str = "output") -> None:
         self.start_time = time.time()
+        self.output_dir = output_dir
         print("\n" + "=" * 60)
         print("VERIGENX PIPELINE STARTED")
         print("=" * 60)
@@ -191,7 +192,7 @@ class Orchestrator:
         design = state_plan.get("design_name", "design")
         from VeriGenX.agents.simrunner import SimRunner
         runner = SimRunner()
-        results = runner.run_simulations(design, state_plan, state_files)
+        results = runner.run_simulations(design, state_plan, state_files, base_run_dir=self.output_dir)
         self.state.update_state(
             simulation_results=results,
             coverage_data=results.get("coverage")
@@ -214,7 +215,7 @@ class Orchestrator:
         design = state_plan.get("design_name", "design")
         from VeriGenX.agents.coverhunter.closure_loop import ClosureLoop
         loop = ClosureLoop(max_iterations=5, convergence_threshold=0.1)
-        results = loop.run_closure_loop(design, state_plan, state_files)
+        results = loop.run_closure_loop(design, state_plan, state_files, base_run_dir=self.output_dir)
         
         print(f"  CoverHunter complete — Overall Status: {results['status'].upper()}")
 

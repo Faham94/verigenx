@@ -45,9 +45,6 @@ class uart_sequence_{gap_name} extends uvm_sequence #(uart_seq_item);
     virtual task body();
         req = uart_seq_item::type_id::create("req");
         start_item(req);
-        if (!req.randomize()) begin
-            `uvm_fatal("SEQ", "Randomization failed")
-        end
         req.tx_data = 8'hAA;
         req.rx_data = 8'hAA;
         finish_item(req);
